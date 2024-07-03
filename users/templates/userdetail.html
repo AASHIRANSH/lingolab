@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if user.first_name %}
+        {{user.first_name|capfirst}}'s
+    {% else %}
+        {{user.first_name}}'s
+    {% endif %}
+    Profile | 
+{% endblock title %}
+
+{% block body %}
+{% include 'header.html' %}
+
+    <div class="container_fluid p-4 bg-gray-100 shadow">
+        <div class="d-flex justify-content-center">
+            <div class="profile-pic me-3">
+                <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow bg-white"/><!-- former class rounded-circle, account-img -->
+            </div>
+
+            <div class="d-flex flex-column">
+                <div class="">
+                    {% if user.first_name %}
+                        <h1>{{user.first_name|capfirst}}</h1>
+                    {% else %}
+                        <h1>{{user.username|capfirst}}</h1>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    {% if user.is_superuser %}
+                    Administrator
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!--PERMS BUTTONS-->
+        <div class="d-flex justify-content-between">
+            <div class="">
+                <button class="btn btn-dark" id="last-seen">Last seen: {% if user.profile.last_seen %}{{user.profile.last_seen|date:'H:i - F j'}}{% else %}{{user.last_login|date:'H:i - F j'}}{% endif %}</button>
+                <!--script>
+                    var last_seen = new Date("");
+                    var upd = last_seen.setMinutes(last_seen.getMinutes()+2);
+                    var date_uls = new Date();
+                    var last_seen_ele = document.getElementById("last-seen");
+                    
+                    if (date_uls > upd) {
+                        last_seen_ele.innerText = `Last seen: {{user.profile.last_seen|date:'H:i - F j'}}`; //${last_seen.getHours()}:${last_seen.getMinutes()} on (${last_seen.getDate()}-${last_seen.getMonth()})
+                    } else {
+                        last_seen_ele.classList.toggle("bg-success");
+                        last_seen_ele.innerText = "Online";
+                    }
+                </script-->
+                <script>
+                    setInterval(updls, 5000);
+                    function updls() {
+                        const userlog = new XMLHttpRequest();
+                        userlog.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var data = this.responseText;
+                                last_seen = new Date(data);
+                                upd = last_seen.setSeconds(last_seen.getSeconds()+30);
+                                date_uls = new Date();
+                                last_seen_ele = document.getElementById("last-seen");
+
+                                if (date_uls > upd) {
+                                    last_seen_ele.innerText = `Last seen: ${data}`; //`Last seen: ${last_seen.getHours()}:${last_seen.getMinutes()} ${last_seen.getDate()}-${last_seen.getMonth()}`;
+                                } else {
+                                    last_seen_ele.classList.toggle("bg-success");
+                                    last_seen_ele.innerText = "Online";
+                                }
+                                console.log(data)
+                            }
+                          };
+                        userlog.open("GET","{% url 'userlog' %}?user={{user.id}}", true);
+                        userlog.send();
+                    };
+                    console.log(last_seen)
+                </script>
+            </div>
+
+            <div>
+                {% if is_friend %}
+                    {% if fr_req == "request_received" %}
+                        <div class="btn-group dropup">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                                Befriend
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                You have a friend request from {{user.username}}.
+                                <button onclick="window.location.assign('?action=accept')" class="btn btn-sm btn-secondary">Accept</button>
+                                <button onclick="window.location.assign('?action=cancel')" class="btn btn-sm btn-secondary">Reject</button>
+                            </div>
+                        </div>
+                    {% else %}
+                    {% if fr_req == "request_sent" %}
+                        <div class="btn-group dropup">
+                            <button type="button" onclick="" class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-message"></i> Message</button>
+                            <div class="dropdown-menu p-2">
+                                You can send messages after they have accepted your friend request.
+                            </div>
+
+                            <button type="button" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                              Befriend
+                            </button>
+                            <div class="dropdown-menu p-2">
+                              You have already sent friend request to <span class="text-primary">{{user.username}}</span>.
+                              <button onclick="window.location.assign('?action=cancel')" class="btn btn-outline-danger">Cancel Request</button>
+                            </div>
+                        </div>
+                    {% else %}
+                        <button onclick="window.location.assign('?action=unfriend')" class="btn btn-danger"><i class="fa-solid fa-hands"></i> Unfriend</button>
+                    {% endif %}
+                    {% endif %}
+                {% else %}
+                <div class="btn-group dropup">
+                    <button type="button" onclick="" class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-message"></i> Message</button>
+                    <div class="dropdown-menu p-2">
+                        You can send messages after they have accepted your friend request.
+                    </div>
+                    <button onclick="window.location.assign('?action=befriend')" class="btn btn-primary"><i class="fa-solid fa-handshake"></i> Befriend</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!--END PROFILE BUTTONS-->
+    </div>
+    {% include 'messages.html' %}
+    
+    <div class="container mt-5">
+        <div class="row">
+            <div class="row col-sm-12 col-md-6">
+                <div class="mb-4">
+                    <h3>Contact Information:</h3>
+                </div>
+                
+                <div class="col-3 mb-3">
+                    {{form.username.label_tag}}
+                </div>
+                <div class="col-9 mb-3">
+                    {{form.username.value}}
+                    {{form.username.errors}}
+                </div>
+
+                <div class="col-3 mb-3">
+                    {{form.first_name.label_tag}}
+                </div>
+                <div class="col-9 mb-3">
+                    {{form.first_name.value}}
+                    {{form.first_name.errors}}
+                </div>
+
+                <div class="col-3 mb-3">
+                    {{form.last_name.label_tag}}
+                </div>
+                <div class="col-9 mb-3">
+                    {{form.last_name.value}}
+                    {{form.last_name.errors}}
+                </div>
+
+
+                <div class="col-3 mb-3 is-friend">
+                    {{p_form.phone.label_tag}}
+                </div>
+                <div class="col-9 mb-3 is-friend">
+                    {{p_form.phone.value}}
+                    {{p_form.phone.errors}}
+                </div>
+
+
+                <div class="col-3 mb-3">
+                    {{form.email.label_tag}}
+                </div>
+                <div class="col-9 mb-3">
+                    {{form.email.value}}
+                    {{form.email.errors}}
+                </div>
+            </div>
+            <div class="row col-sm-12 col-md-6">
+                <div class="mb-4">
+                    <h3>Academic Information:</h3>
+                </div>
+
+                <div class="col-3 mb-3">
+                    {{p_form.profession.label_tag}}
+                </div>
+                <div class="col-8 mb-3">
+                    {{p_form.profession.value|capfirst}}
+                    {{p_form.profession.errors}}
+                </div>
+
+
+                <div class="col-3 mb-3">
+                    {{p_form.highest_degree.label_tag}}
+                </div>
+                <div class="col-8 mb-3">
+                    {{p_form.highest_degree.value}}
+                    {{p_form.highest_degree.errors}}
+                </div>
+                <div class="col-3 mb-3">
+                    {{p_form.reputation.label_tag}}
+                </div>
+                <div class="col-8 mb-3">
+                    {{p_form.reputation.value}} <button type="button" class="btn btn-sm btn-outline-info ms-2" data-bs-toggle="popover" data-bs-title="Reputation?" data-bs-content="Reputation increases each time you answer an exercise question anywhere on the Website.">Click to know more!</button>
+                    {{p_form.reputation.errors}}
+                </div>
+
+                <div class="col-3 mb-3">
+                    {{p_form.languages.label_tag}}
+                </div>
+                <div class="col-8 mb-3">
+                    {{p_form.languages.value}}
+                    {{p_form.languages.errors}}
+                </div>
+                
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+{% endblock body %}
+
+</body>
+</html>

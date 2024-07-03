@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block body %}
+{% include 'static/css/styles.html' %}
+{% include "header.html" %}
+{% include "messages.html" %}
+
+<div class="container post d-grid gap-4 bg-light py-5 mb-5 shadow">
+    <div class="top-t">
+        Both verbs are concerned with wanting something but they have different connotations. Follow the lesson to find out about their difference.    
+    </div>
+
+    <div class="top-m">
+        <div class="h">
+        </div>
+        <div class="c wsp-sm">
+            Both 'wish' and 'desire' refer to wanting or craving something to happen or be true. However, 'wish' is used for unlikely or impossible goals while 'desire' is used with more attainable goals. This lesson will clarify the difference between these two verbs.
+        </div>
+    </div>
+    
+    <div class="content">
+        <h3>Attainable vs. Unattainable</h3>
+        <div class="c">
+            'Wish' generally refers to a strong desire or hope for something that is unlikely or impossible to attain, or for something that is beyond one's control. It often conveys a sense of longing or yearning for something that is not currently present or achievable. 'Desire' refers to having a strong feeling of wanting or craving something, usually something achievable or within one's reach. It often implies a sense of deeply longing for a particular object, experience, or outcome. 'Desiring' typically involves a more tangible, attainable want or goal that one actively pursues.
+        </div>
+        <div class="h">Here are some examples:</div>
+    </div>
+
+    <ul class="examples">
+        <li>
+            They wished they could turn back time and undo their mistakes. 
+        </li>
+        
+        <li>
+            He wished he had more time to spend with his family. 
+        </li>
+        
+        <li>
+            She desires a fulfilling career in the music industry. 
+            <lii>
+               * When talking about something that can be achieved, 'desire' is used.
+            </lii>
+        </li>
+        <li>
+            He desires a loving and committed relationship with a compatible partner. 
+        </li>
+    </ul>
+
+    <div class="content">
+        <h3>Grammatical Difference</h3>
+        <div class="c">
+            'Wish' is typically followed by a clause in the subjunctive mood in this meaning. 'Desire', however, is followed either by a noun phrase or a 'to- infinitive' clause. 
+        </div>
+        <div class="h">Take a look at the examples:</div>
+    </div>
+
+    <ul class="examples">
+        <li>
+            I wish I could travel the world and experience different cultures. 
+            <lii>
+               * 'Wish' with a subjunctive clause.
+            </lii>
+        </li>
+        
+        <li>
+            They desire financial stability and security for their family. 
+            <lii>
+               * 'Desire' with a noun phrase
+            </lii>
+        </li>
+        
+        <li>
+            She desires to become a professional athlete and compete at the highest level. 
+            <lii>
+               * 'Desire' with a 'to- infinitive' clause
+            </lii>
+        </li>
+    </ul>
+
+    <div class="tip">
+        <h3>Tip!</h3>
+        <div class="c">
+            Unlike 'hurt', 'harm' cannot be used as a reflexive verb to refer to damages cause to one by oneself. Take a look at the example below:</li>
+        </div>
+        <ul class="examples">
+            <li>
+                The athlete hurt her ankle during the soccer match. 
+                <lii>* You cannot say 'harmed her ankle'.</lii>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<script>
+    var element = document.getElementsByClassName("example");
+    var words = ["during"]
+    for (line in element) {
+        element[line].innerHTML = element[line].innerHTML.replace(/during/gi, "<span style='color:#0d6efd;'>during</span>");
+        element[line].innerHTML = element[line].innerHTML.replace(/while/gi, "<span style='color:#0d6efd;'>while</span>");
+        element[line].innerHTML = element[line].innerHTML.replace(/for/gi, "<span style='color:#0d6efd;'>for</span>");
+    }
+</script>
+{% endblock body %}

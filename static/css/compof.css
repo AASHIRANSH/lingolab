@@ -1,0 +1,242 @@
+:root{
+    --font-jakarta: Jakarta;
+    --bg-navy: #000080;
+}
+
+.font-jakarta {
+    font-family: var(--font-jakarta);
+}
+
+.bg-gray {
+    background-color: var(--bs-gray);
+}
+.bg-gray-900 {
+    background-color: var(--bs-gray-900);
+}
+.bg-gray-800 {
+    background-color: var(--bs-gray-800);
+}
+.bg-gray-700 {
+    background-color: var(--bs-gray-700);
+}
+.bg-gray-600 {
+    background-color: var(--bs-gray-600);
+}
+.bg-gray-500 {
+    background-color: var(--bs-gray-500);
+}
+.bg-gray-400 {
+    background-color: var(--bs-gray-400);
+}
+.bg-gray-300 {
+    background-color: var(--bs-gray-300);
+}
+.bg-gray-200 {
+    background-color: var(--bs-gray-200,0.5);
+}
+.bg-gray-100 {
+    background-color: var(--bs-gray-100);
+}
+.bg-navy {
+    background-color: var(--bg-navy);
+}
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: initial;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/*--------- BACKGROUNDS ----------*/
+.hover-gray:hover {
+    background-color: var(--bs-gray-300);
+}
+.hover-primary:hover {
+    background-color: var(--bs-blue);
+}
+
+/*----------- FONTS & TEXTS -----------*/
+.font-arial {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.font-majalla {
+    font-family: Majalla;
+}
+.wsp-sm {
+    word-spacing: 0.05rem;
+}
+.wsp {
+    word-spacing: 0.2rem;
+}
+.wsp-lg {
+    word-spacing: 0.3rem;
+}
+.lsp-sm {
+    letter-spacing: 0.08rem;
+}
+.lsp {
+    letter-spacing: 0.2rem;
+}
+.lsp-lg {
+    letter-spacing: 0.3rem;
+}
+.ln-sm {
+    line-height: 1.8rem;
+}
+
+.fw-600{font-weight: 600;}
+.fs-7{font-size: 0.9rem;}
+.fs-8{font-size: 0.8rem;}
+.fs-9{font-size: 0.7rem;}
+.fs-10{font-size: 0.6rem;}
+
+
+.tr-05 {
+    transition:0.5s;
+}
+
+.bg-learner {
+    width: 100%;
+    background-image: linear-gradient(to bottom right, #3B71CA, #3cb371);
+    margin: 0 0 0 0;
+    overflow: hidden;
+}
+.bg-learnerf {
+    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
+    color: #fff;
+}
+
+.rule {
+    width: 100%;
+    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
+    margin: 0 0 0 0;
+    overflow: hidden;
+}
+
+.learner {
+    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-decoration: none;
+}
+
+/* Bubbles Bullets */
+.ts-b {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0 0 100% 0;
+    box-shadow: 0px 0px 1px 1px #0000001a;
+}
+.te-b {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    box-shadow: 0px 0px 1px 1px #0000001a;
+}
+.pulse {
+    animation: pulse-animation 2s infinite;
+}
+@keyframes pulse-animation {
+    0% {
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+    }
+}
+
+.ts-circle-sm {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius:0 0 100% 0;
+}
+.ts-circle-sm > * {
+    display: block;
+    padding: 0.5rem 1.5rem 1.5rem 0.5rem;
+}
+
+.ts-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius:0 0 100% 0;
+}
+.ts-circle > * {
+    display: block;
+    padding: 1rem 2rem 2rem 1rem;
+}
+
+.ts-circle-lg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius:0 0 100% 0;
+}
+.ts-circle-lg > * {
+    display: block;
+    padding: 1.5rem 2.5rem 2.5rem 1.5rem;
+}
+
+.te-circle-sm {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius:0 0 0 100%;
+}
+.te-circle-sm > * {
+    display: block;
+    padding: 0.5rem 0.5rem 1.5rem 1.5rem;
+}
+
+.te-circle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius:0 0 0 100%;
+}
+.te-circle > * {
+    display: block;
+    padding: 1rem 1rem 2rem 2rem;
+}
+
+.te-circle-lg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius:0 0 0 100%;
+}
+.te-circle-lg > * {
+    display: block;
+    padding: 1.5rem 1.5rem 2.5rem 2.5rem;
+}
+
+@media screen and (max-width: 767px) {
+    #vocabd{
+        height: 50%;
+    }
+    #score{
+        height: 35%;
+    }
+}
+@media screen and (min-width: 768px) {
+    #vocabd{
+        height: 60%;
+    }
+    #score{
+        height: 50%;
+    }
+}

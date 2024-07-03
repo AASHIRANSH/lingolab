@@ -1,0 +1,23 @@
+<script>//for inputs
+    var inputs = document.getElementsByTagName("input")    
+    for (i in inputs){
+        var itype = inputs[i].type.toLowerCase()
+        if(itype == 'text' || itype == 'number' || itype == 'email' || itype == 'file') {
+            inputs[i].classList.add("form-control")
+        } else if (itype == 'checkbox') {
+            inputs[i].classList.add("form-check-input")
+        }
+    }
+</script>
+<script>//for select inputs
+    var sels = document.getElementsByTagName("select")
+    for (i in sels){
+        sels[i].classList.add("form-select")
+    }
+</script>
+<script>//textareas
+    var textareas = document.getElementsByTagName("textarea")
+    for (t in textareas){
+        textareas[t].classList.add("form-control")
+    }
+</script>

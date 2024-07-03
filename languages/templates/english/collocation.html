@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% include 'english/flashcards/styles/flashcards.html' %}
+
+{% include "header.html" %}
+{% include 'messages.html' %}
+
+<div class="container mt-2">
+    <div class="d-flex justify-content-between align-items-baseline">
+        <div class="row col-9 d-flex align-items-baseline">
+            <div id="word" class="col-auto fw-bold text-primary d-inline" {% if request.user.is_superuser %}onclick="window.location.assign('/english/dictcolledit?word_id={{word.id}}')"{% endif %}>
+                {{word.word}}
+            </div>
+            <div id="pos" class="col-auto fs-4 d-inline text-secondary">
+                {{word.pos}}
+            </div>
+
+            <div class="col-12">
+                {% if word.grade|length > 0 %}
+                <div class="col-12 mb-2">
+                    <div id="grade" class="col-12 d-inline fs-5 text-uppercase px-2">
+                        {{word.grade}}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row col-12 mb-3">
+                    <div class="col-auto">
+                        <div id="ukpron" class="text-primary fs-5" style=""><i class="fa-solid fa-volume-high cursor-pointer"></i> UK <span id="pruk">{{pronounce.0}}</span></div>
+                        <div id="uspron" class="text-danger fs-5" style=""><i class="fa-solid fa-volume-high cursor-pointer"></i> US <span id="prus">{{pronounce.1}}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-lg-2">
+            <div class="col-12 mb-1">
+                <button class="btn btn-secondary col-12 fs-5">{{rv_count}} / {{rv_total_count}}</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="d-inline-block bg-primary text-white rounded px-2">{{word.usage}}</div>
+    </div>
+
+    <div class="m-3">
+        {% for x in word.fields %}
+            <div class="mb-3">
+                <div class="fw-bold text-decoration-underline">{{x.entry_pos}}</div>
+                <div>{{x.context}}</div>
+                {% if x.examples %}
+                    <div class="fst-italic">&#x2022; {{x.examples}}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if example %}
+        <span class="text-white bg-secondary rounded-top">
+            Example Sentences
+        </span>
+        <div id="example" class="col-12 fs-4 fst-italic border-start border-4 border-secondary bg-gray bg-opacity-10 rounded-bottom py-3 overflow-auto mb-3">
+            <ul>
+                <hr class="my-1">
+                {% for line in example %}
+                    <li class="example">
+                        <!--&#x2022; bullet -->{{line}} <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-primary d-sm-none d-lg-block" onclick="textToSpeech(this.parentNode.textContent, 'UK')"></i> <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-danger" onclick="textToSpeech(this.parentNode.textContent, 'US')"></i>
+                    </li>
+                    <hr class="my-1">
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% include "tts_2.html" %}
+{% include 'english/flashcards/scripts/script.html' %}
+{% endblock body %}

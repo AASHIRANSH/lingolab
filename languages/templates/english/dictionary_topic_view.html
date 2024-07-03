@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block body %}
+{% include "header.html" %}
+
+<div class="bg-polka-learner-sm animation-polka-glow">
+    <div class="bg-white bg-opacity-75 text-primary text-center p-4">
+        <span class="display-4 fw-semibold learner"><i class="fa-solid fa-book"></i> Topic Dictionary</span>
+    </div>
+<div class="rule pt-1 rounded-bottom"></div>
+</div>
+
+<div class="container my-5">
+    <div class="col-11 col-lg-8 mx-auto">
+        {% for w in words %}
+        <div class="bg-gray-200 hover-gray px-3 py-4 rounded my-3 cursor-pointer" onclick="window.location.assign('{% url "words" w.0.pk w.1 %}')">
+            <span class="badge text-uppercase text-bg-secondary fs-7 bg-opacity-50">{{forloop.counter}}</span>
+            <span class="fs-4 fw-semibold mx-2">{{w.0.word}}</span>
+            <span class="text-secondary fs-7 fst-italic">{{w.0.pos}}</span>
+            <span class="badge text-uppercase text-bg-primary fs-7 bg-opacity-50">{{w.0.cefr}}</span>
+            <div class="fs-6 px-5">{{w.2}}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% include "footer.html" %}
+{% endblock body %}

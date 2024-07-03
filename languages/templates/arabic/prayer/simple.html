@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Daily Prayer Timetable | {% endblock title %}
+
+{% block body %}
+<style>
+	{{styles}}
+</style>
+
+	{% include 'header.html' %}
+
+	<div class="container my-5">
+		<div class="text-center mb-3">
+			<div></div>
+			<div class="main">Ghaziabad, UP, India</div>
+			<div id="hijri"></div>
+		</div>
+		<div></div>
+		<div align="center" id="table"></div>
+		<div></div>
+	</div>
+
+	<script type="text/javascript" src="/static/js/web/PrayTimes-tree-53c61df-js/PrayTimes/PrayTimes.js"></script>
+	<script type="text/javascript" src="/static/js/web/hijridate/hijricalendar-kuwaiti.js"></script>
+	
+	<script type="text/javascript">
+		//var hijri = writeIslamicDate(-2);//HIJRI DATE
+		var hijri_2 = new Intl.DateTimeFormat('ar-TN-u-ca-islamic', {day: 'numeric', month: 'long',weekday: 'long',year : 'numeric'}).format(Date.now());
+		document.querySelector('#hijri').innerHTML = hijri_2;
+		var date = new Date(); // today
+
+		//------------------ADDED MANUALLY FOR CUSTOMIZATION--------------------------
+		prayTimes.setMethod('Karachi');      //if this line deleted 'MWL' will be default from PrayTimes.js
+		prayTimes.adjust( {asr: 'Hanafi'} ); //prayTimes.adjust( {fajr: 16, dhuhr: '5 min', asr: 'Hanafi', isha: 15} );
+		prayTimes.tune( {sunrise: -1, sunset: 3.5} ); //adjust minutes as per this 'sunrise will occur 1 minute earlier'
+		//----------------------------------------------------------
+
+		var times = prayTimes.getTimes(date, [28.6692, 77.4538], +5.5, 'auto', '24h'); //var times = prayTimes.getTimes(date, [lat, lngt], timezone, dst:[1,0,'auto'], timeformat:[12h,24h,12hNS,Float]);
+		var list = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Midnight'];
+
+		var html = '<table id="timetable" class="box_shadow rounded">';
+		html += '<tr><th class="text-center rounded" colspan="2"><div class="">'+ date.toLocaleDateString()+'</div><div class="" style="font-size:0.8rem;">('+hijri_2+')</div></th></tr>';
+		for(var i of list)	{
+			html += '<tr><td>'+ i + '</td>';
+			html += '<td>'+ times[i.toLowerCase()]+ '</td></tr>';
+		}
+		html += '</table>';
+		document.getElementById('table').innerHTML = html;
+
+	</script>
+
+{% endblock body %}

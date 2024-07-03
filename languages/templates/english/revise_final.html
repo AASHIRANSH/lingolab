@@ -1,0 +1,438 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/animate.min.css"/>
+<style>
+    .form-check-label{
+        cursor: pointer;
+    }
+</style>
+{% endblock head %}
+{% block body %}
+{% include 'english/flashcards/styles/flashcards.html' %}
+{% comment %} {% include "header.html" %} {% endcomment %}
+{% include 'messages.html' %}
+
+<div id="content"></div>
+
+<script>
+    const objs = JSON.parse("{{objs|escapejs}}");
+    const len = []; //used for current page if there are more than one card
+    const learned_today = [];
+    const easy_arr = [];
+    const hard_arr = [];
+    var rv_count = 1;
+    var rv_total_count = {{rv_total_count}};
+    const shuffle = (array) => { 
+        for (let i = array.length - 1; i > 0; i--) { 
+          const j = Math.floor(Math.random() * (i + 1)); 
+          [array[i], array[j]] = [array[j], array[i]]; 
+        } 
+        return array; 
+    };
+    const d = new Date();
+
+    function master(){
+        r_num = Math.floor(Math.random() * (objs.length - 0)) + 0;
+        while (len.includes(r_num)) {
+            r_num = Math.floor(Math.random() * (objs.length - 0)) + 0;
+        }
+        r_obj = objs[r_num];
+        var rvcount = r_obj.rvcount?r_obj.rvcount:0;
+
+        cookies = document.cookie ? document.cookie.split(";"):"";
+        refresh=0;wlt=0;wrt=0;
+        cookies.forEach(function(c){
+            if (c.includes("refresh")) refresh = parseInt(c.split("=")[1]);
+            if (c.includes("wlt")) wlt = parseInt(c.split("=")[1]);
+            if (c.includes("wrt")) wrt = parseInt(c.split("=")[1]);
+        });
+        {//generating 4 choices
+            var choices_arr = [[r_obj.senses[9].en[0][0],"easy"]];
+            if (r_obj.senses[9].en[2].length){
+                for (let x of r_obj.senses[9].en[2]){
+                    choices_arr.push([x,"hard"])
+                    if (choices_arr.length > 3) break;
+                };
+            }
+            let objs_ii = [...objs].sort(function () { return 0.5 - Math.random() });
+            for (let x of objs_ii) {
+                if (x.pk == r_obj.pk) continue;
+                if (choices_arr.length > 3) break;
+                choices_arr.push([x.senses[9].en[0][0],"hard"]);
+            }
+        }
+        choices_arr.sort(function () { return 0.5 - Math.random() }); // Orders randomly an array
+        
+        var examples = [];
+        for (let x of r_obj.senses[10]){
+            examples.push(`<li class="example p-0"><!--&#x2022; bullet -->${x} <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-primary" onclick="textToSpeech(this.parentNode.textContent, 'UK')"></i></li><hr class="my-2">`);
+        }
+        examples = shuffle(examples);
+
+        document.getElementById("content").innerHTML = `
+            ${objs.length > 4 ? `
+                <div id="vocab" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-wrap justify-content-center align-content-center align-items-center gap-3" style="overflow:hidden;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100" style="overflow:hidden;background:url('/static/img/bgs/bg-navy.jpg');background-position:center;background-size:cover;z-index:-2;"></div>
+                    <!--div class="watermark"><div class="text">Learners' Academy</div></div-->
+                    <div class="modal fade" id="wdd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content bg-light p-0 border border-5">
+                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-body p-0" style="height:80vh">
+                                <!--iframe src="/english/worddetailss/${r_obj.pk}/${r_obj.rvsense}/?h=false" width="100%" height="100%"></iframe-->
+                            </div>
+                            <!--div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                            </div-->
+                        </div>
+                        </div>
+                    </div>
+                    <div class="ts-circle bg-primary bg-opacity-75 shadow">
+                        <a href="{{request.GET.back}}" class="text-light"><i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                    <div class="te-circle bg-navy bg-opacity-50 shadow">
+                        <div>
+                            <div class="text-primary">{{rv_total_count}}</div>
+                            <div class="text-light">${rv_count}/{{rv_count}}</div>
+                        </div>
+                    </div>
+
+                    <div id="points" class="d-none position-absolute start-50 bg-primary fs-2 fw-semibold text-light p-1 rounded animate__animated animate__fadeInUp" style="top:20%;z-index:1;"></div>
+                    
+                    <div id="vocabc" class="position-relative d-flex flex-column justify-content-between bg-gray bg-opacity-75 col-10 col-md-7 overflow-hidden rounded-3 shadow-lg animate__animated animate__fadeIn" style="min-height:50%">
+                        ${r_obj.from=="New Word"?`<div class="ts-b bg-primary" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-primary" data-bs-title="You haven't seen this word before and blue color means that"></div>`:`<div class="ts-b bg-success pulse" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-success" data-bs-title="You have seen this word before and green color means that"></div>`}
+                        <!--div class="te-circle bg-success fs-7 text-light p-1 ps-4">${r_obj.from}</div-->
+                        <div id="qtop" class="row align-items-baseline gap-2 gx-0 bg-light p-3 shadow-sm">
+                            <div class="col-auto text-primary fw-bold fs-2 text-wrap">${r_obj.word}</div>
+                            <!--span class="fs-6">(${r_obj.pos})</span-->
+                            <div class="col-auto text-secondary">${examples.length?'in the following sentence(s) means':'means'}:</div>
+                        </div>
+
+                        <div id="examples" class="py-2 pe-3">
+                            <ul class="m-0">
+                                ${examples.length?'<hr class="my-2">'+examples.slice(0,3).join("").replaceAll("*",""):""}
+                            </ul>
+                        </div>
+
+                        <div id="choices" class="px-4">
+                            <div class="form-check py-1 hover-gray rounded" data-action="exbtn">
+                                <input class="form-check-input" data-action="${choices_arr[0][1]}" type="radio" name="flexRadioDefault" id="flexRadioDefault1" accesskey="a">
+                                <label class="d-block form-check-label" for="flexRadioDefault1">
+                                A. ${choices_arr[0][0]}
+                                </label>
+                            </div>
+                            <div class="form-check py-1 hover-gray rounded" data-action="exbtn">
+                                <input class="form-check-input" data-action="${choices_arr[1][1]}" type="radio" name="flexRadioDefault" id="flexRadioDefault2" accesskey="b">
+                                <label class="d-block form-check-label" for="flexRadioDefault2">
+                                B. ${choices_arr[1][0]}
+                                </label>
+                            </div>
+                            <div class="form-check py-1 hover-gray rounded" data-action="exbtn">
+                                <input class="form-check-input" data-action="${choices_arr[2][1]}" type="radio" name="flexRadioDefault" id="flexRadioDefault3" accesskey="c">
+                                <label class="d-block form-check-label" for="flexRadioDefault3">
+                                C. ${choices_arr[2][0]}
+                                </label>
+                            </div>
+                            <div class="form-check py-1 hover-gray rounded" data-action="exbtn">
+                                <input class="form-check-input" data-action="${choices_arr[3][1]}" type="radio" name="flexRadioDefault" id="flexRadioDefault4" accesskey="d">
+                                <label class="d-block form-check-label" for="flexRadioDefault4">
+                                D. ${choices_arr[3][0]}
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="exmenu d-flex justify-content-between bg-gray py-2 px-3">
+                            <div><button class="btn btn-primary fs-6 py-1 rounded-circle" accesskey="i" onclick="window.open('/english/word/${r_obj.pk}/${r_obj.rvsense}/','_blank')" data-action=""><i class="fa-solid fa-info" style="width:0.6rem;"></i></button></div>
+                            <div><button class="btn btn-primary rounded-circle" data-action="next" data-ele="vocabc" accesskey="n"><i class="fa-solid fa-chevron-right"></i></button></div>
+                        </div>
+                    </div>
+                    
+                    <div id="vocabd" class="d-none position-relative bg-gray bg-opacity-75 col-10 col-md-7 rounded-3 overflow-hidden shadow-lg animate__animated animate__fadeIn">
+                        <div class="row gx-0 align-items-baseline gap-2 bg-light p-3 shadow-sm">
+                            <span class="col-auto text-primary fw-bold fs-2 text-wrap" onclick="window.open('/english/word/${r_obj.pk}/${r_obj.rvsense}/','_blank')">${r_obj.word}</span> 
+                            <span class="col-auto fs-6 text-secondary">${r_obj.pos}</span> 
+                            ${r_obj.cefr?'<span id="grade" class="col-auto">'+r_obj.cefr+'</span>':''}
+                            <div class="fs-6">${r_obj.word_details[5]}</div>
+                        </div>
+
+                        <div class="bg-primary bg-opacity-25 fs-5 px-3 py-2 border-4 border-start border-primary">${r_obj.senses[9].en[0][r_obj.senses[9].en[0].length-1]}</div>
+
+                        <div id="examples" class="pe-3 py-2 border-4 border-start border-secondary mb-5" style="max-height:300px;overflow-y:auto;">
+                            <ul class="m-0">
+                                ${examples.length?'<hr class="my-2">'+
+                                examples.join("").replaceAll("*",""):""}
+                            </ul>
+                        </div>
+
+                        <div class="w-100 position-absolute bottom-0 start-0 bg-gray px-3 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="form-check form-switch" data-action="mastered">
+                                        <label class="" for="revise">Mastered</label>
+                                        <input type="checkbox" class="form-check-input" id="revise" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="me-2">Learning Priority:</span>
+                                    <span class="btn-group btn-group-sm" role="group" aria-label="Basic radio toggle button group">
+                                        <input type="radio" class="btn-check" name="btnradio" id="lph" autocomplete="off" ${r_obj.priority==1?"checked":""}>
+                                        <label class="btn btn-outline-primary" for="lph">High</label>
+                                    
+                                        <input type="radio" class="btn-check" name="btnradio" id="lpa" autocomplete="off" ${r_obj.priority==3?"checked":""}>
+                                        <label class="btn btn-outline-primary" for="lpa">Auto</label>
+                                    
+                                        <input type="radio" class="btn-check" name="btnradio" id="lpl" autocomplete="off" ${r_obj.priority==6?"checked":""}>
+                                        <label class="btn btn-outline-primary" for="lpl">Low</label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="score" class="d-none position-relative bg-gray bg-opacity-75 col-10 col-md-4 rounded-3 overflow-hidden shadow-lg animate__animated animate__fadeIn">
+
+                        <div class="w-100 position-absolute top-0 start-0 px-3 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class=""><button class="btn btn-primary fs-6 py-1 rounded-circle" accesskey="i" onclick="window.open('/english/word/${r_obj.pk}/${r_obj.rvsense}/','_blank')" data-action=""><i class="fa-solid fa-info" style="width:0.6rem;"></i></button></div>
+                                <div class=""><button class="btn btn-primary rounded-circle" data-action="next" data-ele="vocabd" accesskey="n"><i class="fa-solid fa-chevron-right"></i></button></div>
+                            </div>
+                        </div>
+
+                        <div class="p-3">
+                            <div class="fs-4 fw-bold text-primary text-center">My Progress</div>
+                            <div class="fs-5 fw-bold text-secondary text-center mb-3">on this</div>
+                            <div class="d-flex justify-content-center align-items-center bg-secondary bg-opacity-10 p-3 border border-5 border-primary mx-auto rounded-circle" style="width:8rem;height:8rem;">
+                                <div class="display-5 fw-bold text-primary">${(100/20)*(rvcount+1)}<span class="fs-4 text-secondary">%</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="complete" class="d-none bg-opacity-75 col-10 col-md-4 rounded-3 overflow-hidden shadow-lg animate__animated animate__fadeInRight">
+                        <div class="d-flex"></div>
+                    </div>
+                </div>`:""}
+
+            <!-- Modal Mastered Confirm -->
+            <div class="modal fade" id="masteredRevise" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <!--div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div-->
+                    <div class="modal-body">
+                    Have you really mastered this word?
+                    </div>
+                    <!--div class="modal-footer"-->
+                    <div class="text-center">
+                        <button type="button" data-action="reload" class="btn btn-secondary" data-bs-dismiss="modal">Not yet</button>
+                        <button id="mastered" type="button" class="btn btn-success">Certainly!</button>
+                    </div>
+                    <!--/div-->
+                </div>
+                </div>
+            </div>
+            <!-- Modal Delete Confirm -->
+            <div class="modal fade" id="deleteRevise" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!--div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div-->
+                    <div class="modal-body">
+                    Do you want to remove the word from revise?
+                    </div>
+                    <!--div class="modal-footer"-->
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button id="delete" type="button" class="btn btn-danger" onclick="window.location.assign('/english/data?data=remove&word={{word.id}}')">Yes, remove!</button>
+                    </div>
+                    <!--/div-->
+                </div>
+                </div>
+            </div>
+            <!-- Image -->
+            <div class="modal fade" id="fullImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content p-1">
+                    <div class="">
+                        <img id="pic_url" class="border border-4 border-secondary rounded" style="width:100%;height:auto;" src="${r_obj.pic_url ? r_obj.pic_url : r_obj.pic_url_url}"/>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        //if (r_obj.forms){}
+
+        //colors();
+        if (refresh){myTimeout = setTimeout(navigate, refresh*60000);}
+
+        $('#vocabc input').on('click', function () {
+            let attr = this.getAttribute("data-action");
+            let vc = document.querySelector('#vocabc');
+            let score = document.querySelector('#score');
+            let points = document.querySelector('#points');
+
+            if (["easy", "hard"].includes(attr)){
+                d.setDate(d.getDate()+1);d.setHours(0);
+                if (r_obj.from == "New Word"){
+                    document.cookie = "wlt="+(parseInt(wlt)+1)+";expires="+d.toUTCString();
+                } else {
+                    document.cookie = "wrt="+(parseInt(wrt)+1)+";expires="+d.toUTCString();
+                };
+            };
+            learned_today.push(r_obj.pk);
+            if (attr == "hard"){
+                $(this).parent().addClass('bg-danger text-danger animate__animated animate__shakeX');
+                hard_arr.push(r_obj.pk);
+            };
+            if (attr == "easy"){
+                easy_arr.push(r_obj.pk);
+                //$('#choices').css('pointer-events','none');
+                
+                vc.classList.add('d-none');
+                document.querySelector('#vocabd').classList.remove('d-none');
+                score.classList.remove('d-none');
+                points.classList.remove('d-none');
+                points.innerText = "+2 XP";
+                setTimeout(function (){
+                    points.classList.add('animate__fadeOutUp');
+                },1500);
+            };
+        });
+
+        $('*').on('click', function() {
+            if (this.getAttribute("data-action")=="next"){
+                if (hard_arr.includes(r_obj.pk)){
+                    exAction("hard");
+                    navigate(this.getAttribute("data-ele"));
+                } else if (easy_arr.includes(r_obj.pk)){
+                    if (r_obj.actionable) exAction("easy");
+                    navigate(this.getAttribute("data-ele"));
+                } else {
+                    navigate(this.getAttribute("data-ele"));
+                }
+            }
+            if (this.getAttribute("data-action")=="defpage"){
+                $("#vocab").addClass("d-none");
+            }
+            if (this.getAttribute("data-action")=="mastered"){
+                exAction("mastered");
+            }
+            if (this.id == "lph"){exAction("pr1")};if (this.id == "lpa"){exAction("pr3")};if (this.id == "lpl"){exAction("pr6")};
+            
+            //mastered
+            if (this.id=="msb"){
+                //mastered_arr.push(r_obj.pk);
+                clearTimeout(myTimeout);
+            }
+            if (this.id=="mastered"){
+                //mastered_arr.push(r_obj.pk);
+                exAction("mastered");
+            } 
+            if (this.id=="delete"){
+                //mastered_arr.push(r_obj.pk);
+                exAction("delete");
+            }
+        })
+    }
+
+    function exAction(action){
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("GET",`{% url 'data_main' %}?data=${action}&word=${r_obj.pk}&sense=${r_obj.rvsense}`, true);
+        xhttp.send();
+    }
+
+    function navigate(ele){
+        let sl = document.getElementById(ele);
+        let score = document.querySelector('#score');
+        sl.classList.add("animate__fadeOut");
+        score.classList.add("animate__fadeOut");
+        sl.addEventListener("animationend",()=>{
+            if (len.length == objs.length-1) {
+                setPlan("streak",easy_arr.length);
+                window.location.reload();
+                //complete
+            } else {
+                rv_count++;
+                len.push(r_num);
+                if(refresh){clearTimeout(myTimeout)};//clear timeout so that there would be no other timeouts
+                master();
+            }
+        });
+    }
+
+    master();
+
+    function colors(){
+        //let def = document.getElementById("definition");
+        //def.innerHTML = def.innerHTML.replace(/[;]/g, "<span class='fw-bold text-primary'> ; </span>");
+
+        var example = document.getElementById("examples");
+        var examples = example.getElementsByTagName("li");
+
+        for (let x of examples) {
+            let tag_start = false;
+
+            if (tag_start == false){
+                x.innerHTML = x.innerHTML.replace("**", "<span style='font-style:normal;'>[");
+                tag_start = true;
+            }
+
+            if (tag_start == true){
+                x.innerHTML = x.innerHTML.replace("**", "]</span>");
+                tag_start = false;
+            }
+
+            if (tag_start == false){
+                x.innerHTML = x.innerHTML.replace("*", "<span class='fw-bold'>");
+                tag_start = true;
+            }
+
+            if (tag_start == true){
+                x.innerHTML = x.innerHTML.replace("*", "</span>");
+                tag_start = false;
+            }
+        }
+
+        //reg = new RegExp(r_obj.word,"gi");
+        //example.innerHTML = example.innerHTML.replace(reg, `<span style='color:#0d6efd;'>${r_obj.word}</span>`);
+
+        // Example Shadows
+        let exampleHeight = example.scrollHeight;//example.getBoundingClientRect().height;
+        if ( exampleHeight > 300 ){
+            example.classList.add("shadow-b");
+        }
+        example.addEventListener("scroll", function(){
+            if (example.scrollTop > 40){
+                example.classList.remove("shadow-b");
+                example.classList.add("shadow-y");
+            }
+            if (example.scrollTop > (exampleHeight-example.offsetHeight-2)){
+                example.classList.remove("shadow-y");
+                example.classList.add("shadow-t");
+            }
+            if (example.scrollTop < 10){
+                example.classList.remove("shadow-y");
+                example.classList.add("shadow-b");
+            }
+            //console.log(example.classList);
+        });
+    }
+
+    //const btnAct = {
+    //    easy: function(){},
+    //    hard: function(){},
+    //    mastered: function(){}
+    //}
+    //btnAct.easy()
+</script>
+
+{% include "english/rv_settings.html" %}
+{% include "tts_2.html" %}
+{% endblock body %}

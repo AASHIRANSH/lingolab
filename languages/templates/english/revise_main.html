@@ -1,0 +1,657 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/animate.min.css"/>
+<style>
+    .hover-grey:hover {
+        background-color: #ccc;
+    }
+</style>
+{% endblock head %}
+{% block body %}
+{% include 'english/flashcards/styles/flashcards.html' %}
+{% comment %} {% include "header.html" %} {% endcomment %}
+{% include 'messages.html' %}
+
+<div id="content"></div>
+
+<script>
+    const objs = JSON.parse("{{objs|escapejs}}");
+    const len = [];//used for current page if there are more than one card
+    const learned_today = [];
+    const easy_arr = [];
+    const hard_arr = [];
+    var rv_count = 1;
+    var rv_total_count = {{rv_total_count}};
+    const shuffle = (array) => { 
+        for (let i = array.length - 1; i > 0; i--) { 
+          const j = Math.floor(Math.random() * (i + 1)); 
+          [array[i], array[j]] = [array[j], array[i]]; 
+        } 
+        return array; 
+    };
+    const d = new Date();
+
+    function master(){
+        r_num = Math.floor(Math.random() * (objs.length - 0)) + 0;
+        while (len.includes(r_num)) {
+            r_num = Math.floor(Math.random() * (objs.length - 0)) + 0;
+        }
+        r_obj = objs[r_num];
+        console.log(r_obj.pk, r_obj.word);
+
+        cookies = document.cookie ? document.cookie.split(";"):"";
+        refresh = 0;
+        wlt = 0;
+        cookies.forEach(function(c){
+            if (c.includes("refresh")) refresh = parseInt(c.split("=")[1]);
+            if (c.includes("wlt")) wlt = parseInt(c.split("=")[1]);
+        });
+        {//generating 4 choices
+            //let objs_rand = objs.sort(function () { return 0.5 - Math.random() });
+            var choices_arr = [[r_obj.senses[9].en[0][0],"easy"]];
+            for (let x in objs) {
+                if (x == r_num){continue;}else{choices_arr.push([objs[x].senses[9].en[0][0],"hard"]);}
+                
+                if (choices_arr.length == 4){break;}
+            }
+        }
+        choices_arr.sort(function () { return 0.5 - Math.random() }); // Orders randomly an array
+        
+        var examples = [];
+        for (let x of r_obj.senses[10]){
+            examples.push(`<li class="example p-0"><!--&#x2022; bullet -->${x} <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-primary" onclick="textToSpeech(this.parentNode.textContent, 'UK')"></i> <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-danger" onclick="textToSpeech(this.parentNode.textContent, 'US')"></i></li><hr class="my-1">`);
+        }
+        examples = shuffle(examples);
+
+        var boxes = [];
+        for (let x of r_obj.senses[19]){
+            boxes.push(`
+                <div class="col-sm-12 col-lg-6 accordion my-1" id="accordionExample{{forloop.counter}}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapseOne">
+                            <span class="d-inline-block bg-secondary text-white fw-bold wsp-sm lsp-sm fs-7 p-2 rounded">${x[0]}</span>
+                        </button>
+                    </h2>
+                    <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body shadow-sm">
+                            ${x[1]}
+                        </div>
+                    </div>
+                </div>
+                </div>
+            `);
+        };
+
+        document.getElementById("content").innerHTML = `
+            ${objs.length?`
+                <div id="vocab" class="position-absolute top-0 start-0 w-100 h-100 bg-navy d-flex flex-wrap justify-content-center align-content-center gap-3" style="overflow:hidden;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100" style="overflow:hidden;background:url('/static/img/bgs/bg-navy.jpg');background-position:center;background-size:cover;"></div>
+
+                    <div class="ts-circle bg-primary bg-opacity-75 shadow">
+                        <a href="{{request.GET.back}}" class="text-light"><i class="fa-solid fa-arrow-left"></i></a>
+                    </div>
+                    <div class="te-circle bg-navy bg-opacity-50 shadow">
+                        <div>
+                            <div class="text-primary">{{rv_total_count}}</div>
+                            <div class="text-light">${rv_count}/{{rv_count}}</div>
+                        </div>
+                    </div>
+                    
+                    <div id="vocabc" class="position-relative d-flex flex-column justify-content-between bg-gray bg-opacity-75 col-10 col-md-8 rounded-3 shadow-lg tr-05 animate__animated animate__fadeInRight" 
+                        style="min-height:40%;max-height:85%;overflow-x:hidden;overflow-y:scroll;">
+
+                        <div class="mb-5">
+                            <div class="bg-light p-3 mb-3 shadow rounded">
+                                <div class="d-flex justify-content-between align-items-center rounded">
+                                    <div class="row col-11">
+                                        <!-- Word Pos-->
+                                        <div class="col-12 mb-1">
+                                            <div id="word" class="col-auto text-primary d-inline-block me-2" {% if request.user.is_superuser %}onclick="window.location.assign('/english/wordadd?edit=true&word=${r_obj.pk}&sense=${r_obj.rvsense}')"{% endif %}>
+                                                ${r_obj.word}
+                                            </div>
+                                            <div id="pos" class="col-auto fs-5 d-inline-block text-secondary me-2">
+                                                ${r_obj.pos}
+                                            </div>
+                                            ${r_obj.cefr?`
+                                                <div id="grade" class="col-auto d-inline-block fs-5 text-uppercase px-2">
+                                                    ${r_obj.cefr}
+                                                </div>
+                                            `:``}
+                                        </div>
+                                        <!-- Grade Pronounce Pic-->
+                                        <div class="col-12">
+                                            <div class="row col-12 mb-3">
+                                                ${r_obj.pronunciation?`
+                                                    <div class="col-auto ps-3" style="font-family:Arial;">
+                                                        <div>
+                                                            <span id="" class="text-primary fs-5 speak" data-src-mp3="${r_obj.pronunciation.uk.audios.mp3[0]}">UK <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.uk.texts[0]}</span></span>
+                                                            ${r_obj.pronunciation.uk.texts[1]?`
+                                                            <span id="" class="text-primary fs-5 speak" data-src-mp3="${r_obj.pronunciation.uk.audios.mp3[1]}">, <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.uk.texts[1]}</span></span>
+                                                            `:``}
+                                                        </div>
+                                        
+                                                        ${r_obj.pronunciation.us.texts?`
+                                                            <div>
+                                                                <span id="" class="text-danger fs-5 speak" data-src-mp3="${r_obj.pronunciation.us.audios.mp3[0]}">US <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.us.texts[0]}</span></span>
+                                                                ${r_obj.pronunciation.us.texts[1]?`
+                                                                <span id="" class="text-danger fs-5 speak" data-src-mp3="${r_obj.pronunciation.us.audios.mp3[1]}">, <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.us.texts[1]}</span></span>
+                                                                `:``}
+                                                            </div>
+                                                        `:``}
+                                                    </div>
+                                                `:``}
+                                            </div>
+                                        </div>
+                
+                                        <div class="wd">
+                                            ${r_obj.word_details[5]?`<div id="labels" class="text-secondary my-1">${r_obj.word_details[5]}</div>`:``}
+                                            ${r_obj.word_details[1]?`<div id="gra" class="text-secondary my-1">${r_obj.word_details[1]}</div>`:``}
+                                            ${r_obj.word_details[2]?`<div id="vars" class="text-secondary my-1">${r_obj.word_details[2]}</div>`:``}
+                                            ${r_obj.word_details[3]?`<div id="infl" class="text-secondary my-1">${r_obj.word_details[3]}</div>`:``}
+                                            ${r_obj.word_details[4]?`<div id="use" class="text-warning my-1">${r_obj.word_details[4]}</div>`:``}
+                                        </div>
+                                    </div>
+                                    <!-- Option Buttons -->
+                                    <div class="col-1">
+                                        {% if visible == "disabled" %}
+                                            <button title="Already Added" disabled class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/data?data=new&word={{word.id}}')"><i class="fa-solid fa-heart"></i></button>
+                                        {% else %}
+                                            <button title="Add it" class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
+                                        {% endif %}
+                                        <button title="Revise/Practise" class="btn btn-outline-success col-12 fs-5 mt-2" onclick="window.location.assign('/english/revisemain/?back={{request.path}}')"><i class="fa fa-history"></i></button>
+                                        <button title="Share it" class="btn btn-outline-primary col-12 fs-5 mt-2" data-bs-toggle="collapse" data-bs-target="#collapseShare" aria-expanded="false" aria-controls="collapseShare"><i class="fa-solid fa-share-nodes"></i></button>
+                                        <div class="card col-auto shadow-sm" style="position:absolute;translate:-105% -50%;z-index:1;">
+                                            <div class="collapse" id="collapseShare">
+                                                <div id="share" class="text-center fs-7" style="width:10rem;">
+                                                  <div class="p-2">Copy Link</div>
+                                                  <hr class="my-0">
+                                                  <div class="p-2">Copy Link</div>
+                                                  <hr class="my-0">
+                                                  <div class="p-2">Copy Link</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${r_obj.word_details[6]?`<div id="help" class="wd bg-warning bg-opacity-50 p-2 rounded my-1">${r_obj.word_details[6]}</div>`:``}
+                            </div>
+                
+                            ${r_obj.senses?`
+                                <div class="p-2 rounded shadow">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div>
+                                            <span class="badge text-uppercase text-bg-primary bg-opacity-100">sense ${r_obj.rvsense+1}</span>
+                                            ${r_obj.senses[2]?`<span class="badge text-uppercase text-bg-secondary bg-opacity-100">${r_obj.senses[2]}</span>`:``}
+                                            <div class="d-inline-block">
+                                                ${r_obj.senses[16][0][0]?`
+                                                    <button class="btn btn-primary fs-8 p-0 px-1">
+                                                        TOPIC
+                                                        <span class="badge text-light text-uppercase text-bg-light bg-opacity-10">
+                                                            ${r_obj.senses[16][0][0]} ${r_obj.senses[16][1][0]}
+                                                        </span>
+                                                    </button>
+                                                `:``}
+                                                ${r_obj.senses[16][0][1]?`
+                                                    <button class="btn btn-primary fs-8 p-0 px-1">
+                                                        TOPIC
+                                                        <span class="badge text-light text-uppercase text-bg-light bg-opacity-25">
+                                                            ${r_obj.senses[16][0][1]} ${r_obj.senses[16][1][1]}
+                                                        </span>
+                                                    </button>
+                                                `:``}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {% if favs %}
+                                                {% if sense.0 in favs %}
+                                                    <button title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense={{sense.0}}')"><i class="fa-solid fa-heart"></i></button>
+                                                    {% else %}
+                                                    <button title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense={{sense.0}}')"><i class="fa-regular fa-heart"></i></button>
+                                                {% endif %}
+                                            {% else %}
+                                            <button title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense={{sense.0}}')"><i class="fa-regular fa-heart"></i></button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                    
+                                    <div id="def-container" class="bg-white rounded p-1 mb-1 shadow-sm">
+                                        <div id="def" class="bg-primary position-relative bg-opacity-25 fs-4 p-2 rounded">
+                    
+                                            <div class="fs-6 mb-1">
+                                                ${r_obj.senses[6]?`<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">${r_obj.senses[6]}</span>`:``}
+                                                ${r_obj.senses[8]?`<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">${r_obj.senses[8]}</span>`:``}
+                                                ${r_obj.senses[7]?`<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">${r_obj.senses[7][0]}${r_obj.senses[7][1]?`, ${r_obj.senses[7][1]}`:``}</span>`:``}
+                                            </div>
+                                            <div>
+                                                ${r_obj.senses[1]?`
+                                                    <span class="d-inline-block bg-primary text-light text-uppercase fs-8 bg-opacity-100 p-0 px-2 rounded mb-1">
+                                                        ${r_obj.senses[1]}
+                                                    </span>
+                                                `:``}
+                                            </div>
+
+                                            ${r_obj.senses[5]?`<span class="text-primary fs-5">${r_obj.senses[5]}</span>`:``}
+                    
+                                            ${r_obj.senses[9].en[0]}
+                    
+                                            <div class="position-absolute top-0 end-0 me-1">
+                                                <i class="fa-solid fa-language fs-3 text-primary cursor-pointer" data-action="dtog" data-target="defHiCarousel{{sense.0}}"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                    ${r_obj.senses[10]?`
+                                        <div class="bg-white rounded p-1 shadow-sm">
+                                            <div id="example" class="example fs-5 fst-italic bg-gray bg-opacity-10 rounded pt-1 overflow-auto">
+                                                <ul>
+                                                    <hr class="my-1">
+                                                    ${examples.join("")}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    `:``}
+                    
+                                    ${r_obj.senses[18]?`
+                                        <div class="d-flex gap-2 bg-warning bg-opacity-25 p-3 rounded my-3">
+                                            <div class=""><i class="fa-solid fa-lightbulb text-warning fs-3"></i></div>
+                                            <div class="">${r_obj.senses[18]}</div>
+                                        </div>
+                                    `:``}
+                    
+                                    ${boxes?`
+                                        <div class="row accordion my-3">
+                                            ${boxes.join("")}
+                                        </div>
+                                    `:``}
+                    
+                                    <!-- My Note -->
+                                    <div class="my-3 p-0">
+                                        <span class="d-inline-block bg-danger bg-opacity-50 text-white py-1 rounded px-2 mb-2">
+                                            my note
+                                        </span>
+                                        <div class="ps-3">
+                                            <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded">{{note|default:"You have no notes currently"|safe}}</div> 
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="myNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <div class="modal-title bg-danger bg-opacity-75 text-white p-2 rounded fs-5" id="exampleModalLabel">My Note - Edit</div>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="post" action="">
+                                                    <div class="modal-body">
+                                                        {% csrf_token %}
+                                                        <textarea id="textarea_note" class="form-control" name="note" rows="4" placeholder="Type here to make your note....">{% if word.note %}{{word.note}}{% endif %}</textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                    {% if sense.11 %}
+                                        <div class="my-3 p-0">
+                                            <span class="d-inline-block bg-primary text-white py-1 rounded px-2 mb-2">
+                                                sentence usage
+                                            </span>
+                                            <div class="ps-3">
+                                                {% for x in sense.11 %}
+                                                    <div class="d-flex align-items-center bg-gray rounded mb-1">
+                                                        <div class="col-4 bg-secondary bg-opacity-10 text-secondary fw-bold px-2 py-1 rounded-start">{{x.0}}</div> 
+                                                        <div class="col-8 px-2 py-1">&#x2022; {{x.1}}</div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                    
+                                    {% if sense.15 %}
+                                        <div class="my-3 p-0">
+                                            <span class="d-inline-block bg-primary text-white py-1 rounded px-2 mb-2">
+                                                see also
+                                            </span>
+                                            <div class="d-flex gap-1 px-2">
+                                                {% for x in sense.15 %}
+                                                    <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                    
+                                    <div class="{% if sense.13 and sense.12 %}d-flex flex-row gap-2{% endif %}">
+                                        {% if sense.12 %}
+                                            <div class="{% if sense.13 %}col {% endif %}p-0 my-3">
+                                                <span class="d-inline-block bg-primary text-white rounded py-1 px-2 mb-2">
+                                                    synonyms
+                                                </span>
+                                                <div class="d-flex gap-1 ps-3">
+                                                    {% for x in sense.12 %}
+                                                        <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                    
+                                        {% if sense.13 %}
+                                            <div class="{% if sense.12 %}col {% endif %}p-0 my-3">
+                                                <span class="d-inline-block bg-danger text-white rounded py-1 px-2 mb-2">
+                                                    antonyms
+                                                </span>
+                                                <div class="d-flex gap-1 ps-3">
+                                                    {% for x in sense.13 %}
+                                                        <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                    
+                                    {% if sense.14 %}
+                                        <div class="my-3 p-0">
+                                            <span class="d-inline-block bg-primary text-white rounded py-1 px-2 mb-2">
+                                                related words
+                                            </span>
+                                            <div class="d-flex gap-1 px-2">
+                                                {% for x in sense.14 %}
+                                                    <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                    
+                                    {% if word.related_post.count %}
+                                        <div class="my-3 p-0">
+                                            <div class="bg-secondary text-white rounded py-1 px-2 mb-2">
+                                                Related Post
+                                            </div>
+                                            <div id="related_post" class="d-flex gap-1 px-2">
+                                                {% for post in word.related_post.all %}
+                                                    <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_detail' post.pk %}`)">
+                                                        {{post.title}}
+                                                    </button>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                    
+                                    {% if collocation %}
+                                        <div class="my-3 p-0">
+                                            <div class="bg-secondary text-white rounded-3 py-1 px-2 mb-2">
+                                                collocation
+                                            </div>
+                                            <div class="d-flex gap-1 px-2">
+                                                <a class="btn btn-secondary" href="{% url "collocation_view" collocation.id %}">{{collocation}}</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            `:``}                          
+                        </div>
+                    </div>
+                    <div id="vocabd" class="d-none position-relative bg-gray bg-opacity-75 col-10 col-md-7 rounded-3 shadow-lg tr-05 animate__animated animate__fadeInRight" 
+                        style="min-height:45%;max-height:80%;overflow-y:auto;">
+                        <div class="d-flex justify-content-between align-items-center bg-light p-3 shadow-sm">
+                            <div class="d-flex flex-wrap align-items-baseline gap-2">
+                                <span class="col-auto text-primary fw-bold fs-2">${r_obj.word}</span> 
+                                <span class="fs-6 text-secondary">${r_obj.pos}</span> 
+                                ${r_obj.cefr?'<span id="grade">'+r_obj.cefr+'</span>':''}
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-sliders fs-4 text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="bg-primary bg-opacity-25 fs-5 px-3 py-1 border-4 border-start border-primary">${r_obj.senses[9].en[0][0]}</div>
+
+                        <div id="examples" class="px-3 py-1 border-4 border-start border-secondary mb-5">
+                            ${examples.length?'<hr class="my-2">'+
+                            examples.join("").replaceAll("*",""):""}
+                        </div>
+
+                        <div class="w-100 position-fixed bottom-0 d-flex justify-content-between align-items-center bg-gray px-3 py-2">
+                            <div>
+                                <div class="form-check form-switch" data-action="mastered">
+                                    <label class="" for="revise">Mastered</label>
+                                    <input type="checkbox" class="form-check-input" id="revise" autocomplete="off">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="me-2">Learning Priority:</span>
+                                <span class="btn-group btn-group-sm" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" class="btn-check" name="btnradio" id="lph" autocomplete="off" ${r_obj.priority==1?"checked":""}>
+                                    <label class="btn btn-outline-primary" for="lph">High</label>
+                                
+                                    <input type="radio" class="btn-check" name="btnradio" id="lpa" autocomplete="off" ${r_obj.priority==3?"checked":""}>
+                                    <label class="btn btn-outline-primary" for="lpa">Auto</label>
+                                
+                                    <input type="radio" class="btn-check" name="btnradio" id="lpl" autocomplete="off" ${r_obj.priority==6?"checked":""}>
+                                    <label class="btn btn-outline-primary" for="lpl">Low</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `:""}
+
+            <!-- Modal Mastered Confirm -->
+            <div class="modal fade" id="masteredRevise" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <!--div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div-->
+                    <div class="modal-body">
+                    Have you really mastered this word?
+                    </div>
+                    <!--div class="modal-footer"-->
+                    <div class="text-center">
+                        <button type="button" data-action="reload" class="btn btn-secondary" data-bs-dismiss="modal">Not yet</button>
+                        <button id="mastered" type="button" class="btn btn-success">Certainly!</button>
+                    </div>
+                    <!--/div-->
+                </div>
+                </div>
+            </div>
+            <!-- Modal Delete Confirm -->
+            <div class="modal fade" id="deleteRevise" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!--div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div-->
+                    <div class="modal-body">
+                    Do you want to remove the word from revise?
+                    </div>
+                    <!--div class="modal-footer"-->
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button id="delete" type="button" class="btn btn-danger" onclick="window.location.assign('/english/data?data=remove&word={{word.id}}')">Yes, remove!</button>
+                    </div>
+                    <!--/div-->
+                </div>
+                </div>
+            </div>
+            <!-- Image -->
+            <div class="modal fade" id="fullImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content p-1">
+                    <div class="">
+                        <img id="pic_url" class="border border-4 border-secondary rounded" style="width:100%;height:auto;" src="${r_obj.pic_url ? r_obj.pic_url : r_obj.pic_url_url}"/>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        //if (r_obj.forms){}
+
+        //colors();
+        if (refresh){myTimeout = setTimeout(navigate, refresh*60000);}
+
+        $('#vocabc input').on('click', function () {
+            let attr = this.getAttribute("data-action");
+            if (["easy", "hard"].includes(attr) && r_obj.from == "New Word"){
+                d.setDate(d.getDate()+1);d.setHours(0);
+                document.cookie = "wlt="+(parseInt(wlt)+1)+";expires="+d.toUTCString();
+                learned_today.push(r_obj.pk)
+            };
+            if (attr == "hard"){
+                $(this).parent().addClass('text-danger animate__animated animate__shakeX');
+                this.classList.add('bg-danger');
+                hard_arr.push(r_obj.pk);
+            };
+            if (attr == "easy"){
+                easy_arr.push(r_obj.pk);
+                $('#vocabc').removeClass('col-md-8').addClass('col-md-4');
+                $('#vocabc #qtop').addClass('d-none');
+                $('#vocabc #examples').addClass('d-none');
+                setTimeout(function(){
+                    $('#vocabd').removeClass('d-none');
+                }, 1000);
+                //if (refresh){clearTimeout(myTimeout);}
+                //myTimeout = setTimeout(function(){document.querySelector('[data-action="next"]').click()},60000);
+            };
+        });
+
+        $('*').on('click', function() {
+            if (this.getAttribute("data-action")=="next"){
+                if (hard_arr.includes(r_obj.pk)){
+                    exAction("hard");
+                    navigate();
+                } else if (easy_arr.includes(r_obj.pk)){
+                    if (r_obj.actionable) exAction("easy");
+                    navigate();
+                } else {
+                    navigate();
+                }
+            }
+            if (this.getAttribute("data-action")=="defpage"){
+                $("#vocab").addClass("d-none");
+            }
+            if (this.getAttribute("data-action")=="mastered"){
+                exAction("mastered");
+            }
+            if (this.id == "lph"){exAction("pr1")};if (this.id == "lpa"){exAction("pr3")};if (this.id == "lpl"){exAction("pr6")};
+            
+            //mastered
+            if (this.id=="msb"){
+                //mastered_arr.push(r_obj.pk);
+                clearTimeout(myTimeout);
+            }
+            if (this.id=="mastered"){
+                //mastered_arr.push(r_obj.pk);
+                exAction("mastered");
+            } 
+            if (this.id=="delete"){
+                //mastered_arr.push(r_obj.pk);
+                exAction("delete");
+            }
+        })
+    }
+
+    function exAction(action){
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("GET",`{% url 'data_main' %}?data=${action}&word=${r_obj.pk}&sense=${r_obj.rvsense}`, true);
+        xhttp.send();
+    }
+
+    function navigate(){
+        //let ani = document.getElementById("animator");
+        //ani.classList.add("animate__fadeOutLeft");
+        let vocabc = document.getElementById("vocabc");
+        let vocabd = document.getElementById("vocabd");
+        if (vocabc){
+            vocabc.classList.add("animate__fadeOutLeft");
+            vocabd.classList.add("animate__fadeOutRight");
+        }
+        //setTimeout(function(){
+        vocabc.addEventListener("animationend",()=>{
+            if (len.length == objs.length-1) {
+                setPlan("streak",easy_arr.length);
+                window.location.reload();
+            } else {
+                rv_count++;
+                len.push(r_num);
+                if(refresh){clearTimeout(myTimeout)};//clear timeout so that there would be no other timeouts
+                master();
+            }
+        });
+        //},1000)
+    }
+
+    master();
+
+    function colors(){
+        //let def = document.getElementById("definition");
+        //def.innerHTML = def.innerHTML.replace(/[;]/g, "<span class='fw-bold text-primary'> ; </span>");
+
+        var example = document.getElementById("examples");
+        var examples = example.getElementsByTagName("li");
+
+        for (let x of examples) {
+            let tag_start = false;
+
+            if (tag_start == false){
+                x.innerHTML = x.innerHTML.replace("**", "<span style='font-style:normal;'>[");
+                tag_start = true;
+            }
+
+            if (tag_start == true){
+                x.innerHTML = x.innerHTML.replace("**", "]</span>");
+                tag_start = false;
+            }
+
+            if (tag_start == false){
+                x.innerHTML = x.innerHTML.replace("*", "<span class='fw-bold'>");
+                tag_start = true;
+            }
+
+            if (tag_start == true){
+                x.innerHTML = x.innerHTML.replace("*", "</span>");
+                tag_start = false;
+            }
+        }
+
+        //reg = new RegExp(r_obj.word,"gi");
+        //example.innerHTML = example.innerHTML.replace(reg, `<span style='color:#0d6efd;'>${r_obj.word}</span>`);
+
+        // Example Shadows
+        let exampleHeight = example.scrollHeight;//example.getBoundingClientRect().height;
+        if ( exampleHeight > 300 ){
+            example.classList.add("shadow-b");
+        }
+        example.addEventListener("scroll", function(){
+            if (example.scrollTop > 40){
+                example.classList.remove("shadow-b");
+                example.classList.add("shadow-y");
+            }
+            if (example.scrollTop > (exampleHeight-example.offsetHeight-2)){
+                example.classList.remove("shadow-y");
+                example.classList.add("shadow-t");
+            }
+            if (example.scrollTop < 10){
+                example.classList.remove("shadow-y");
+                example.classList.add("shadow-b");
+            }
+            //console.log(example.classList);
+        });
+    }
+
+    //const btnAct = {
+    //    easy: function(){},
+    //    hard: function(){},
+    //    mastered: function(){}
+    //}
+    //btnAct.easy()
+</script>
+
+{% include "english/rv_settings.html" %}
+{% include "tts_2.html" %}
+{% endblock body %}

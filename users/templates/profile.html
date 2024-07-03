@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile | {% endblock title %}
+
+{% block body %}
+    <style>
+        .button {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 150px;
+            background: none;
+            border: none;
+            border-radius: 50%; 
+            position: relative;
+            z-index: 0;
+            transition: .3s;
+            cursor: pointer;
+        }
+        .button:before {
+            content: "";
+            position: absolute;
+            inset: -8px;
+            padding: 10px;
+            border-radius: 50%; 
+            background: conic-gradient(
+                #ff53bb ,
+                #0000 30deg 120deg,
+                #3cb371 150deg 180deg,
+                #0000 210deg 300deg,
+                #ff53bb 330deg
+            );
+            -webkit-mask:
+            linear-gradient(#000 0 0) content-box,
+            linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+                    mask-composite: intersect
+        }
+        .button:after {
+            content: "";
+            position: absolute;
+            inset: -100px;
+            background:
+            radial-gradient(50px at left  50px top 90px,#ff53bb 100%,#0000),
+            radial-gradient(50px at right 50px bottom 90px,#3cb371 100%,#0000);
+            filter: blur(120px);
+            opacity: .5;
+        }
+        
+        .button:before,
+        .button:after {
+            transition:.5s, 99999s 99999s transform;
+        }
+        button:hover {
+            box-shadow: 0 0 0 1px #666;
+        }
+        
+        .button:hover:before,
+        .button:hover:after {
+            transform: rotate(36000deg);
+            transition: .5s,600s linear transform;
+        }
+        .button:before {
+            background-color: #222;
+            border: 2px solid #333;
+        }
+        
+        .button>img{
+            border-radius: 50%;
+            opacity:0.9;
+        }
+    </style>
+
+    {% include 'header.html' %}
+
+    <div class="container_fluid p-5 bg-secondary bg-opacity-90 text-light shadow">
+        <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+            <div class="profile-pic text-center">
+                <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow-lg bg-white" style="width:10rem;height:auto"/>
+            </div>
+
+            <div class="d-flex flex-column text-center text-md-start">
+                <div class="">
+                    <span class="bg-dark bg-opacity-25 p-1 rounded">
+                        @{{user.username}}
+                    </span>
+                </div>
+                
+                <div class="fs-1 text-uppercase my-2">
+                    {% if user.first_name %}
+                        {{user.first_name}} {{user.last_name}}
+                    {% else %}
+                        {{user.username}}
+                    {% endif %}
+                </div>
+                
+                <div class="fs-5 bg-light bg-opacity-10 px-1 rounded text-center">
+                    {% if user.pk == 1 %}
+                    Servant at Learners' Academy
+                    {% else %}
+                    User
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!--Profile BUTTONS-->
+        <div class="mt-4">
+            <div class="">
+                <div class="d-block d-md-none text-center text-md-end">
+                    <div class="dropdown-center">
+                        <button class="btn btn-outline-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Menu
+                        </button>
+                      
+                        <ul class="dropdown-menu p-3">
+                          <li><a class="dropdown-item" href="{% url 'users' %}?users=friends"><i class="fa-solid fa-user-group"></i> My Friends <span id="fr" class="badge bg-secondary">{{friends.count}}</span></a></li>
+                          <li><a class="dropdown-item" href="{% url "chat" %}"><i class="fa-solid fa-message"></i> Messages <span id="msgs" class="badge bg-secondary">0</span></a></li>
+                          <li><div class="dropdown-divider"></div></li>
+                          <li><a class="dropdown-item" href="{% url 'my_words' %}"><i class="fa-solid fa-book"></i> My Words</a></li>
+                          <li><a class="dropdown-item" href="{% url 'notes' %}"><i class="fa-solid fa-book"></i> Notes</a></li>
+                          <li><div class="dropdown-divider"></div></li>
+                          <li><a class="dropdown-item" href="{% url 'users' %}?users=users"><i class="fa-solid fa-user-group"></i> Find People </a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="d-none d-md-flex justify-content-center gap-3">
+                    <button onclick="window.location.assign('{% url 'users' %}?users=friends')" class="btn btn-outline-light"><i class="fa-solid fa-user-group"></i> Friends <span id="fr-md" class="badge bg-secondary"></span></button>
+                    <button onclick="window.location.assign('{% url 'users' %}')" class="btn btn-outline-light"><i class="fa-solid fa-people-group"></i> Find People</button>
+                    {% if perms.languages.add_post %}
+                        <button onclick="window.location.assign('{% url 'my_posts' %}')" class="btn btn-outline-light"><i class="fa-solid fa-pen"></i> My Posts</button>
+                    {% endif %}
+                    <button onclick="window.location.assign('{% url 'chat' %}')" class="btn btn-outline-light"><i class="fa-solid fa-message"></i> Messages <span id="msg" class="badge bg-secondary">0</span></button>
+                    <button onclick="window.location.assign('{% url 'my_words' %}')" class="btn btn-outline-light"><i class="fa-solid fa-book"></i> My Words</button>
+                    <button onclick="window.location.assign('{% url 'notes' %}')" class="btn btn-outline-light"><i class="fa-solid fa-note"></i> Notes</button>
+                </div>
+            </div>
+        </div>
+        <!--END PROFILE BUTTONS-->
+    </div>
+
+    {% include 'messages.html' %}
+
+    <!-- Friend Requests -->
+    {% for f in friends %}
+        {% if f.friend == user and f.is_friend == False %}
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center m-1" role="alert">
+                You have a friend request from <a href="{% url 'user_detail' f.user.id %}">{{f.user.username}}<a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="container my-5">
+        <!-- Statistics -->
+        <div class="row mb-3">
+            <h3 class="fw-bold"><i class="fa-solid fa-chart-column"></i> Statistics</h3>
+        </div>
+
+        <div class="d-flex flex-wrap flex-md-nowrap justify-content-center gap-2">
+            <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
+                <div><i class="fa-solid fa-fire fs-1 text-danger"></i></div>
+                <div>
+                    <div class="fw-bold text-dark fs-2">{{user.learnerprofile.plan.0.0}}</div>
+                    <div class="text-secondary">Day streak</div>
+                </div>
+            </div>
+
+            <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "leaderboard" %}')">
+                <div><i class="fa-solid fa-bolt fs-1 text-warning"></i></div>
+                <div>
+                    <div class="fw-bold text-dark fs-2">{{user.learnerprofile.plan.0.2}}</div>
+                    <div class="text-secondary">Total XP</div>
+                </div>
+            </div>
+            
+            <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
+                <div><i class="fa-solid fa-diamond fs-1 text-info"></i></div>
+                <div>
+                    <div class="fw-bold text-dark fs-2">NA</div>
+                    <div class="text-secondary">Current League</div>
+                </div>
+            </div>
+
+            <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
+                <div><i class="fa-solid fa-medal fs-1 text-warning"></i></div>
+                <div>
+                    <div class="fw-bold text-dark fs-2">Never</div>
+                    <div class="text-secondary">Top 3 Finished</div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+        <div class="row gx-0">
+            <!-- Contact Information -->
+            <div class="row col-10 col-md-6 mx-auto gx-0 mb-5">
+                <div class="mb-3">
+                    <h3 class="fw-bold"><i class="ti ti-address-book"></i> Contact Information</h3>
+                </div>
+                
+                <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                    <i class="ti ti-user-scan"></i> Username
+                </div>
+                <div class="col-6 col-md-9 mb-3 text-end text-md-start">
+                    {{user.username}}
+                </div>
+
+                <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                    <i class="ti ti-user"></i> Name
+                </div>
+                <div class="col-6 col-md-9 mb-3 text-end text-md-start">
+                    {{user.first_name}} {{user.last_name}}
+                </div>
+
+
+                <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                    <i class="ti ti-phone"></i> Phone
+                </div>
+                <div class="col-6 col-md-9 mb-3 text-end text-md-start">
+                    {{user.profile.phone}}
+                </div>
+
+
+                <div class="col-6 col-md-3 text-secondary px-2 rounded">
+                    <i class="ti ti-mail"></i> Email
+                </div>
+                <div class="col-6 col-md-9 text-end text-md-start">
+                    {{user.email}}
+                </div>
+            </div>
+
+            <!-- Academic Information -->
+            <div class="row col-10 col-md-6 mx-auto gx-0 mb-5">
+                <div class="mb-3">
+                    <h3 class="fw-bold"> <i class="ti ti-school"></i> Academic Information</h3>
+                </div>
+
+                <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                    <i class="ti ti-briefcase"></i> Profession
+                </div>
+                <div class="col-6 col-md-8 mb-3 text-end text-md-start">
+                    {{user.profile.profession|capfirst}}
+                </div>
+
+
+                <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                    <i class="fa-outline fa-graduation-cap"></i> Highest Education
+                </div>
+                <div class="col-6 col-md-8 mb-3 text-end text-md-start">
+                    {{user.profile.highest_degree}}
+                </div>
+
+                <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                    <i class="ti ti-stars"></i> Reputation
+                </div>
+                <div class="col-6 col-md-8 mb-3 text-end text-md-start">
+                    {{user.profile.reputation}} <button type="button" class="btn btn-sm btn-outline-info ms-2" data-bs-toggle="popover" data-bs-title="Reputation?" data-bs-content="Reputation increases each time you answer an exercise question anywhere on the Website.">Click to know more!</button>
+                </div>
+                
+                <div class="col-6 col-md-3 text-secondary px-2 rounded">
+                    <i class="ti ti-language"></i> Languages
+                </div>
+                <div class="col-6 col-md-8 text-end text-md-start">
+                    {{user.profile.languages}}
+                </div>
+            </div>
+        </div>
+
+        <hr class="mb-5">
+        
+        <div class="mb-3">
+            <h3 class="fw-bold">Friend suggestions</h3>
+        </div>
+
+        <hr class="my-5">
+
+        <div class="col-auto mb-5">
+            <button type="button" class="btn btn-primary" onclick="window.location.assign('{% url 'change_profile' %}')"><i class="fa-solid fa-gear"></i> Edit Profile</button>
+            <button onclick="window.location.assign('{% url 'sign_out' %}')" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
+        </div>
+    </div>
+
+    <script>
+        var friends_model = [];
+        `{% for f in friends %}
+            {% if f.is_friend %}
+            ${friends_model.push("{{f.user.username}}")}
+            {% endif %}
+        {% endfor %}`
+        console.log(friends_model)
+        
+        var fr = document.getElementById("fr")
+        var frmd = document.getElementById("fr-md")
+        fr.innerText = friends_model.length
+        frmd.innerText = friends_model.length
+    </script>
+    {% include 'footer.html' %}
+{% endblock body %}

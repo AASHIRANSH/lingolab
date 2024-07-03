@@ -1,0 +1,97 @@
+<script>
+    // Pronounce
+    let wds = document.getElementsByClassName("wd");
+    let letter = "{{word.word_details.0.0}}";
+    for (let wd of wds){
+        for (let x of wd.getElementsByClassName("phons_br")){
+            for (let y of x.getElementsByTagName("i")){
+                y.classList.add("fa-solid","fa-volume-high","cursor-pointer","text-primary","speak");
+            }
+        }
+        for (let x of wd.getElementsByClassName("phons_am")){
+            for (let y of x.getElementsByTagName("i")){
+                y.classList.add("fa-solid","fa-volume-high","cursor-pointer","text-danger","speak");
+            }
+        }
+    }
+    $(".speak").on("click",function(){
+        let data = $(this).attr("data-src-mp3");
+        let audio = new Audio('/media/dictionary/audio/'+letter+'/'+data);
+        audio.play();
+    });
+
+    document.addEventListener("click", function(e) {
+        if (e.target.getAttribute("data-action") == "dtog"){
+            let target = document.getElementById(e.target.getAttribute("data-target"));
+            target.classList.toggle("d-none");
+        }
+    });
+
+    document.addEventListener("dblclick",()=>{
+        if (window.getSelection){
+            let selection = window.getSelection().toString();
+            if (selection) window.location.assign('{% url "dictionary" %}?q='+selection);
+        };
+    });
+</script>
+
+<script>
+    let def = document.getElementsByClassName("definition");
+    for (let d of def){
+        d.innerHTML = d.innerHTML.replace(/[;]/g, "<span class='fw-bold text-primary'>; </span>");
+    };
+
+    var example = document.getElementsByClassName("example");
+
+    for (let x of example){
+        // Bolding
+        let examples = x.getElementsByTagName("li");
+        for (let y of examples) {
+            let tag_start = false;
+    
+            if (tag_start == false){
+                y.innerHTML = y.innerHTML.replace("*", "<span class='fw-600'>");
+                tag_start = true;
+            }
+    
+            if (tag_start == true){
+                y.innerHTML = y.innerHTML.replace("*", "</span>");
+                tag_start = false;
+            }
+        }
+
+        // Example Shadows
+        let exampleHeight = x.scrollHeight;//example.getBoundingClientRect().height;
+        if ( exampleHeight > 300 ){
+            x.classList.add("shadow-b");
+        }
+        x.addEventListener("scroll", function(){
+            if (x.scrollTop > 40){
+                x.classList.remove("shadow-b");
+                x.classList.add("shadow-y");
+            }
+            if (x.scrollTop > (exampleHeight-x.offsetHeight-2)){
+                x.classList.remove("shadow-y");
+                x.classList.add("shadow-t");
+            }
+            if (x.scrollTop < 10){
+                x.classList.remove("shadow-y");
+                x.classList.add("shadow-b");
+            }
+            //console.log(example.classList);
+        });
+    }
+</script>
+
+<!--AUTO REFRESHER SCRIPT-->
+<!--script>
+    if ("{{refresh}}" == "True") {
+        setTimeout(function() {
+            location.reload();
+        }, 4000);
+    } else {
+        setTimeout(function() {
+            location.reload();
+        }, 60000);
+    };
+</script-->

@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block body %}
+
+{% include "header.html" %}
+{% include "messages.html" %}
+
+<!--style>
+  #dstate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    color: #3cb371;
+    z-index: 100;
+  }
+</style-->
+
+{% if request.user.is_superuser %}
+{% else %}
+<!--div id="dstate">
+  <theader class="p-5">
+    <div id="title_bar">
+      <div id="title">
+        <a href="/"><img src="/static/img/dark-logo_ad.svg"/></a>
+      </div>
+      <div id="user" class="me-5">
+        <a class="fs-6 fw-bold" href="/admin"><i class="fa-solid fa-toolbox"></i> ADMIN PANEL</a>
+      </div>
+    </div>
+  </theader>
+  <div class="h-100 d-flex justify-content-center align-items-center flex-column text-center">
+    <div class="fs-1"><i>Oops!</i></div>
+    <div class="fs-1"><i>The app is under deveplopment state.</i></div>
+    <div class="fs-1"><i>Thank you for visiting us!</i></div>
+  </div>
+</div-->
+{% endif %}
+
+<section id="sl" class="shadow mb-3">
+  <div id="headersl">
+  </div>
+  <div id="caption" class="d-none d-lg-inline-block">
+    <div id="text">
+      <h1>Learn</h1>
+      <h1>&amp;</h1>
+      <h1>Grow</h1>
+    </div>
+  </div>
+  <div id="title">
+    <div class="position-relative ps-4 pb-3">
+      <span class="position-absolute top-0 start-0 text-success">❝ </span>
+      {{quotes.quote}}
+      <button id="q-auth" class="btn position-absolute bottom-0 start-0 text-light fw-light fs-6 btn-success rounded-4 py-1 px-2">{{quotes.author}}</button>
+      <span class="position-absolute bottom-0 end-0 text-success"> ❞</span>
+    </div>
+  </div>
+</section>
+
+{% include "iht" %}
+
+<hr class="my-5">
+
+<!-- WOD -->
+<div class="container-fluid">
+  <div class="d-flex justify-content-center w-100">
+    <div class="bg-light col-12 col-md-8 rounded shadow">
+      <div class="d-flex justify-content-between bg-primary bg-opacity-50 p-3 rounded shadow-sm">
+        <span class="col-auto bg-primary text-white py-1 px-3 rounded-2"><i class="fa-solid fa-star me-2"></i> Word of the Day</span>
+        <span class="col-auto text-end bg-primary text-light py-1 px-3 rounded-2"><i class="fa-regular fa-calendar-days me-2"></i> {% now "D, d M, Y" %}</span>
+      </div>
+      
+      <div class="text-center text-secondary px-2 py-4 cursor-pointer" onclick="window.location.assign('{% url 'word' word.pk %}')">
+        <div class="display-5 text-primary">{{word.word}}</div>
+        <div class="fs-5 fst-italic">({{word.pos}})<hr></div>
+        <span class="fs-4">: {{word.senses.0.9.en.0.0}}</span>
+      </div>
+
+      <div class="bg-primary bg-opacity-50 p-1 rounded">
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-5">
+
+<!-- Exercise -->
+<div class="p-3">
+<div class="card card-body bg-light col-12 col-md-8 mx-auto shadow-sm">
+
+  <div class="text-center">Name that thing</div>
+
+  <div class="text-center">
+    <img src="/media/dictionary/img/fullsize/fedora.jpg" class="border border-4 border-secondary rounded my-3" style="width:25rem;height:auto;"/>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+    <button type="button" class="btn btn-secondary col-12 col-md">Option</button>
+    <button type="button" class="btn btn-secondary col-12 col-md">Option</button>
+  </div>
+  <div class="d-flex flex-wrap justify-content-between gap-2">
+    <button type="button" class="btn btn-secondary col-12 col-md">Option</button>
+    <button type="button" class="btn btn-secondary col-12 col-md">Option</button>
+  </div>
+</div>
+</div>
+
+<hr class="my-5">
+
+<div class="bg-light p-3 rounded mx-3 shadow-sm">
+  <div class="col-12 d-flex justify-content-between mb-3">
+    <div class="col-auto">
+      <span class="fs-5 text-secondary fw-bold">Latest Posts</span>
+    </div>
+  
+    <div class="col-auto">
+      <a href="/english/" class="btn btn-secondary">Show All</a>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column flex-md-row flex-md-wrap justify-content-center">
+    {% for post in posts %}
+    <div class="card col-12 col-md-5 col-lg mx-md-1 mb-3 shadow-sm">
+      <div id="lesson_cont" class="card-img-top position-relative cursor-pointer" onclick="window.location.assign(`{% url 'post_detail' post.pk %}`)">
+        <div class="position-absolute top-0 start-0 bg-secondary bg-opacity-50 py-1 px-2 fs-7 fst-italic rounded text-light">
+          {{post.created_at|date:"j-m-y"}}
+        </div>
+        <div id="lesson_title" class="d-flex justify-content-center align-items-center">
+          <div class="">
+            <div class="fs-8">■ ■ ■</div>
+            <div class="fs-3 fst-italic" style="font-family:Poppins;">{{post.topic.name|title}}</div>
+            <div class="fs-8">■ ■ ■</div>
+          </div>
+        </div>
+        {% if post.like_set.count > 10 %}
+          <div class="position-absolute bottom-0 end-0 bg-secondary bg-opacity-75 py-1 px-2 rounded-3 text-light">
+            <i class="fa fa-thumbs-up fs-6"></i> <span class="badge text-light">{{post.like_set.count}}</span>
+          </div>
+        {% endif %}
+      </div>
+  
+      <div class="card-body">
+        <div class="">
+          <div class="fw-bold fs-4 text-primary cursor-pointer" onclick="window.location.assign(`{% url 'post_detail' post.pk %}`)">{{ post.title }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% comment %} {% for post in posts %}
+  <div class="col-10 col-md-8 text-light p-3 rounded mb-3" style="background-color:#2b71c9;" onclick="window.location.assign(`{% url 'post_detail' post.pk %}`)">
+    <div class="d-flex justify-content-between fs-8 lsp-sm text-uppercase mb-3">
+      <span>{{post.created_at|date:"M d, Y"}}</span>
+      <span class="p-1 rounded" style="background-color:#2867b9;">{{post.topic.name}}</span>
+    </div>
+    <div class="fw-bold fs-3 text-white mb-4">
+      {{post.title}}
+    </div>
+    <div class="mb-3">
+      <span class="bg-light bg-opacity-10 p-1 rounded">by {{post.author.first_name}} {{post.author.last_name}}</span>
+    </div>
+
+    {% if post.like_set.count %}
+    <div class="text-end">
+      <span class="d-inline-block bg-light bg-opacity-10 py-1 px-2 rounded-3">
+        <i class="fa fa-thumbs-up fs-6"></i> <span class="badge text-bg-primary">{{post.like_set.count}}</span>
+      </span>
+    </div>
+    {% endif %}
+  </div>
+{% endfor %} {% endcomment %}
+
+
+{% include "footer.html" %}
+{% endblock body %}

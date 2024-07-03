@@ -1,0 +1,278 @@
+<button class="position-fixed bottom-0 end-0 m-3 btn btn-primary p-2 rounded-circle d-flex align-items-center justify-content-center customizer-btn shadow" style="z-index:2;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+    <i class="icon ti ti-settings fs-4"></i>
+</button>
+
+<div class="offcanvas customizer offcanvas-end rounded-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" aria-modal="true" role="dialog">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+        <h4 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">
+            Settings
+        </h4>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    
+    <div class="offcanvas-body simplebar-scrollable-y" data-simplebar="init" style="height: calc(100vh - 80px)">
+        <div class="simplebar-content" style="padding: 16px;">
+
+            <h6 class="fw-semibold fs-5 mb-2">Auto Word Change</h6>
+            <hr>
+            <div class="d-flex flex-row align-items-center gap-3 customizer-box" role="group">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" name="theme-layout" id="acc" autocomplete="off">
+                </div>
+                <select class="form-select form-select-sm" id="acs">
+                    <option value="1">1 minute</option>
+                    <option value="2">2 minute</option>
+                    <option value="3">3 minute</option>
+                </select>
+            </div>
+
+            <h6 class="mt-5 fw-semibold fs-5 mb-2">Plan</h6>
+            <hr>
+            <div class="d-flex flex-row align-items-center gap-3 customizer-box mb-1" role="group">
+                <span class="">Learn</span>
+                <select class="form-select form-select-sm" id="lpd">
+                    <option value="5" {% if learn == 5 %}selected{% endif %}>5 words</option>
+                    <option value="10" {% if learn == 10 %}selected{% endif %}>10 words</option>
+                    <option value="15" {% if learn == 15 %}selected{% endif %}>15 words</option>
+                </select>
+                <span class="">Day</span>
+            </div>
+            <div class="d-flex flex-row align-items-center gap-3 customizer-box" role="group">
+                <span class="">Revise</span>
+                <select class="form-select form-select-sm" id="rpd">
+                    <option value="5" {% if revise == 5 %}selected{% endif %}>5 words</option>
+                    <option value="10" {% if revise == 10 %}selected{% endif %}>10 words</option>
+                    <option value="15" {% if revise == 15 %}selected{% endif %}>15 words</option>
+                    <option value="20" {% if revise == 20 %}selected{% endif %}>20 words</option>
+                </select>
+                <span class="">Day</span>
+            </div>
+
+            <h6 class="mt-5 fw-semibold fs-5 mb-2">Include Words</h6>
+            <hr>
+            <div class="d-flex flex-column gap-2 customizer-box mb-1" role="group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="inall">
+                    <label class="form-check-label" for="inall">
+                      All
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="ina1">
+                    <label class="form-check-label" for="ina1">
+                      A1
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="ina2">
+                    <label class="form-check-label" for="ina2">
+                      A2
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="inb1">
+                    <label class="form-check-label" for="inb1">
+                      B1
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="inb2">
+                    <label class="form-check-label" for="inb2">
+                      B2
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="inc1">
+                    <label class="form-check-label" for="inc1">
+                      C1
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="inc2">
+                    <label class="form-check-label" for="inc2">
+                      C2
+                    </label>
+                </div>
+            </div>
+
+            <!--
+            <h6 class="mt-5 fw-semibold fs-5 mb-2">Theme Colors</h6>
+            <hr>
+            <div class="d-flex flex-row flex-wrap gap-3 customizer-box color-pallete" role="group">
+                <input type="radio" class="btn-check" name="color-theme-layout" id="Blue_Theme" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Blue_Theme')" for="Blue_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="BLUE_THEME">
+                    <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-1">
+                        <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                    </div>
+                </label>
+
+                <input type="radio" class="btn-check" name="color-theme-layout" id="Aqua_Theme" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Aqua_Theme')" for="Aqua_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="AQUA_THEME">
+                    <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-2">
+                        <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                    </div>
+                </label>
+
+                <input type="radio" class="btn-check" name="color-theme-layout" id="Purple_Theme" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Purple_Theme')" for="Purple_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PURPLE_THEME">
+                    <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-3">
+                        <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                    </div>
+                </label>
+
+                <input type="radio" class="btn-check" name="color-theme-layout" id="green-theme-layout" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Green_Theme')" for="green-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="GREEN_THEME">
+                    <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-4">
+                        <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                    </div>
+                </label>
+
+                <input type="radio" class="btn-check" name="color-theme-layout" id="cyan-theme-layout" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Cyan_Theme')" for="cyan-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="CYAN_THEME">
+                    <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-5">
+                        <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                    </div>
+                </label>
+
+                <input type="radio" class="btn-check" name="color-theme-layout" id="orange-theme-layout" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Orange_Theme')" for="orange-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="ORANGE_THEME">
+                    <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-6">
+                        <i class="ti ti-check text-white d-flex icon fs-5"></i>
+                    </div>
+                </label>
+            </div>
+            -->
+
+            <!--
+            <h6 class="mt-5 fw-semibold fs-5 mb-2">Layout Type</h6>
+            <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                <div>
+                    <input type="radio" class="btn-check" name="page-layout" id="vertical-layout" autocomplete="off">
+                    <label class="btn p-9 btn-outline-primary" for="vertical-layout"><i class="icon ti ti-layout-sidebar-right fs-7 me-2"></i>Vertical</label>
+                </div>
+                <div>
+                    <input type="radio" class="btn-check" name="page-layout" id="horizontal-layout" autocomplete="off">
+                    <label class="btn p-9 btn-outline-primary" for="horizontal-layout"><i class="icon ti ti-layout-navbar fs-7 me-2"></i>Horizontal</label>
+                </div>
+            </div>
+            -->
+
+            <!--
+            <h6 class="mt-5 fw-semibold fs-5 mb-2">Container Option</h6>
+            <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                <input type="radio" class="btn-check" name="layout" id="boxed-layout" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary" for="boxed-layout"><i class="icon ti ti-layout-distribute-vertical fs-7 me-2"></i>Boxed</label>
+
+                <input type="radio" class="btn-check" name="layout" id="full-layout" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary" for="full-layout"><i class="icon ti ti-layout-distribute-horizontal fs-7 me-2"></i>Full</label>
+            </div>
+            -->
+
+            <!--
+            <h6 class="fw-semibold fs-5 mb-2 mt-5">Sidebar Type</h6>
+            <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                <a href="javascript:void(0)" class="fullsidebar">
+                    <input type="radio" class="btn-check" name="sidebar-type" id="full-sidebar" autocomplete="off">
+                    <label class="btn p-9 btn-outline-primary" for="full-sidebar"><i class="icon ti ti-layout-sidebar-right fs-7 me-2"></i>Full</label>
+                </a>
+                <div>
+                    <input type="radio" class="btn-check " name="sidebar-type" id="mini-sidebar" autocomplete="off">
+                    <label class="btn p-9 btn-outline-primary" for="mini-sidebar"><i class="icon ti ti-layout-sidebar fs-7 me-2"></i>Collapse</label>
+                </div>
+            </div>
+            -->
+
+            <!--
+            <h6 class="mt-5 fw-semibold fs-5 mb-2">Card With</h6>
+            <div class="d-flex flex-row gap-3 customizer-box" role="group">
+                <input type="radio" class="btn-check" name="card-layout" id="card-with-border" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary" for="card-with-border"><i class="icon ti ti-border-outer fs-7 me-2"></i>Border</label>
+
+                <input type="radio" class="btn-check" name="card-layout" id="card-without-border" autocomplete="off">
+                <label class="btn p-9 btn-outline-primary" for="card-without-border"><i class="icon ti ti-border-none fs-7 me-2"></i>Shadow</label>
+            </div>
+            -->
+
+            <div class="position-absolute bottom-0 start-0 m-3">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="openFullscreen();">Full Screen</button>
+            </div>
+            <div class="mb-5"></div>
+            <div class="mb-5"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let acc = document.getElementById("acc");
+    let acs = document.getElementById("acs");
+    acs.addEventListener("change", ()=>{
+        clearTimeout(myTimeout);
+        myTimeout = setTimeout(navigate, acs.value*60000);
+        setCookie("refresh",acs.value);
+    });
+
+    if (refresh==0){acc.checked = false;acs.setAttribute("disabled","");}else{acc.checked = true;}
+    acc.addEventListener("click", ()=>{
+        if (acc.checked == false){
+            acs.setAttribute("disabled","");
+            clearTimeout(myTimeout);
+            setCookie("refresh",0);
+        } else {
+            acs.removeAttribute("disabled");
+            myTimeout = setTimeout(navigate, acs.value);
+            setCookie("refresh",acs.value);
+        }
+    });
+
+    var acsop = acs.getElementsByTagName("option");
+    if (refresh == "1"){
+        removeSel();
+        acsop[0].setAttribute("selected","");
+    } else if (refresh == "2"){
+        removeSel();
+        acsop[1].setAttribute("selected","");
+    } else if (refresh == "3"){
+        removeSel();
+        acsop[2].setAttribute("selected","");
+    }
+
+    let lpd = document.getElementById("lpd");
+    let rpd = document.getElementById("rpd");
+    lpd.addEventListener("change", ()=>{
+        setPlan("learn",lpd.value);
+    });
+    rpd.addEventListener("change", ()=>{
+        setPlan("revise",rpd.value);
+    });
+    
+
+    function removeSel(){
+        for (let x of acsop){
+            x.removeAttribute("selected");
+        }
+    }
+    function setCookie(key,val){
+        if (key == "refresh"){
+            document.cookie=key+"="+val;
+        }
+    };
+    function setPlan(key,val){
+        let xhttp = new XMLHttpRequest();
+        xhttp.onload = ()=>{
+            document.getElementById("popup").innerHTML = val+" words per day";
+        }
+        xhttp.open("GET","{% url 'set_plan' %}?key="+key+"&val="+val, true);
+        //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // required with POST request
+        xhttp.send(); //xhttp.send(`csrfmiddlewaretoken={{csrf_token}}&data=${JSON.stringify(entry).replaceAll("&","ampp")}`);
+    }
+    function openFullscreen(){
+        let elem = document.documentElement;
+        if (elem.requestFullscreen){
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen){
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen){
+            elem.msRequestFullscreen();
+        }
+    };
+</script>

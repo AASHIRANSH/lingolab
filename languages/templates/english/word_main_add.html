@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+
+{% block title %} Add Word {% endblock title %}
+{% block body %}
+
+  <div class="position-fixed top-0 start-0 m-3">
+    <button class="btn btn-outline-secondary py-2" onclick="window.location.assign('/')">
+      <i class="fa-solid fa-house fs-4"></i>
+    </button>
+  </div>
+  <div class="position-fixed top-0 end-0 m-3">
+    <button class="btn btn-outline-secondary py-2" onclick="window.location.assign('{% url "dictionary" %}')">
+      <i class="fa-solid fa-book fs-4"></i>
+    </button>
+  </div>
+
+  <div class="container my-5">
+    <form action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" id="id_sense_count" name="sense_count" value="1"></input>
+      <div class="bg-light border border-2 border-primary rounded p-3 mb-3">
+        {% include 'messages.html' %}
+        <div class="row mb-3"><!-- English -->
+          <div class="row col-4">
+            <!-- word -->
+            <div class="col-12 mb-2">
+              {{form.word.label_tag}}
+              <input type="text" class="form-control" name="word" value="{{word.word}}" id="id_word"></input>
+            </div>
+
+            <!-- pos -->
+            <div class="col-7">
+              <label for="pos">POS:</label>
+              <select class="form-select" name="pos" id="id_pos">
+                <option value="">--</option>
+                <option value="noun" {% if pos == 'noun' or form.pos.value == 'noun' %}selected{% endif %}>noun</option>
+                <option value="verb" {% if pos == 'verb' or form.pos.value == 'verb' %}selected{% endif %}>verb</option>
+                <option value="phrasal verb" {% if pos == 'phrasal verb' or form.pos.value == 'phrasal verb' %}selected{% endif %}>phrasal verb</option>
+                <option value="adjective" {% if pos == 'adjective' or form.pos.value == 'adjective' %}selected{% endif %}>adjective</option>
+                <option value="phrase" {% if pos == 'phrase' or form.pos.value == 'phrase' %}selected{% endif %}>phrase</option>
+                <option value="idiom" {% if pos == 'idiom' or form.pos.value == 'idiom' %}selected{% endif %}>idiom</option>
+                <option value="adverb" {% if pos == 'adverb' or form.pos.value == 'adverb' %}selected{% endif %}>adverb</option>
+                <option value="noun, name" {% if pos == 'noun, name' or form.pos.value == 'noun, name' %}selected{% endif %}>noun, name</option>
+                <option value="preposition" {% if pos == 'preposition' or form.pos.value == 'preposition' %}selected{% endif %}>preposition</option>
+                <option value="conjunction" {% if pos == 'conjunction' or form.pos.value == 'conjunction' %}selected{% endif %}>conjunction</option>
+                <option value="exclamation" {% if pos == 'exclamation' or form.pos.value == 'exclamation' %}selected{% endif %}>exclamation</option>
+                <option value="slang" {% if pos == 'slang' or form.pos.value == 'slang' %}selected{% endif %}>slang</option>
+                <option value="abbreviation" {% if pos == 'abbreviation' or form.pos.value == 'abbreviation' %}selected{% endif %}>abbreviation</option>
+              </select>
+            </div>
+
+            <!-- grade -->
+            <div class="col-5">
+              {{form.cefr.label_tag}}
+              <select class="form-select" name="cefr">
+                <option value="" {% if word.cefr == '' %}selected{% endif %}>-</option>
+                <option value="a1" {% if word.cefr == 'a1' %}selected{% endif %}>A1</option>
+                <option value="a2" {% if word.cefr == 'a2' %}selected{% endif %}>A2</option>
+                <option value="b1" {% if word.cefr == 'b1' %}selected{% endif %}>B1</option>
+                <option value="b2" {% if word.cefr == 'b2' %}selected{% endif %}>B2</option>
+                <option value="c1" {% if word.cefr == 'c1' %}selected{% endif %}>C1</option>
+                <option value="c2" {% if word.cefr == 'c2' %}selected{% endif %}>C2</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="col-4">
+            <label for="id_ukphones" onclick="genPron('id_ukphones');">UK Phones:</label>
+            <textarea class="form-control" name="ukphones" id="id_ukphones" rows="4">{{word.pronounciation.uk}}</textarea>
+          </div>
+
+          <div class="col-4">
+            <label for="id_usphones" onclick="genPron('id_usphones');">US Phones:</label>
+            <textarea class="form-control" name="usphones" id="id_usphones" rows="4">{{word.pronounciation.us}}</textarea>
+          </div>
+        </div>
+
+        <div class="row mb-3"><!-- Hindi -->
+          <div class="col-4">
+            <div class="col mb-2">
+              <label for="id_plural">Plural:</label>
+              <textarea class="form-control" name="plural" id="id_plural" rows="1">{{word.plural|default:""}}</textarea>
+            </div>
+            <div class="col">
+              <label for="id_csforms">CS Forms:</label>
+              <textarea class="form-control" name="csforms" id="id_csforms" rows="2">{{word.csforms|default:""}}</textarea>
+            </div>
+          </div>
+          <div class="col-8">
+            <div class="col">
+              <label for="id_forms">Other Forms:</label>
+              <textarea class="form-control" rows="5" name="forms" id="id_forms">{{word.forms}}</textarea>
+            </div>
+          </div>
+
+          <!--div class="col-4">
+            <label for="id_listing">Listing:</label>
+            <textarea class="form-control" name="listing" id="id_listing" rows="4">{{word.listing}}</textarea>
+          </div-->
+
+          <div class="col-8">
+            <label for="id_word_details">Word Details:</label>
+            <textarea class="form-control" name="word_details" id="id_word_details" rows="4">{% if word.word_details %}{{word.word_details}}{% else %}[["", 0], "", "", "", "", "", "", ["", ""], ""]{% endif %}</textarea>
+          </div>
+
+          <div class="col-4">
+            <div class="my-4">
+              {{form.listing.label_tag}}
+              <select class="form-select" name="listing" id="id_listing">
+                <option value="0">-----</option>
+                <option value="1" {% if form.listing.value == 5 %}selected{% endif %}>I Word</option>
+                <option value="1" {% if form.listing.value == 1 %}selected{% endif %}>Common Phrasal Verbs</option>
+                <option value="2" {% if form.listing.value == 2 %}selected{% endif %}>Conversational Phrases</option>
+                <option value="3" {% if form.listing.value == 3 %}selected{% endif %}>Common Idioms</option>
+                <option value="4" {% if form.listing.value == 4 %}selected{% endif %}>Common Sayings</option>
+              </select>
+            </div>
+
+            <div class="form-check my-4">
+              <label for="id_complete">Complete</label>
+              <input type="checkbox" class="form-check-input" name="complete" id="id_complete" {% if word.is_complete %}checked{% endif %}></input>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="senses">
+        <div class="bg-light border border-2 border-secondary rounded p-3 mb-3">
+          <div class="row">
+            <div class="col-12"><h3>SENSE {{sense.0}}</h3></div>
+            <div class="col-3">
+              <label for="id_def_head">Def. Head:</label>
+              <input type="text" class="form-control" name="def_head_0" id="id_def_head" value="{{sense.1}}"></input>
+            </div>
+            <div class="col-3">
+              <label for="id_scefr">CEFR:</label>
+              <select class="form-select" name="scefr_0" id="id_scefr">
+                <option value="">-</option>
+                <option value="a1" {% if sense.2 == 'a1' %}selected{% endif %}>A1</option>
+                <option value="a2" {% if sense.2 == 'a2' %}selected{% endif %}>A2</option>
+                <option value="b1" {% if sense.2 == 'b1' %}selected{% endif %}>B1</option>
+                <option value="b2" {% if sense.2 == 'b2' %}selected{% endif %}>B2</option>
+                <option value="c1" {% if sense.2 == 'c1' %}selected{% endif %}>C1</option>
+                <option value="c2" {% if sense.2 == 'c2' %}selected{% endif %}>C2</option>
+              </select>
+            </div>
+
+            <div class="col-3">
+              <label for="id_context">Context:</label>
+              <input type="text" class="form-control" name="context_0" id="id_context" value="{{sense.5}}"></input>
+            </div>
+
+            <div class="col-3">
+              <label for="id_labels">Labels:</label>
+              <input type="text" class="form-control" name="labels_0" id="id_labels" value="{{sense.6}}"></input>
+            </div>
+
+            <div class="col-3">
+              <label for="id_variants">Variants:</label>
+              <textarea class="form-control" rows="1" name="variants_0" id="id_variants">{% for x in sense.7 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+
+            <div class="col-3">
+              <label for="id_def_inf">Grammar:</label>
+              <input type="text" class="form-control" name="def_inf_0" id="id_def_inf" value="{{sense.8}}"></input>
+            </div>
+
+            <div class="col-3">
+              <label for="id_dtxt">DTXT:</label>
+              <input type="text" class="form-control" name="dtxt_0" id="id_dtxt" value="{{sense.4}}"></input>
+            </div>
+
+            <div class="col-3">
+              <label for="id_topic">Topic:</label>
+              <input type="text" class="form-control" name="topic_0" id="id_topic" value="{{sense.16}}"></input>
+            </div>
+
+            <div class="col-5">
+              <div class="col-12 mb-1">
+                <label for="id_endef">Definition:</label>
+                <textarea class="form-control" rows="2" name="endef_0" id="id_endef">{% for x in sense.9.en.0 %}{{x}}
+{% endfor %}</textarea>
+              </div>
+              <div class="col-12">
+                <label for="id_enbdef">B. Def.:</label>
+                <textarea class="form-control" rows="1" name="enbdef_0" id="id_enbdef">{{sense.9.en.1|join:", "}}</textarea>
+              </div>
+            </div>
+
+            <div class="col-7">
+              <label for="id_enexdef">Ex Defs:</label>
+              <textarea class="form-control" rows="5" name="enexdef_0" id="id_enexdef">{% for x in sense.9.en.2 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+
+            <div class="col-12">
+              <label for="id_examples">Example Sentences:</label>
+              <textarea class="form-control" rows="5" name="examples_0" id="id_examples">{% for x in sense.10 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+
+            <div class="col-6">
+              <div class="col-12 mb-1">
+                <label for="id_hidef">Hindi Definition:</label>
+                <textarea class="form-control" rows="2" name="hidef_0" id="id_hidef">{% for x in sense.9.hi.0 %}{{x}}
+{% endfor %}</textarea>
+              </div>
+              <div class="col-12">
+                <label for="id_hibdef">Hi. B. Def.:</label>
+                <textarea class="form-control" rows="1" name="hibdef_0" id="id_hibdef">{{sense.9.hi.1|join:", "}}</textarea>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="col-12 mb-1">
+                <label for="id_urdef">Urdu Definition:</label>
+                <textarea class="form-control" rows="2" name="urdef_0" id="id_urdef">{% for x in sense.9.ur.0 %}{{x}}
+{% endfor %}</textarea>
+              </div>
+              <div class="col-12">
+                <label for="id_urbdef">Urdu B. Def.:</label>
+                <textarea class="form-control" rows="1" name="urbdef_0" id="id_urbdef">{{sense.9.ur.1|join:", "}}</textarea>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <label for="id_usages">Sentence Usage:</label>
+              <textarea class="form-control" rows="3" name="usages_0" id="id_usages">{% for x in sense.11 %}{{x|join:"$"}}
+{% endfor %}</textarea>
+            </div>
+            <div class="col-3">
+              <label for="id_synonyms">Synonyms:</label>
+              <textarea class="form-control" rows="3" name="synonyms_0" id="id_synonyms">{% for x in sense.12 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+            <div class="col-3">
+              <label for="id_antonyms">Antonyms:</label>
+              <textarea class="form-control" rows="3" name="antonyms_0" id="id_antonyms">{% for x in sense.13 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+
+            <div class="col-6">
+              <label for="id_compares">Compare:</label>
+              <textarea class="form-control" rows="2" name="compares_0" id="id_compares">{% for x in sense.14 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+            <div class="col-6">
+              <label for="id_see_also">See Also:</label>
+              <textarea class="form-control" rows="2" name="see_also_0" id="id_see_also">{% for x in sense.15 %}{{x}}
+{% endfor %}</textarea>
+            </div>
+
+            <div class="col-6">
+              <label for="id_use">Use:</label>
+              <textarea class="form-control" rows="3" name="use_0" id="id_use">{{sense.17}}</textarea>
+            </div>
+
+            <div class="col-6">
+              <label for="id_help">Help:</label>
+              <textarea class="form-control" rows="3" name="help_0" id="id_help">{{sense.18}}</textarea>
+            </div>
+
+            <div class="col-12">
+              <label for="id_unbox">Unboxes:</label>
+              <textarea class="form-control" rows="3" name="unbox_0" id="id_unbox">{{sense.19}}</textarea>
+            </div>
+
+            <div class="col-6">
+              <label for="id_img">Picutre:</label>
+              <input type="text" class="form-control" name="img_0" id="id_img" value="{{sense.3}}"></input>
+            </div>
+
+            <div class="col-12">
+              <label for="id_post">Related Post:</label>
+              {{form.related_post}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-3">
+        <div class="">
+          <button id="addBtn" type="button" class="btn btn-secondary text-white">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+        <div class="">
+          <input type="submit" value="Submit" class="btn btn-success"/>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>//Add Entry
+    let sense_count = {{word.senses|length}};
+    let word = document.getElementById("id_word");
+    let pos = document.getElementById("id_pos");
+    let plural = document.getElementById("id_plural");
+    let csforms = document.getElementById("id_csforms");
+    let word_details = document.getElementById("id_word_details");
+    let btn = document.getElementById("addBtn");
+    let entry = document.getElementById("senses");
+
+    word.onchange = (e)=> {
+      plural.value = pos.value == "noun" ? e.target.value+"s" : "";
+      csforms.value = pos.value == "adjective" ? e.target.value+"er, "+e.target.value+"est" : "";
+      //word_details.value = `[['${e.target.value[0]}',''],'','','','','','','','']`;
+    }
+    pos.onchange = ()=> {
+      plural.value = pos.value == "noun" ? word.value+"s" : "";
+      csforms.value = pos.value == "adjective" ? word.value+"er, "+word.value+"est" : "";
+    }
+
+    btn.addEventListener("click", function(){
+      sense_count++;
+      addEntry();
+    });
+
+    //var elems = {{fields.2.context|length}} > 0 ? 3 : {{fields.1.context|length}} > 0 ? 2 : {{fields.0.context|length}} > 0 ? 1 : 0;
+    var elems = sense_count;
+    function addEntry(){
+      let option = `
+      <div class="bg-light border border-2 border-secondary rounded p-3 mb-3">
+        <div class="row">
+          <div class="col-12"><h3>SENSE ${elems+1}</h3></div>
+          <div class="col-3">
+            <label for="id_def_head_${elems}">Def. Head:</label>
+            <input type="text" class="form-control" name="def_head_${elems}" id="id_def_head_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_scefr_${elems}">CEFR:</label>
+            <input type="text" class="form-control" name="scefr_${elems}" id="id_scefr_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_context_${elems}">Context:</label>
+            <input type="text" class="form-control" name="context_${elems}" id="id_context_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_labels_${elems}">Labels:</label>
+            <input type="text" class="form-control" name="labels_${elems}" id="id_labels_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_variants_${elems}">Variants:</label>
+            <input type="text" class="form-control" name="variants_${elems}" id="id_variants_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_def_inf_${elems}">Def. Inf.:</label>
+            <input type="text" class="form-control" name="def_inf_${elems}" id="id_def_inf_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_dtxt_${elems}">DTXT:</label>
+            <input type="text" class="form-control" name="dtxt_${elems}" id="id_dtxt_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_topic_${elems}">Topic:</label>
+            <input type="text" class="form-control" name="topic_${elems}" id="id_topic_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-5">
+            <label for="id_definition_${elems}">Definition:</label>
+            <textarea class="form-control" rows="5" name="definition_${elems}" id="id_definition_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-7">
+            <label for="c_2_${elems}">Example Sentences:</label>
+            <textarea class="form-control" rows="5" name="example_${elems}" id="c_2_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-5">
+            <label for="id_usages_${elems}">Sentence Usage:</label>
+            <textarea class="form-control" rows="3" name="usages_${elems}" id="id_usages_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_synonyms_${elems}">Synonyms:</label>
+            <textarea class="form-control" rows="3" name="synonyms_${elems}" id="id_synonyms_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-3">
+            <label for="id_antonyms_${elems}">Antonyms:</label>
+            <textarea class="form-control" rows="3" name="antonyms_${elems}" id="id_antonyms_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-6">
+            <label for="id_compare_${elems}">Compare:</label>
+            <textarea class="form-control" rows="2" name="compare_${elems}" id="id_compare_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+          <div class="col-6">
+            <label for="id_see_also_${elems}">See Also:</label>
+            <textarea class="form-control" rows="2" name="see_also_${elems}" id="id_see_also_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-5">
+            <label for="id_use_${elems}">Use:</label>
+            <textarea class="form-control" rows="3" name="use_${elems}" id="id_use_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-7">
+            <label for="id_help_${elems}">Help:</label>
+            <textarea class="form-control" rows="3" name="help_${elems}" id="id_help_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+
+          <div class="col-3">
+            <label for="id_img_${elems}">Picutre:</label>
+            <input type="text" class="form-control" name="img_${elems}" id="id_img_${elems}">{% if edit %}{{form.example.value}}{% endif %}</textarea>
+          </div>
+        </div>
+      </div>
+      `;
+      entry.insertAdjacentHTML("beforeend",option);
+      elems++;
+    }
+    function genPron(id){
+      let field = document.getElementById(id);
+      let synt = `{'texts': [''], 'audios': {'mp3': [''], 'ogg': ['']}}`
+      field.value = synt;
+    }
+  </script>
+  <script>//translate
+    let input = document.getElementById("id_definition");
+    input.onchange = (e)=> {
+      translate(e.target.value,'ur');
+      translate(e.target.value,'hi');
+    }
+
+    function translate(text,lang){
+      const data = JSON.stringify([
+        {
+          Text: text
+        }
+      ]);
+
+      let toLang = lang;
+      let langid = lang == 'ur'?'urdu':'hindi';
+
+      const xhr = new XMLHttpRequest();
+      xhr.withCredentials = true;
+
+      xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === this.DONE) {
+          let response = JSON.parse(this.responseText);
+          document.getElementById("id_definition_"+langid).innerHTML = response[0].translations[0].text;
+        }
+      });
+
+      xhr.open('POST', 'https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D='+toLang+'&api-version=3.0&profanityAction=NoAction&textType=plain');
+      xhr.setRequestHeader('content-type', 'application/json');
+      xhr.setRequestHeader('X-RapidAPI-Key', '9ea8b16349msh45b993004bb2674p10f7f1jsnc7a403c6b963');
+      xhr.setRequestHeader('X-RapidAPI-Host', 'microsoft-translator-text.p.rapidapi.com');
+
+      xhr.send(data);
+    }
+  </script>
+{% endblock body %}

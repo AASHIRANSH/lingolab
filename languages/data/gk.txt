@@ -1,0 +1,3 @@
+Formula to convert fahrenheit to celcius. =(5/9) * (fahrenheit-32)
+--How many states in India?
+After India became independent in 1947, it was divided into states and union territories. Now, India has 28 states and 8 union territories. Each part of India has its own culture and identity.

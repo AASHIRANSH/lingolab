@@ -1,0 +1,1 @@
+by default you will get the words to learn from the range of a1 to c2. if you want other words you can search a word in the dictionary and save/bookmark it. that's it, it will start to show in the revise words list.

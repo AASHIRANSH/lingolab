@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="position-fixed top-0 start-0 w-100 h-100 bg-light d-flex justify-content-center align-items-center">
+    Learning...
+</div>
+
+<script>
+    window.location.assign('{% url "learn_home" %}');
+</script>
+{% endblock body %}

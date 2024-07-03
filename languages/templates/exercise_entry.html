@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block body %}
+{% include 'static/css/styles.html' %}
+{% include "header.html" %}
+
+{% include 'messages.html' %}
+
+<!--form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for f in form %}
+    {{f.label_tag}}
+    {{f}}
+    {% endfor %}
+    <input type="submit" name="_save" value="submit"/>
+</form-->
+
+<div class="container my-5">
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.date_created}}
+        <div class="row">
+            <div class="col-6 mb-3">
+                {{form.post.label_tag}}
+                {{form.post}}
+                {{form.post.error}}
+            </div>
+
+            <div class="col-6 mb-3">
+                {{form.type.label_tag}}
+                {{form.type}}
+                {{form.type.error}}
+            </div>
+
+            <div class="col-6 mb-3">
+                {{form.target_values.label_tag}}
+                {{form.target_values}}
+                {{form.target_values.error}}
+            </div>
+
+            <div class="col-6 mb-3">
+                {{form.choice.label_tag}}
+                {{form.choice}}
+                {{form.choice.error}}
+            </div>
+
+            <div class="col-6 mb-3">
+                {{form.level.label_tag}}
+                {{form.level}}
+                {{form.level.error}}
+            </div>
+
+            <div class="col-6 mb-3">
+                {{form.pos.label_tag}}
+                {{form.pos}}
+                {{form.pos.error}}
+            </div>
+
+
+            <div class="col-6 mb-3">
+                {{form.question.label_tag}}
+                {{form.question}}
+                {{form.question.error}}
+            </div>
+            
+            <div class="col-6 mb-3">
+                {{form.answer.label_tag}}
+                {{form.answer}}
+                {{form.answer.error}}
+            </div>
+
+
+        </div>
+
+        <div class="col">
+            <input type="submit" value="Submit" class="btn btn-primary"/>
+        </div>
+    </form>
+</div>
+
+{% include 'static/components/bs_form.html' %}
+
+<script>
+    document.body.onload = function(){
+        tinymce.init({
+            height: '600',
+            selector: '#id_content',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ]
+        });
+    }
+</script>
+
+{% endblock body %}

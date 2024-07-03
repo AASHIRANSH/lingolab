@@ -1,0 +1,76 @@
+<div id="notif-box" class="d-none w-100 h-100 position-fixed top-0 start-0 bg-gray-200 animate__animated animate__faster" style="z-index:2000;overflow:auto">
+    <div id="notifications" class="m-3">
+    
+        <div id="notif-top" class="d-flex justify-content-between mb-5">
+            <div id="datetime">
+                <div class="font-jakarta">
+                    <span id="time" class="display-2 fw-bold"></span>
+                    <span id="seconds" class="fs-6 fw-bold"></span>
+                </div>
+                <div id="date" class="fs-2"></div>
+            </div>
+            <div>
+                <button type="button" class="btn-close fs-1" onclick="closeNotif()"></button>
+            </div>
+        </div>
+
+        <div id="notifs">
+
+            <div class="col-12 col-md-6 bg-light cursor-pointer p-3 rounded-3 shadow-sm my-2">
+                <div class="d-flex justify-content-between text-secondary mb-1">
+                    <span><i class="fa-solid fa-envelope"></i> Messages</span>
+                    <span>06:00</span>
+                </div>
+                You have got a notification
+            </div>
+
+            {% for x in request.notifications %}
+                <div class="col-12 col-md-6 card card-body cursor-pointer shadow-sm my-2">
+                    <div class="d-flex justify-content-between text-secondary mb-1">
+                        <span>{% if x.type == "message" %}<i class="fa-solid fa-envelope"></i> Messages {% endif %}{{x.sender}}</span>
+                        <span>{{x.created}}</span>
+                    </div>
+                    {{x.content}}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var notifBox = document.getElementById("notif-box");
+    var time = document.getElementById("time");
+    var date = document.getElementById("date");
+    var seconds = document.getElementById("seconds");
+    const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    
+    function notifications(){
+        notifBox.classList.remove("d-none");
+        notifBox.classList.add("animate__fadeInDown");
+        document.querySelector("body").style.overflow = "hidden";
+
+        var today = new Date();
+        time.innerText = `${today.getHours()}:${today.getMinutes()<10?'0':''}${today.getMinutes()}`;
+        date.innerText = `${weekday[today.getDay()].slice(0,3)}, ${month[today.getMonth()]} ${today.getDate()}`;
+        
+        var timeInt = setInterval(()=>{
+            today = new Date();
+            time.innerText = `${today.getHours()}:${today.getMinutes()<10?'0':''}${today.getMinutes()}`;
+            date.innerText = `${weekday[today.getDay()].slice(0,3)}, ${month[today.getMonth()]} ${today.getDate()}`;
+            seconds.innerText = `${today.getSeconds()<10?'0':''}${today.getSeconds()}`;
+        }, 1000);
+    };
+
+    function closeNotif(){
+        notifBox.classList.remove("animate__fadeInDown");
+        notifBox.classList.add("animate__fadeOutUp")
+        setTimeout(()=>{
+            notifBox.classList.remove("animate__fadeOutUp");
+            notifBox.classList.add("d-none")
+            document.querySelector("body").style.overflow = "auto";
+        },1000);
+        clearInterval(timeInt);
+    }
+</script>

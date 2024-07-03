@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="container my-5">
+    {% for user in users %}
+        <div class="row align-items-center my-1">
+            <div class="col-1 fs-4 fw-bold">{{forloop.counter}}</div>
+            <div class="col-2"><img class="rounded-circle" src="{{user.user.profile.image.url}}" style="width:5rem;height:auto;"/></div>
+            <div class="col-7 fs-2">{{user.user.first_name}} {{user.user.last_name}}</div>
+            <div class="col-2 fs-4">{{user.plan.0.2}} XP</div>
+        </div>
+        <hr>
+    {% endfor %}
+</div>
+
+{% endblock body %}

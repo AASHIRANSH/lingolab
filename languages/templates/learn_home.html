@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block body %}
+{% include "header.html" %}
+
+<div class="bg-gray-300 text-center fs-2 text-secondary fw-semibold text-uppercase p-4">
+    {% if course_selected %}
+        <button class="btn btn-secondary" data-bs-toggle="offcanvas" data-bs-target="#sidebarl"><i class="fa-solid fa-bars"></i></button>
+        Learning {{lang}}
+    {% else %}
+        Select a Language to Start
+    {% endif %}
+</div>
+
+<div class="container">
+    <div class="col-12 col-md-8 mx-auto">
+        {% if course_selected %}
+            {% for unit in course.data %}
+            {% with un=forloop.counter %}
+            <div class="my-5">
+            <div class="text-bg-primary fs-3 p-3 rounded">Unit {{forloop.counter}} ({{unit.title}})</div>
+                {% for lesson in unit.lessons %}
+                    <div class="text-center fs-1 mx-auto my-3" style="width:5rem;height:5rem">{% if un <= ul.1 and forloop.counter <= ul.2 %}<div class="bg-success p-2 rounded-circle cursor-pointer" onclick="window.location.assign('{% url 'learn' course.pk un forloop.counter %}')"><i class="fa-solid fa-star text-white"></i></div>{% else %}<div class="bg-gray-200 p-2 rounded-circle"><i class="fa-solid fa-lock text-secondary"></i></div>{% endif %}</div>
+                {% endfor %}
+            </div>
+            {% endwith %}
+            {% endfor %}
+        {% else %}
+            {% for lang in course %}
+                <div class="col-12 col-md-6 card card-body bg-primary-subtle text-primary text-center fw-bold fs-2 border-4 border-light shadow mx-auto my-3 cursor-pointer" onclick="window.location.assign('{% url 'learn_start' lang.pk %}')">
+                    {{lang|title}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarl" aria-labelledby="offcanvasExampleLabel" aria-modal="true" role="dialog">
+    <div class="d-flex justify-content-between align-items-center bg-white p-3 border-2 border-bottom">
+        <img src="/static/img/dark-logo_ad.svg" style="height:40px;width:auto"/>
+        <button type="button" class="btn-close fs-5" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="link-group link-gray font-public fw-semibold fs-5 px-3 my-3">
+        {% for lang in courses %}
+            <li><a href="{% url "learn_start" lang.pk %}"><i class="ti ti-notification fs-4"></i> {{lang.course|title}} ({{lang.origin}}) </a></li>
+        {% endfor %}
+    </div>
+
+    <div class="w-100 position-absolute bottom-0 start-0">
+        <div class="card bg-light p-3">
+        {% if request.user.is_authenticated %}
+        <button class="col-12 btn btn-light text-secondary d-flex justify-content-between align-items-center fw-semibold" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><span>My Account</span> <i class="fas fa-chevron-down"></i></button>
+        <div class="collapse" id="collapseExample">
+            <div class="card-body">
+                <div class="text-secondary mb-3">
+                    <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                        <div class="profile-pic text-center">
+                            <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow bg-white" style="width:10rem;height:auto"/>
+                        </div>
+            
+                        <div class="d-flex flex-column text-center text-md-start">
+                            <div class="">
+                                <span class="bg-gray-200 p-1 rounded">
+                                    @{{user.username}}
+                                </span>
+                            </div>
+                            
+                            {% if user.first_name %}
+                                <div class="fs-1 text-uppercase my-2">
+                                    {{user.first_name}} {{user.last_name}}
+                                </div>
+                            {% endif %}
+                            
+                            <div class="fs-5 px-1 text-center">
+                                {% if user.pk == 1 %}
+                                Servant at Learners' Academy
+                                {% else %}
+                                User
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" class="form-control" id="status_update" placeholder="Update Status"/>
+                <div class="link-group link-gray font-public fs-7 my-3">
+                    <li class="superuser"><a href="/admin"><i class="fa-solid fa-sliders"></i> Admin Panel</a></li>
+                    <li><a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
+                </div>
+                <a href="{% url 'sign_out' %}" role="button" class="btn btn-danger text-end"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
+            </div>
+        </div>
+        {% else %}
+        <a href="{% url 'sign_in' %}" role="button" class="col-12 btn btn-light fw-semibold lsp-sm mb-1">Login</a>
+        <a href="{% url 'sign_up' %}" role="button" class="col-12 btn btn-primary fw-semibold lsp-sm">Register</a>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

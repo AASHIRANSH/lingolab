@@ -1,0 +1,36 @@
+{
+    "unit_1":[
+        {
+            "type":"word",
+            "interface":"wcard",
+            "content":"",
+            "pk":33260,
+            "sense":0,
+            "level":1
+        },
+        {
+            "type":"word",
+            "interface":"wcard",
+            "content":"",
+            "pk":70953,
+            "sense":0,
+            "level":1
+        },
+        {
+            "type":"word",
+            "interface":"wbutton_r",
+            "content":"",
+            "pk":70953,
+            "sense":0,
+            "level":1
+        },
+        {
+            "type":"translate",
+            "interface":"tr_sel",
+            "content":"हमने अपनी गाड़ी सड़क पर ही छोड़दी",
+            "pk":24,
+            "sense":0,
+            "level":1
+        }
+    ]
+}

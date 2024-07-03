@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block head %}
+{% endblock head %}
+{% block body %}
+{% include 'header.html' %}
+
+<div class="container my-4">
+    <div class="wrapper col-sm-10 col-md-8">
+        <div class="search-input">
+            <input type="search" name="q" class="form-control" placeholder="Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
+            <div id="subox" class="autocom-box mt-1 rounded-bottom shadow">
+                <!-- here list is inserted from javascript -->
+            </div>
+            <a><div class="icon"><i class="fas fa-search"></i></div></a>
+        </div>
+    </div>
+</div>
+
+<div id="demo"></div>
+
+<script>
+    // getting all required elements
+    const searchWrapper = document.querySelector(".search-input");
+    const inputBox = searchWrapper.querySelector("input");
+    const icon = searchWrapper.querySelector(".icon");
+    var linkTag = searchWrapper.querySelector("a");
+    var webLink;
+
+    // if user press any key and release
+    inputBox.onkeyup = (e)=>{
+        let data = e.target.value; //user enetered data
+
+        var x = document.getElementById("subox");
+        if (x) x = x.getElementsByTagName("li");
+
+        if (e.keyCode == 13) {
+            /*If the ENTER key is pressed, prevent the form from being submitted,*/
+            e.preventDefault();
+            loadDoc(data);
+        } else {            
+            if(data){
+                icon.onclick = ()=>{
+                    loadDoc(data);
+                    $(".loader-wrapper").fadeIn("slow");
+                }
+            }
+        }
+    }
+
+    function loadDoc(data) {
+        const xhttp = new XMLHttpRequest();
+        //xhttp.onload = ()=>{}
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var result = JSON.parse(this.responseText);
+                //var res = [];
+                //for (let x of result){
+
+                //}
+                document.getElementById("demo").innerHTML = result.join(" ");
+            }
+        };
+        xhttp.open("GET",'{% url "ipa_converter" %}?data='+data, true);
+        xhttp.send();
+    }
+</script>
+{% endblock %}

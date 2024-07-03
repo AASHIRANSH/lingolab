@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "header.html" %}
+
+<div class="container">
+    <div class="row gap-5 justify-content-center align-items-center text-light my-5">
+
+        <div class="col-8 col-md-3 d-flex align-items-center justify-content-center gap-2 bg-dark cursor-pointer p-3 rounded-5" onclick="window.location.assign('{% url "coding" %}python')">
+            <div class="col-auto"><i class="fa-brands fa-python display-3"></i></div>
+            <div class="col-auto display-3">Python</div>
+        </div>
+        
+        <div class="col-8 col-md-3 d-flex flex-wrap align-items-center justify-content-center gap-2 bg-dark cursor-pointer p-3 rounded-5" onclick="window.location.assign('{% url "coding" %}javascript')">
+            <div class="col-auto display-3">JavaScript</div>
+        </div>
+
+        <div class="col-8 col-md-3 d-flex flex-wrap align-items-center justify-content-center gap-2 bg-dark cursor-pointer p-3 rounded-5" onclick="window.location.assign('{% url "coding" %}html')">
+            <div class="col-auto display-3">HTML</div>
+        </div>
+
+        <div class="col-8 col-md-3 d-flex flex-wrap align-items-center justify-content-center gap-2 bg-dark cursor-pointer p-3 rounded-5" onclick="window.location.assign('{% url "coding" %}css')">
+            <div class="col-auto display-3">CSS</div>
+        </div>
+
+    </div>
+</div>
+{% endblock body %}

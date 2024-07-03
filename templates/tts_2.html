@@ -1,0 +1,99 @@
+<style>
+    #tts {
+        display: none;
+    }
+</style>
+<div id="tts" class="wrapper">
+    <form action="#">
+        <div class="row">
+            <label>Enter Text</label>
+            <textarea></textarea>
+        </div>
+        <div class="row">
+            <label>Select Voice</label>
+            <div class="outer">
+                <select id="ttss"></select>
+            </div>
+        </div>
+        <button>Convert To Speech</button>
+    </form>
+</div>
+<script>
+    const textarea = document.querySelector("textarea"),
+        voiceList = document.querySelector("#ttss"),
+        speechBtn = document.querySelector("button");
+
+    let synth = speechSynthesis,
+        isSpeaking = true;
+
+    voices();
+
+    function voices() {
+        for (let voice of synth.getVoices()) {
+            //let selected = voice.name === "Microsoft Kalpana - Hindi (India)" ? "selected" : "";
+            if (voice.name==="Google US English") {
+                var selected = "selected";
+            }else if (voice.name==="Microsoft Swara Online (Natural) - Hindi (India)"){
+                var selected = "selected";
+            }else{
+                var selected = "";
+            }
+            let option = `<option value="${voice.name}" ${selected}>${voice.name} (${voice.lang})</option>`;
+            voiceList.insertAdjacentHTML("beforeend", option);
+        }
+    }
+
+    synth.addEventListener("voiceschanged", voices);
+
+    function textToSpeech(text, tt) {
+        let utterance = new SpeechSynthesisUtterance();
+        utterance.volume = 1; // From 0 to 1
+        utterance.rate = 0.7; // From 0.1 to 10
+        utterance.pitch = 1; // From 0 to 2
+        utterance.text = text;
+        //utterance.lang = 'en';
+
+        // Select voice from html select options
+        //for (let voice of synth.getVoices()) {
+        //    if (voice.name === voiceList.value) {
+        //        utterance.voice = voice;
+        //    }
+        //}
+        
+        if (tt === 'US'){
+            utterance.voice = synth.getVoices()[9];
+        }else if(tt === 'UK'){
+            utterance.voice = synth.getVoices()[10];
+        }
+        synth.speak(utterance);
+    }
+
+    speechBtn.addEventListener("click", e => {
+        e.preventDefault();
+        if (textarea.value !== "") {
+            if (!synth.speaking) {
+                textToSpeech(textarea.value);
+            }
+            if (textarea.value.length > 80) {
+                setInterval(() => {
+                    if (!synth.speaking && !isSpeaking) {
+                        isSpeaking = true;
+                        speechBtn.innerText = "Convert To Speech";
+                    } else {
+                    }
+                }, 500);
+                if (isSpeaking) {
+                    synth.resume();
+                    isSpeaking = false;
+                    speechBtn.innerText = "Pause Speech";
+                } else {
+                    synth.pause();
+                    isSpeaking = true;
+                    speechBtn.innerText = "Resume Speech";
+                }
+            } else {
+                speechBtn.innerText = "Convert To Speech";
+            }
+        }
+    });
+</script>

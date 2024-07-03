@@ -1,0 +1,21 @@
+{
+    "grammar":{
+        "present_perfect":[
+            ["has or have?",
+            ["Everybody has worked so hard.","Everybody have worked so hard."],
+            [0]],
+            ["has or have?",
+            ["We've already finished.","We've all ready finished."],
+            [0]],
+            ["on or that?",
+            ["My parents insisted on paying for dinner."],
+            ["on",["on","that"]]],
+            ["bought or brought?",
+            ["I was bought up in the Midlands.","I was brought up in the Midlands."],
+            [1]],
+            ["about or that?",
+            ["My sister forgot about her exam was today.","My sister forgot that her exam was today."],
+            [1]]
+        ]
+    }
+}

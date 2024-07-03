@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Register / Sign Up{% endblock title %}
+
+{% block body %}
+{% include 'header.html' %}
+
+<div class="bg-check animation-polka">
+    <div class="bg-grd-gray font-public text-center text-primary pt-5 pb-3">
+        <h1 class="fw-semibold">Create Account</h1>
+        <span class="text-secondary">Sign up now and get free account instant.</span>
+    </div>
+</div>
+
+{% include 'messages.html' %}
+
+<form action="" method="post" spellcheck="false" novalidate>
+    {% csrf_token %}
+    <div class="container my-3">
+        <div class="card card-body col-10 col-md-6 mx-auto shadow">
+            {% if fm.non_field_errors %}
+                {% for error in fm.non_field_errors %}
+                    <p>{{error}}</p>
+                {% endfor %}
+            {% endif %}
+
+            {% for f in fm %}
+                <div class="mb-3">
+                    <div class="text-secondary fw-semibold fs-8 mb-1">{{f.label_tag|title}}</div>
+                    {{f}}
+                    {% if f.errors %}
+                        <script>//add is-invalid class to field
+                            var id = document.getElementById("{{f.id_for_label}}");
+                            id.classList.add("is-invalid")
+                            id.placeholder = "Please fill this. {{f.errors|striptags}}";
+                        </script>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="showpass" onclick="if(id_password1.type==`password`){id_password1.type=`text`;id_password2.type=`text`;}else{id_password1.type=`password`;id_password2.type=`password`}"/>
+                <label class="form-check-label text-secondary small" for="showpass">Show Password</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-3">Sign Up</button>
+            <div>Already have an account? <a href="{% url 'sign_in' %}">Sign In here.</a></div>
+        </div>
+    </div>
+</form>
+
+<!--script>
+    var inparr = document.getElementsByTagName('input')
+    inparr.forEach(function(index,arr) {
+        arr[index].classList.add("form-control")
+    });
+</script-->
+
+{% include 'footer.html' %}
+{% include 'static/components/bs_form.html' %}
+{% endblock body %}

@@ -1,0 +1,45 @@
+{
+    sensenum: 0,
+    def_head: 1,
+    cefr: 2,
+    pic: 3,
+    dtxt: 4,
+    context: 5,
+    labels: 6,
+    variants: 7,
+    grammar: 8,
+    definition: 9,
+    examples: 10,
+    usages: 11,
+    synonyms: 12,
+    antonyms: 13,
+    compares: 14,
+    see_also: 15,
+    topics: 16,
+    use: 17,
+    help: 18,
+    unbox: 19
+}
+{
+    oxs:0,
+    grammar:1,
+    variants:2,
+    inflections:3,
+    use:4,
+    labels:5,
+    help:6,
+    word_origin:7,
+    culture:8
+}
+{
+    a:[1,4065],
+    b:[4066:9591],
+    c:[9592:16934],
+    d:[16935:21546],
+    e:[21547:24305],
+    f:[24306:28308],
+    g:[28309:],
+    h:[],
+    i:[:39238],
+    k:[38239:39202]
+}

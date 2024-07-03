@@ -1,0 +1,59 @@
+{
+    "Greetings":[
+        ["Hi","привет"],
+        ["Good Morning","सुप्रभात"],
+        ["Good Afternoon","नमस्ते"],
+        ["Good Evening","सुसंध्या"],
+        ["Good Night","शुभ रात्रि"]
+    ],
+    "school": [
+        ["principal","प्रधानाचार्य"],
+        ["clerk","लेखाकार"],
+        ["teacher","अध्यापक"],
+        ["student","विधार्थी"],
+        ["peon","चपरासी"],
+        ["driver","गाड़ी चलाने वाला"]
+    ],
+    "hospital": [
+        ["doctor","डॉक्टर"],
+        ["dentist","दांतों का डॉक्टर"],
+        ["gastrologist","पेट का डॉक्टर"]
+    ],
+    "family": [
+        ["father","पिताजी"],
+        ["mother","माताजी"],
+        ["sister","बहन"],
+        ["brother","भाई"]
+    ],
+    "in_law_family_bride": [
+        ["father-in-law","ससुर"],
+        ["mother-in-law","सास"],
+        ["brother-in-law","साला"],
+        ["sister-in-law","साली"]
+    ],
+    "in_law_family_groom": [
+        ["father-in-law","ससुर"],
+        ["mother-in-law","सास"],
+        ["brother-in-law","देवर"],
+        ["sister-in-law","ननंद/नन्द"]
+    ],
+    "paternal_family": [
+        ["grandfather","दादा"],
+        ["grandmother","दादी"],
+        ["uncle","चाचा/ताया"],
+        ["aunt","चाची/ताई"]
+    ],
+    "maternal_family": [
+        ["uncle","मामा"],
+        ["aunt","मामी"],
+        ["uncle","मौसा/खालू"],
+        ["aunt","मौसी/खाला"]
+    ],
+    "people": [
+        ["man","आदमी"],
+        ["boy","लड़का"],
+        ["girl","लड़की"],
+        ["child","बच्चा"],
+        ["woman","औरत"]
+    ]
+}

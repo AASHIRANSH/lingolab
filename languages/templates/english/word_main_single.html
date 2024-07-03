@@ -1,0 +1,468 @@
+{% extends 'base.html' %}
+{% block title %}{{word}} | Dictionary | {% endblock title %}
+{% block body %}
+{% include 'english/flashcards/styles/flashcards.html' %}
+{% include "header.html" %}
+<div id="scr" class="position-absolute top-0 start-0 d-none bg-light rounded" style="width:500px;height:500px">
+    <div class="d-flex flex-wrap justify-content-center align-items-center text-center p-3">
+        <div class="col-12 fs-1 fw-bold text-primary mb-3">{{word.word}}</div>
+        <div class="col-12 fs-4 text-secondary mb-3">: {{word.senses.0.9.en.0}}</div>
+        <div class="col-12 fs-6 text-start">
+            <ul>
+            {% for e in word.senses.0.10 %}
+            <li>{{e}}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="bg-primary bg-opacity-50 p-1 rounded">
+    </div>
+</div>
+
+<div class="container-fluid bg-light py-4">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-lg-9 px-4 pe-lg-0 mb-5">
+            {% include 'messages.html' %}
+            <div class="bg-light p-3 mb-3 shadow rounded">
+                <div class="d-flex justify-content-between align-items-center rounded">
+                    <div class="row col-11">
+                        <!-- Word Pos-->
+                        <div class="col-12 mb-1">
+                            <div id="word" class="col-auto text-primary d-inline-block me-2" {% if request.user.is_superuser %}onclick="window.location.assign(`{% url 'word_entry' %}?edit=true&word={{word.pk}}&sense={{sense.0|add:-1}}`)"{% endif %}>
+                                {{word.word}}
+                            </div>
+                            <div id="pos" class="col-auto fs-5 d-inline-block text-secondary me-2">
+                                {{word.pos}}
+                            </div>
+                            {% if word.cefr %}
+                                <div id="grade" class="col-auto d-inline-block fs-5 text-uppercase px-2">
+                                    {{word.cefr}}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!-- Grade Pronounce Pic-->
+                        <div class="col-12">
+                            <div class="row col-12 mb-3">
+                                {% if word.pronounciation.uk.texts %}
+                                    <div class="col-auto ps-3" style="font-family:Arial;">
+                                        <div>
+                                            <span id="" class="text-primary fs-5 speak" data-src-mp3="{{word.pronounciation.uk.audios.mp3.0}}">UK <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>{{word.pronounciation.uk.texts.0}}</span></span>
+                                            {% if word.pronounciation.uk.texts.1 %}
+                                            <span id="" class="text-primary fs-5 speak" data-src-mp3="{{word.pronounciation.uk.audios.mp3.1}}">, <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>{{word.pronounciation.uk.texts.1}}</span></span>
+                                            {% endif %}
+                                        </div>
+                        
+                                        {% if word.pronounciation.us.texts %}
+                                            <div>
+                                                <span id="" class="text-danger fs-5 speak" data-src-mp3="{{word.pronounciation.us.audios.mp3.0}}">US <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>{{word.pronounciation.us.texts.0}}</span></span>
+                                                {% if word.pronounciation.us.texts.1 %}
+                                                <span id="" class="text-danger fs-5 speak" data-src-mp3="{{word.pronounciation.us.audios.mp3.1}}">, <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>{{word.pronounciation.us.texts.1}}</span></span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="wd">
+                            {% if word.word_details.5 %}<div id="labels" class="text-secondary my-1">{{word.word_details.5|safe}}</div>{% endif %}
+                            {% if word.word_details.1 %}<div id="gra" class="text-secondary my-1">{{word.word_details.1}}</div>{% endif %}
+                            {% if word.word_details.2 %}<div id="vars" class="text-secondary my-1">{{word.word_details.2|safe}}</div>{% endif %}
+                            {% if word.word_details.3 %}<div id="infl" class="text-secondary my-1">{{word.word_details.3|safe}}</div>{% endif %}
+                            {% if word.word_details.4 %}<div id="use" class="text-warning my-1">{{word.word_details.4}}</div>{% endif %}
+                        </div>
+        
+                        {% if word.forms %}
+                            <div id="forms-cont" class="mt-3">
+                                <div class="col-auto">
+                                    <input class="btn-check" id="v_table" type="checkbox" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"></input>
+                                    <label for="v_table" class="btn btn-outline-primary">Other Forms</label>
+                                </div>
+                                <div class="collapse col-7 col-md-auto shadow" id="collapseExample" style="position:absolute;translate:40% -40%;z-index:1;">
+                                    <div class="card">
+                                        <div id="forms" class="card-body">
+                                            {% for form in word.forms %}
+                                                <div>{{form.1}}</div>
+                                                {% if form.2.0.0 %}
+                                                <div>UK 
+                                                    <span class="speak" data-src-mp3="{{form.2.1.0.0}}">
+                                                        <i class="fa-solid fa-volume-high cursor-pointer"></i> 
+                                                        {{form.2.0.0}}
+                                                    </span>
+                                                    {% if form.2.0.1 %}
+                                                        <span class="speak" data-src-mp3="{{form.2.1.0.1}}">
+                                                            <i class="fa-solid fa-volume-high cursor-pointer"></i> 
+                                                            {{form.2.0.1}}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                                {% endif %}
+
+                                                {% if form.3.0.0 %}
+                                                <div>US 
+                                                    <span class="speak" data-src-mp3="{{form.3.1.0.0}}">
+                                                        <i class="fa-solid fa-volume-high cursor-pointer"></i> 
+                                                        {{form.3.0.0}}
+                                                    </span>
+                                                    {% if form.3.0.1 %}
+                                                        <span class="speak" data-src-mp3="{{form.3.1.0.1}}">
+                                                            <i class="fa-solid fa-volume-high cursor-pointer"></i> 
+                                                            {{form.3.0.1}}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Option Buttons -->
+                    <div class="col-1">
+                        {% if visible == "disabled" %}
+                            <button title="Already Added" disabled class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/data?data=new&word={{word.id}}')"><i class="fa-solid fa-heart"></i></button>
+                        {% else %}
+                            <button title="Add it" class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
+                        {% endif %}
+                        <button title="Revise/Practise" class="btn btn-outline-success col-12 fs-5 mt-2" onclick="window.location.assign('/english/revisemain/?back={{request.path}}')"><i class="fa fa-history"></i></button>
+                        <button title="Share it" class="btn btn-outline-primary col-12 fs-5 mt-2" data-bs-toggle="collapse" data-bs-target="#collapseShare" aria-expanded="false" aria-controls="collapseShare"><i class="fa-solid fa-share-nodes"></i></button>
+                        <div class="card col-auto shadow-sm" style="position:absolute;translate:-105% -50%;z-index:1;">
+                            <div class="collapse" id="collapseShare">
+                                <div id="share" class="text-center fs-7" style="width:10rem;">
+                                  <div class="p-2">Copy Link</div>
+                                  <hr class="my-0">
+                                  <div class="p-2">Copy Link</div>
+                                  <hr class="my-0">
+                                  <div class="p-2">Copy Link</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if word.word_details.6 %}<div id="help" class="wd bg-warning bg-opacity-50 p-2 rounded my-1">{{word.word_details.6|safe}}</div>{% endif %}
+            </div>
+
+            {% if sense %}
+            <div class="p-2 rounded shadow">
+                <div class="d-flex justify-content-between mb-1">
+                    <div>
+                        {% if word.senses|length > 1 %}<div><a href="{% url "word" word.pk %}" class="btn btn-outline-primary fs-9 px-1 py-0">show all senses</a></div>{% endif %}
+                        <span class="badge text-uppercase text-bg-primary bg-opacity-100"{% if request.user.is_superuser %} onclick="window.location.assign('/english/wordadd?edit=true&word={{word.pk}}&sense={{sense.0|add:-1}}')"{% endif %}>sense {{sense.0}}</span>
+                        <span class="badge text-uppercase text-bg-secondary bg-opacity-100">{{sense.2}}</span>
+                        <div class="d-inline-block">
+                            {% if sense.16.0 %}
+                                <button class="btn btn-primary fs-8 p-0 px-1">
+                                    TOPIC
+                                    <span class="badge text-light text-uppercase text-bg-light bg-opacity-10">
+                                        {{sense.16.0.0}} {{sense.16.1.0}}
+                                    </span>
+                                </button>
+                            {% endif %}
+                            {% if sense.16.0.1 %}
+                                <button class="btn btn-primary fs-8 p-0 px-1">
+                                    TOPIC
+                                    <span class="badge text-light text-uppercase text-bg-light bg-opacity-25">
+                                        {{sense.16.0.1}} {{sense.16.1.1}}
+                                    </span>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {% if fav %}
+                            {% if sense.0 in fav %}
+                                <button title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense={{sense.0}}')"><i class="fa-solid fa-heart"></i></button>
+                                {% else %}
+                                <button title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense={{sense.0}}')"><i class="fa-regular fa-heart"></i></button>
+                            {% endif %}
+                        {% else %}
+                        <button title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense={{sense.0}}')"><i class="fa-regular fa-heart"></i></button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div id="def-container" class="bg-white rounded p-1 mb-1 shadow-sm">
+                    <div id="def" class="bg-primary position-relative bg-opacity-25 fs-4 p-2 rounded">
+
+                        <div class="fs-6 mb-1">
+                            {% if sense.6 %}<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">{{sense.6}}</span>{% endif %}
+                            {% if sense.8 %}<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">{{sense.8}}</span>{% endif %}
+                            {% if sense.7 %}<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">{{sense.7.0|safe}}{% if sense.7.1 %}, {{sense.7.1|safe}}{% endif %}</span>{% endif %}
+                        </div>
+                        <div>
+                            {% if sense.1 %}
+                            <span class="d-inline-block bg-primary text-light text-uppercase fs-8 bg-opacity-100 p-0 px-2 rounded mb-1">
+                                {{sense.1}}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% if sense.5 %}<span class="text-primary fs-5">{{sense.5}}</span>{% endif %}
+
+                        <div id="defEnCarousel{{sense.0}}" class="carousel slide">
+                            <div class="carousel-inner definition" data-bs-target="#defEnCarousel{{sense.0}}" data-bs-slide="next">
+                                {% for x in sense.9.en.0 %}
+                                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+                                        {{x}}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="defHiCarousel{{sense.0}}" class="d-none carousel slide animate__animated animate__fadeIn">
+                            <div class="carousel-inner definition" data-bs-target="#defHiCarousel{{sense.0}}" data-bs-slide="next">
+                                {% for x in sense.9.hi.0 %}
+                                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+                                        {{x}}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="position-absolute top-0 end-0 me-1">
+                            <i class="fa-solid fa-language fs-3 text-primary cursor-pointer" data-action="dtog" data-target="defHiCarousel{{sense.0}}"></i>
+                        </div>
+                    </div>
+                </div>
+
+                {% if sense.10 %}
+                    <div class="bg-white rounded p-1 shadow-sm">
+                        <div id="example" class="example fs-5 fst-italic bg-gray bg-opacity-10 rounded pt-1 overflow-auto">
+                            <ul>
+                                <hr class="my-1">
+                                {% for example in sense.10 %}
+                                    <li class="example p-0">
+                                        <!--&#x2022; bullet -->{{example}} <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-primary" onclick="textToSpeech(this.parentNode.textContent, 'UK')"></i> <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-danger" onclick="textToSpeech(this.parentNode.textContent, 'US')"></i>
+                                    </li>
+                                    <hr class="my-1">
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if sense.18 %}
+                    <div class="d-flex gap-2 bg-warning bg-opacity-25 p-3 rounded my-3">
+                        <div class=""><i class="fa-solid fa-lightbulb text-warning fs-3"></i></div>
+                        <div class="">{{sense.18}}</div>
+                    </div>
+                {% endif %}
+
+                {% if sense.19 %}
+                    <div class="row accordion my-3">
+                        {% for box in sense.19 %}
+                        <div class="col-sm-12 col-lg-6 accordion my-1" id="accordionExample{{forloop.counter}}">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapseOne">
+                                        <span class="d-inline-block bg-secondary text-white fw-bold wsp-sm lsp-sm fs-7 p-2 rounded">{{box.0|safe}}</span>
+                                    </button>
+                                </h2>
+                                <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body shadow-sm">
+                                        {{box.1|safe}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- My Note -->
+                <div class="my-3 p-0">
+                    <span class="d-inline-block bg-danger bg-opacity-50 text-white py-1 rounded px-2 mb-2">
+                        my note
+                    </span>
+                    <div class="ps-3">
+                        <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded">{{note|default:"You have no notes currently"|safe}}</div> 
+                    </div>
+                </div>
+                <div class="modal fade" id="myNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title bg-danger bg-opacity-75 text-white p-2 rounded fs-5" id="exampleModalLabel">My Note - Edit</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post" action="">
+                                <div class="modal-body">
+                                    {% csrf_token %}
+                                    <textarea id="textarea_note" class="form-control" name="note" rows="4" placeholder="Type here to make your note....">{% if word.note %}{{word.note}}{% endif %}</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                {% if sense.11 %}
+                    <div class="my-3 p-0">
+                        <span class="d-inline-block bg-primary text-white py-1 rounded px-2 mb-2">
+                            sentence usage
+                        </span>
+                        <div class="ps-3">
+                            {% for x in sense.11 %}
+                                <div class="d-flex align-items-center bg-gray rounded mb-1">
+                                    <div class="col-4 bg-secondary bg-opacity-10 text-secondary fw-bold px-2 py-1 rounded-start">{{x.0}}</div> 
+                                    <div class="col-8 px-2 py-1">&#x2022; {{x.1}}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if sense.15 %}
+                    <div class="my-3 p-0">
+                        <span class="d-inline-block bg-primary text-white py-1 rounded px-2 mb-2">
+                            see also
+                        </span>
+                        <div class="d-flex gap-1 px-2">
+                            {% for x in sense.15 %}
+                                <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="{% if sense.13 and sense.12 %}d-flex flex-row gap-2{% endif %}">
+                    {% if sense.12 %}
+                        <div class="{% if sense.13 %}col {% endif %}p-0 my-3">
+                            <span class="d-inline-block bg-primary text-white rounded py-1 px-2 mb-2">
+                                synonyms
+                            </span>
+                            <div class="d-flex gap-1 ps-3">
+                                {% for x in sense.12 %}
+                                    <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if sense.13 %}
+                        <div class="{% if sense.12 %}col {% endif %}p-0 my-3">
+                            <span class="d-inline-block bg-danger text-white rounded py-1 px-2 mb-2">
+                                antonyms
+                            </span>
+                            <div class="d-flex gap-1 ps-3">
+                                {% for x in sense.13 %}
+                                    <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if sense.14 %}
+                    <div class="my-3 p-0">
+                        <span class="d-inline-block bg-primary text-white rounded py-1 px-2 mb-2">
+                            related words
+                        </span>
+                        <div class="d-flex gap-1 px-2">
+                            {% for x in sense.14 %}
+                                <a href="{% url "dictionary" %}?q={{x}}" class="text-dark bg-gray px-2 py-1 rounded">{{x}}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if word.related_post.count %}
+                    <div class="my-3 p-0">
+                        <div class="bg-secondary text-white rounded py-1 px-2 mb-2">
+                            Related Post
+                        </div>
+                        <div id="related_post" class="d-flex gap-1 px-2">
+                            {% for post in word.related_post.all %}
+                                <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_detail' post.pk %}`)">
+                                    {{post.title}}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if collocation %}
+                    <div class="my-3 p-0">
+                        <div class="bg-secondary text-white rounded-3 py-1 px-2 mb-2">
+                            collocation
+                        </div>
+                        <div class="d-flex gap-1 px-2">
+                            <a class="btn btn-secondary" href="{% url "collocation_view" collocation.id %}">{{collocation}}</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if word.word_details.7 %}
+                <div class="bg-secondary bg-opacity-25 p-1 my-3 rounded">
+                    <div class="fw-bold p-1">{{word.word_details.7.0|safe}}</div>
+                    <div class="bg-light bg-opacity-50 p-3 rounded">
+                        {{word.word_details.7.1|safe}}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if word.word_details.8 %}
+                <div class="">
+                    <div class="bg-warning bg-opacity-75 p-1">
+                        {{word.word_details.8.title}}
+                        <div class="bg-light bg-opacity-50 p-1">
+                            {{word.word_details.8.heading}}
+                            {{word.word_details.8.body|safe}}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+          
+        </div>
+
+        <div class="col-12 col-sm-12 col-lg-3 px-4 px-lg-2">
+            <div class="position-sticky sticky bg-light p-2 rounded shadow-sm">
+                <div class="d-flex justify-content-between align-items-center border-bottom border-grey">
+                    <h5 class="text-secondary">Nearby words</h5>
+                    <div class="">
+                        <a href="{% url "words" word.pk|add:-1 0 %}" class="btn btn-grey" role="button" title="short-key alt+z" accesskey="z">&lt;</a>
+                        <a href="{% url "words" word.pk|add:1 0 %}" class="btn btn-grey" role="button" title="short-key alt+x" accesskey="x">&gt;</a>
+                    </div>
+                </div>
+                {% for w in nw %}
+                    {% if word.pk == w.pk %}
+                        <a class="d-block fw-bold bg-secondary bg-opacity-25 text-secondary px-2 py-1 my-1 rounded">{{w.word}}</a>
+                    {% else %}
+                        <a href="{% url 'word' w.pk %}" class="d-block text-secondary hover-gray px-1 my-1 rounded">{{w.word}}</a>
+                    {% endif %}
+                {% endfor %}
+                <div class="my-2">
+                    <form action="{% url "dictionary" %}">
+                        <input type="search" name="q" class="form-control" placeholder="Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image -->
+<div class="modal fade" id="fullImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-1">
+        <div class="">
+            {% if word.pic %}
+                <img class="border border-4 border-secondary rounded" style="width:100%;height:auto;" src="{{word.pic.url}}"/>
+            {% else %}
+                <img class="border border-4 border-secondary rounded" style="width:100%;height:auto;" src="{{word.pic_url}}"/>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</div>
+
+{% include 'tts_2.html' %}
+{% include 'english/flashcards/scripts/script.html' %}
+
+{% endblock body %}

@@ -1,0 +1,91 @@
+UR 590
+EN 1000
+--------------daily spoken sentences
+There's loads to do today.
+
+--yeh (to) aapka badappan hai
+it's your greatness.
+it's your nobility.
+it's modest of you.
+it's your magnanimity
+it's so magnanimous of you
+
+--talking about clothes
+the shirt's buttons come undone repeatedly.
+------------------------------------------------
+
+I haven't eaten properly for (many) days - eat
+I was born of/to Indian parents - born
+The place gives me an air of spirituality - air
+
+--bike, by
+She got on her bike and rode off
+We had to push our bikes up the hill
+
+it was raining hard when we set off
+It was raining harder than ever
+
+Can you show me an example of what you mean?  
+
+Whenever something goes wrong, everyone blames it on me.  
+You can hardly blame Peter for being angry with her.  
+Why is he blaming others for his problems?  
+
+He has demonstrated exceptional commitment and dedication.  
+I was saddened to see their lack of commitment.  
+A career as an actor requires one hundred per cent commitment. 
+She was criticized for her lack of commitment.   
+Not everyone will be happy with this level of commitment.  
+
+entire
+the entire process takes less than 15 minutes
+this is a great workout for the entire body
+I have never in my entire life heard such nonsense!
+They have only won six games the entire season
+I wasted an entire day on it
+You two are her favourite people in the entire world
+
+
+The topic interests me very much.
+She tried to interest the director in her plan.  
+It may interest you to know that Andy didn't accept the job.  
+Politics doesn't interest me.  
+
+Muhammad has gone on leave for two weeks
+She divided the candies equally among the children
+
+
+recommended words to learn
+spiritual home
+
+--use humour to make points
+He uses humour to make his points
+
+------what's wrong with doing something
+I wish people wouldn't play loud music on the train. What's wrong with using headphones?
+
+-----it's not as if
+"She's really old, but she still gives concerts." "Why does she bother? It's not as if she needs the money (use koi paiso waison ki zarurat thodi na hai)."
+
+
+-----Jobs & Employement
+He works in insurance.
+She's in insurance.
+
+------Topic (doing what one promises, says or is supposed to do)
+man of one's words
+honor (v s3)
+
+--------Pronunciation Difference and Confusions
+record (verb) = /rɪˈkɔːd/, /rɪˈkɔːrd/
+record (noun) = /ˈrekɔːd/, /ˈrekərd/
+
+60741- 70291
+from languages.models import Dictionary
+for x in range(60742,70205):
+    Dictionary.objects.get(pk=x).delete()
+
+from languages.models import Dictionary, Fav
+for x in range(60742,70291):
+    word = Dictionary.objects.get(pk=x)
+    Fav.objects.create(word=word)

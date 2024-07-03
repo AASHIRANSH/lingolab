@@ -1,0 +1,24 @@
+[
+    {
+        "president":{
+            "country":"israel",
+            "name":"benjamin netanyahu",
+            "family":{
+                "parents":[],
+                "wives":[],
+                "children":[]
+            }
+        }
+    },
+    {
+        "actor":{
+            "country":"india",
+            "name":"shahrukh khan",
+            "family":{
+                "parents":[],
+                "wives":[],
+                "children":[]
+            }
+        }
+    }
+]

@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% block css %}
+{% include 'static/css/styles.html' %}
+<style>
+    .container{
+        min-height: 85vh;
+    }
+    .link-group li{
+        cursor: pointer;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+
+<section id="body"></div>
+
+<script>
+    const body = document.getElementById("body");
+    const db = {
+        home:`
+            <div class="link-group link-gray fs-4">
+                <li><a onclick="master('adj_and_adv')">Adjectives and adverbs</a></li>
+                <li><a onclick="master('easily_confused_words')">Easily confused words</a></li>
+                <li><a onclick="master('nouns_pronouns_determiners')">Nouns, pronouns and determiners</a></li>
+                <li><a onclick="master('prepositions_and_particles')">Prepositions and particles</a></li>
+                <li><a onclick="master('using_english')">Using English</a></li>
+                <li><a onclick="master('verbs')">Verbs</a></li>
+                <li><a onclick="master('words_sentences_and_clauses')">Words, sentences and clauses</a></li>
+            </div>
+        `,
+        adj_and_adv:`
+            <h1>Adjectives and adverbs</h1>
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a class="link" onclick="master('home')">Grammar</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Adjectives and adverbs</li>
+                </ol>
+            </nav>
+            <div>Adjectives and adverbs are two of the four main word classes in English, along with nouns and verbs.<br/>
+            Adjectives describe the qualities of people and things. Words like poor, blue and interesting are adjectives.<br/>
+            Adverbs indicate the time, place, manner, degree or frequency of an event or action. Adverbs have many different functions and can have different positions in a clause.
+            </div>
+            Click on a topic to learn more about adjectives and adverbs.
+            <div class="link" onclick="master('adjectives')">Adjectives</div>
+            <div class="link" onclick="master('adverbs')">Adverbs</div>
+            <div class="link" onclick="master('using_adj_and_adv')">Using adjectives and adverbs</div>
+        `,
+        adjectives:`
+            <h1>Adjectives</h1>
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a class="link" onclick="master('home')">Grammar</a></li>
+                    <li class="breadcrumb-item"><a class="link" onclick="master('adj_and_adv')">Adjectives and adverbs</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Adjectives</li>
+                </ol>
+            </nav>
+            <div>Adjectives are one of the four major word classes, along with nouns, verbs and adverbs. Examples of adjectives are: big, small, blue, old, rich and nice. They give us more information about people, animals or things represented by nouns and pronouns.<br/>
+            Click on a topic to learn more about adjectives.</div>
+
+            <div class="link" onclick="master('adjectives_ii')">Adjectives</div>
+            <div class="link" onclick="master('adjectives')">Adjectives: forms</div>
+            <div class="link" onclick="master('adjectives')">Adjectives: order</div>
+            <div class="link" onclick="master('adjectives')">Adjective phrases</div>
+            <div class="link" onclick="master('adjectives')">Comparative and superlative adjectives</div>
+        `,
+        adjectives_ii:`
+            <h1>Adjectives</h1>
+
+            <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a class="link" onclick="master('home')">Grammar</a></li>
+                    <li class="breadcrumb-item"><a class="link" onclick="master('adj_and_adv')">Adjectives and adverbs</a></li>
+                    <li class="breadcrumb-item"><a class="link" onclick="master('adjectives')">Adjectives</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Adjectives</li>
+                </ol>
+            </nav>
+
+            <div>Adjectives are one of the four major word classes, along with nouns, verbs and adverbs.<br/>
+            Examples of adjectives are: <em><strong>big</strong></em>, <em><strong>small</strong></em>, <em><strong>blue</strong></em>, <em><strong>old</strong></em>, <em><strong>rich</strong></em> and <em><strong>nice</strong></em>.<br/>
+            They give us more information about people, animals or things represented by nouns and pronouns:</div>
+
+            <div class="post">
+                <ul class="examples">
+                    <li>That’s a big house.</li>
+                    <li>Look at the grey horse.</li>
+                    <li>Some dogs have long tails.</li>
+                    <li>She is tall.</li>
+                </ul>
+            </div>
+
+            <div>See also:</div>
+            <div class="link" onclick="master('nouns')">Nouns</div>
+            <div class="link" onclick="master('pronouns')">Pronouns</div>
+
+            <div>Meanings of adjectives</div>
+            <div>Adjectives give us more information.<br>
+            They modify or describe features and qualities of people, animals and things.</div>
+
+            <div>Here are some of the common meanings.</div>
+
+            <table class="table table-bordered align-middle shadow-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">examples</th>
+                        <th scope="col">meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>I am fond of ice cream.</li>
+                                <li>Cairo is different from Alexandria.</li>
+                                <li>His car is similar to mine.</li>
+
+                                <div>Other examples:</div>
+
+                                <li>keen (on), near (to), aware (of)</li>
+                            </ul>
+                        </td>
+                        <td>
+                            Relations between people and things. These adjectives usually require a word or phrase (complement) to complete their meaning.
+                        </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <li>He’s generous.</li>
+                        <li>She’s a kind woman.</li>
+                        <li>The waiter was very polite.</li>
+
+                        <div>Other examples:</div>
+                        
+                        <li>talkative, cruel, cooperative, helpful, useful</li>
+                    </td>
+                    <td>
+                        Descriptions of people and things in terms of their actions.
+                    </td>
+                    </tr>
+                    <ul>
+
+                </tbody>
+            </table>
+
+
+            That’s an old house.
+
+            The Olympic stadium is big.
+
+            Other examples:
+
+            tall, old, good, rough, true, ugly, red, heavy
+
+            Features that will last a long time or will not change (permanent).
+
+            Anyone hungry? Lunch is nearly ready.
+
+            It’s so cold in Nick’s house.
+
+            Other examples:
+
+            absent, ill, dry, full, lonely, wet, hot, thirsty, angry
+
+            States and conditions that can change.
+
+            I saw a great French film last night.
+
+            I don’t like modern paintings.
+
+            I live in a detached house.
+
+            Other examples:
+
+            organic (vegetables), impressionist (painter), wild (salmon)
+
+            Classifying people and things into types.
+
+            See also:
+
+            Adjective phrases
+
+            Oppositeness
+            Most common adjectives are members of a pair of opposites (antonyms):
+
+            beautiful – ugly
+
+            dead – alive
+
+            happy – sad
+
+            rough – smooth
+
+            big – small
+
+            dry – wet
+
+            heavy – light
+
+            tall – short
+
+            cold – hot
+
+            good – bad
+
+            Gradable and ungradable
+            Many pairs of opposites are gradable, i.e. they have different degrees of the same feature:
+
+            Small:
+
+            This suitcase is extremely small.
+
+            This suitcase is very small.
+
+            This suitcase is quite small.
+
+            Hot:
+
+            It was reasonably hot in Italy this summer.
+
+            It was quite hot in Italy this summer.
+
+            It was pretty hot in Italy this summer.
+
+            It was very hot in Italy this summer.
+
+            It was extremely hot in Italy this summer.
+
+            One type of adjective is not gradable. These are the adjectives that we use to classify people and things into types:
+
+            Warning:
+            These vegetables are organic.
+
+            Not: These vegetables are very organic.
+
+            I like salmon especially when it is wild.
+
+            Not: I like salmon especially when it is quite wild.
+
+            See also:
+
+            Adjective phrases
+
+            Gradable opposites (antonyms)
+        `
+    }
+
+    function master(){
+        vars = arguments;
+        body.innerHTML = `
+            <div class="container p-3 shadow rounded my-5 animate__animated animate__fadeIn"">
+                ${db[vars[0]]}
+            </div>
+        `;
+    }
+
+    var url = window.location.href;
+    url = url.indexOf("page=")>0?url.slice(url.indexOf("=")+1,url.length):"home";
+    //console.log(url);
+    master(url);
+
+</script>
+{% endblock body %}

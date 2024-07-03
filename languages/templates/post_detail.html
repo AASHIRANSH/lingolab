@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% block og %}
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://dev.to/earthcomfy/getting-started-custom-user-model-5hc" />
+    <meta property="og:title" content="Custom User Model in Django" />
+    <meta property="og:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve..." />
+    <meta property="og:site_name" content="DEV Community" />
+    <meta name="twitter:site" content="@thepracticaldev">
+    <meta name="twitter:creator" content="@earthcomfy">
+    <meta name="twitter:title" content="Custom User Model in Django">
+    <meta name="twitter:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve...">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta property="og:image" content="https://dev.to/social_previews/article/1024949.png" />
+    <meta name="twitter:image:src" content="https://dev.to/social_previews/article/1024949.png">
+
+{% endblock og %}
+
+{% block body %}
+{% include 'static/css/styles.html' %}
+{% include "header.html" %}
+
+{% include 'messages.html' %}
+
+<div class="container post py-5">
+    {% if perms.languages.change_post %}
+        <div class="row">
+            <div class="col-auto">
+                <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_entry' %}?action=editpost&pk={{post.pk}}`)">Edit Post</button>
+                <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'exercise_entry' %}`)">Add Exercise</button>
+            </div>
+        </div>
+        <hr>
+    {% endif %}
+    
+    <div id="post-title-cont">
+        <div id="post-title">
+            <div class="d-flex justify-content-between p-4">
+                <div>
+                    <h1 class="fw-bold fs-1 text-primary"><!--i class="fa-solid fa-pen-nib"></i--> {{ post.title }}</h1>
+                    <div class="mt-1" id="post-stamp">Posted on {{post.created_at|date:"j-m-y"}} by {{post.author}}</div>
+                </div>
+                <div>
+                    <div>{% include 'static/components/like.html' %}</div>
+                    <div class="d-flex align-item-center text-secondary"><i class="ti ti-eye fs-3 me-1"></i> {{post.views}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rule pt-1 rounded-bottom"></div>
+
+    {% if post.image %}<div class="post-img"><img src="{{post.image.url}}"/></div>{% endif %}
+    
+    <div id="post-content" class="px-3 my-5">
+        {{ post.content|safe }}
+    </div>
+    
+    <hr>
+    
+    <div class="text-center">
+    {% include 'static/components/like.html' %} {% include 'static/components/copy_to_clipboard.html' %}
+    </div>
+
+    <hr>
+    <div class="fs-4">Exercise <i class="fa-solid fa-dumbbell"></i></div>
+    
+    {% if post.exercise_set.count > 0 %}
+        <b>Choose the correct word to fill in the blanks</b>:
+        
+        <div id="exercise" class="my-4 position-relative">
+            {% if not premium %}
+                <div class="intr">
+                    <div class="col"><i class="fa-solid fa-lock"></i> You need premium membership for this</div>
+                    <div card="col"><button class="btn btn-primary">Get it</button></div>
+                </div>
+            {% endif %}
+            <!-- Result Prompt <div class="hidden">
+                <div class="intr">
+                    <div id="result">That was awesome!</div>
+                </div>
+            </div>-->
+
+            <!-- Result Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Result:</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div id="modal-body" class="modal-body">
+                        <!-- content by javascript -->
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Copy</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="questions">
+                <ol>
+                    {% for q in post.exercise_set.all %}
+                        <li class="mb-2">{{q.question}}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+
+        <div class="col-auto my-5">
+            <button onclick="check()" class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#exampleModal">Check</button>
+        </div>
+    {% else %}
+        No exercises for this post.
+    {% endif %}
+
+    <hr>
+
+    <!-- Comment Form -->
+    <div class="container-fluid my-5">
+        <div class="row col-12">
+
+            <div class="col-sm-1 col-md-2">
+            </div>
+
+            <div class="col-sm-10 col-md-8">
+                <form class="comment-form mb-5" method="post" data-post="{{ post.id }}">
+                    {% csrf_token %}
+                    <textarea class="form-control mb-2" name="content" placeholder="Add/Write a comment" rows="4"></textarea>
+                    <button class="btn btn-primary" type="submit">Comment</button>
+                </form>
+
+                {% for comment in comments %}
+                    <div class="mb-4">
+                        <div id="comment-head" class="row bg-gray-secondary p-2">
+                            <div class="col-8">
+                                <img style="height:3rem;" src="{{comment.author.profile.image.url}}" class="rounded-circle"/>
+                                <span class="fs-4"> {{ comment.author }}</span>
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <div class="col-4 d-flex justify-content-end p-1">
+                                <div class="dropdown">
+                                    <button class="btn" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                                        {% if request.user == comment.author %}
+                                        <li><a class="dropdown-item" href="{% url 'edit_comment' comment.pk %}">Edit</a></li>
+                                        {% endif %}
+
+                                        {% if request.user.is_superuser or request.user == comment.author %}<li><a class="dropdown-item" href="{% url 'delete_comment' comment.pk %}">Delete</a></li>{% endif %}
+                                        
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item active" href="#">Separated link</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="comment" class="position-relative bg-gray p-2" style="">
+                        
+                            <pre>{{ comment.content }}</pre>
+
+                            <span id="time-stamp">{{ comment.created_at }}</span>
+                        </div>
+                    </div>
+
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
+            </div>
+
+
+            <div class="col-sm-1 col-md-2">
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>//adding class ".example" to each example
+    var post_content = document.getElementById("post-content");
+    for (let x of post_content.getElementsByClassName("examples")){
+        x.classList.add("col-10","col-lg-8","mx-auto");
+    }
+    for (let li of post_content.getElementsByTagName("li")) {
+        li.classList.add("example");
+    }
+</script>
+
+<script>//highlighting the texts by replacing within li elems
+    var fill_values = "{{post.fill_values}}";
+    var target_vals = fill_values.split(",");
+    var element = document.getElementsByClassName("example");
+    for (let line in element) {
+        for (var tvx in target_vals) {
+            line_patt = new RegExp("\\b"+target_vals[tvx]+"\\b","gi")
+            element[line].innerHTML = element[line].innerHTML.replace(line_patt, `<span style='color:#0d6efd;'>${target_vals[tvx]}</span>`);
+        }
+    }
+</script>
+
+<script>//insert select element
+    var exercise = document.getElementById("questions"); //parent element of questions
+    var questions = exercise.getElementsByTagName("li"); //question elements array
+    var exchoices = [];
+    var choice_tar = [];
+    `{% for ex in post.exercise_set.all %}
+        ${exchoices.push("{{ex.choice|safe}}")} ${choice_tar.push("{{ex.target_values|safe}}")}
+    {% endfor %}`;
+    
+    // RegExp
+    //var target_vals_join = target_vals.join("|");
+    //var reg_patt = new RegExp("\\b"+target_vals_join+"\\b","gi");
+    // end RegExp
+    
+    for (var ques in questions) {
+        var reg_patt = new RegExp("\\b"+choice_tar[ques]+"\\b","gi"); //NOTE: try -- choice_tar[ques].replace("&#x27","'") if you ever face errors
+        questions[ques].innerHTML = questions[ques].innerHTML.replace(reg_patt, sel());
+        
+        function sel(){
+            let select = `<select id="q-${ques}"><option selected="selected"></option>`
+            for (let x of exchoices[ques].split(",")) {
+                select += `<option value="${x}">${x}</option>`
+            }
+            select += `</select>`
+            return ` ${select} `
+        };
+    }
+</script>
+
+<script>
+    var q_arr = [];
+    var q_id_arr = [];
+    {//q_arr
+        `{% for x in post.exercise_set.all %}
+            ${q_arr.push('{{x.question}}')}
+            ${q_id_arr.push('q{{x.id}}')}
+        {% endfor %}`;
+    }
+    var q_count = q_arr.length;//`{{post.exercise_set.count}}`; //length of questions
+    
+    var pre_values = [] //answer values
+    for ( let x in q_arr ) {
+        var ql = q_arr[x].replace("&#x27;","'")
+        var prechoice = exchoices[x].split(",")
+        for ( var y of prechoice ) {
+            let preReg = new RegExp("\\b"+y.trim()+"\\b","gi")
+            if (ql.search(preReg) >= 0) {
+                pre_values.push(y)
+            }
+        }
+    };
+
+    var val_array = [];
+    var exam = 0
+    var corrects = [];
+
+    function check() {
+        //getting selected option values of each select element
+        for (let vl=0; vl < q_count; vl++) {
+            var e = document.getElementById("q-"+vl);
+            val_array.push(e.value)
+            if (e.value == pre_values[vl]) { exam += 1; corrects.push(q_id_arr[vl]); };
+        }
+
+        console.log("overall:",val_array.join("") == pre_values.join("")) // returns true or false based on 100% correct result
+        console.log("val_array:",val_array)
+        console.log("pre_values:",pre_values)
+        console.log("prechoice:",prechoice, y)
+        console.log("exchoices:",exchoices)
+        console.log("q_arr:",ql)
+
+        //for BSModal
+        q_arr_html = []
+        for (q in q_arr){
+            q = parseInt(q)
+            res_class = val_array[q]==pre_values[q]?"text-success":"text-danger";
+            res_ic = val_array[q]==pre_values[q]?`<i class="fa-solid fa-circle-check"></i>`:`<i class="fa-solid fa-circle-xmark"></i>`;
+            q_arr_html.push(`<div class="${res_class}">${res_ic} ${q+1}. ${q_arr[q]}</div>`)
+        }
+        var exmod = document.getElementById("modal-body")
+        exmod.innerHTML = `
+            <div class="text-center">
+                <div class="fs-3">You did ${exam} out of ${q_count}</div>
+            </div>
+            <hr>
+            <div class="mb-4">${q_arr_html.join("")}</div>
+
+        `;
+
+        exam = 0;// reset the value
+        val_array = [];
+        expost("{{csrf_token}}");
+    }
+</script>
+
+<script>//update user reputation/points
+    function expost(csrf) {
+        xhttp = new XMLHttpRequest();
+        //xhttp.onreadystatechange = function() {
+        //    if (this.readyState == 4 && this.status == 200) {
+        //        
+        //    }
+        //};
+        xhttp.open("POST", "{% url 'ex_action' %}?action=", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`csrfmiddlewaretoken=${csrf}&questions=${JSON.stringify(corrects)}`); //
+    }
+</script>
+
+<script>
+    window.onscroll = function() {scrollInd()};
+
+    function scrollInd() {
+    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var scrolled = (winScroll / height) * 100;
+    document.getElementById("myBar").style.width = scrolled + "%";
+}
+</script>
+{% include 'footer.html' %}
+{% endblock body %}
