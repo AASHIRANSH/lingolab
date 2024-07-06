@@ -14,7 +14,7 @@ import random, datetime, json#, requests
 import urllib.request
 from django.contrib import messages
 
-''' /home/muhammadsog/learners_academy/ '''
+''' /home/lingolab/lingolab/ '''
 def index(request, id):
     strid = str(id)
 
@@ -530,17 +530,19 @@ from os.path import exists
 def dictionary_json(request):
     get = request.GET
 
-    if get.get("action")=="heads":
+    if get.get("action")=="search_index":
         words = Dictionary.objects.all().order_by('word')
         headwords = []
         for x in words:
-            headwords.append(x.word)#headwords.append([x.pk,x.word,x.pos])
+            headwords.append([x.pk,x.word,x.pos])
         
         with open("database/models/suggs_trm.json", mode="w") as jsondict:
             json.dump(headwords, fp=jsondict)
 
         # with open("database/models/pos.json", mode="w") as jsondict:
         #     json.dump(pos, fp=jsondict)
+        messages.success(request,"Search index was built")
+        return HttpResponseRedirect('/english/dictionary/')
     
     elif get.get("action")=="topic":
         words = Dictionary.objects.all().order_by('word')
@@ -1040,29 +1042,31 @@ def dictionary(request):
     search_query = get.get("q","").strip()
     filt = get.get("filter","")
 
-    if filt:
-        words = Dictionary.objects.filter(Q(word__startswith=search_query,cefr=filt) | Q(word__contains=search_query,cefr=filt))
-    elif search_query:
-        words = Dictionary.objects.filter(Q(word__startswith=search_query))
-        if not words.exists():
-            words = Dictionary.objects.filter(Q(word__contains=search_query[1:-1]) | Q(word__contains=search_query[2:-2]))
-            messages.warning(request,"There were no exact match to your query, hence showing similar results")
+    if filt or search_query:
+        if filt:
+            words = Dictionary.objects.filter(Q(word__startswith=search_query,cefr=filt) | Q(word__contains=search_query,cefr=filt))
+    
+        if search_query:
+            words = Dictionary.objects.filter(Q(word__startswith=search_query))
+            if not words.exists():
+                words = Dictionary.objects.filter(Q(word__contains=search_query[1:-1]) | Q(word__contains=search_query[2:-2]))
+                messages.warning(request,"There were no exact match to your query, hence showing similar results")
+
+        paginator = Paginator(words, 10)  # 10 contacts per page.
+        page_number = get.get("page") if get.get("page") else 1
+        page_navi = int(page_number)-1
+        page_obj = paginator.get_page(page_number)
+
+        vars = {
+            "wordscount":words.count(),
+            "wordsp":page_obj,
+            "pagen":page_navi,
+            "usr":"usr"+str(request.user.pk)
+            # "fav":fav
+        }
+        return render(request, "english/dictionary_2.html", vars)
     else:
-        words = Dictionary.objects.all()
-
-    paginator = Paginator(words, 10)  # 10 contacts per page.
-    page_number = get.get("page") if get.get("page") else 1
-    page_navi = int(page_number)-1
-    page_obj = paginator.get_page(page_number)
-
-    vars = {
-        "wordscount":words.count(),
-        "wordsp":page_obj,
-        "pagen":page_navi,
-        "usr":"usr"+str(request.user.pk)
-        # "fav":fav
-    }
-    return render(request, "english/dictionary_2.html", vars)
+        return render(request, "english/dictionary_2.html")
 
 def dictionaryTopic(request):
     topics = TopicDictionary.objects.all()
@@ -1110,8 +1114,12 @@ def word_main_single(request,word,sense):
     fav_obj = Fav.objects.get(pk=word.pk)
     if request.user.username in fav_obj.rvdata.keys():
         rvdata = fav_obj.rvdata[request.user.username]
-        fav = [x+1 for x in rvdata["senses"]]
-        note = rvdata["notes"][rvdata["senses"].index(sense)]
+        if len(rvdata["senses"]):
+            fav = [x+1 for x in rvdata["senses"]]
+            note = rvdata["notes"][rvdata["senses"].index(sense)]
+        else:
+            fav = None
+            note = None
     else:
         fav = None
         note = None

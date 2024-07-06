@@ -62,7 +62,7 @@
         <button class="btn btn-outline-light text-secondary d-md-none fs-2 px-4 py-3 cursor-pointer" data-bs-toggle="offcanvas" data-bs-target="#sidebarm"><i class="ti ti-menu-2"></i></div>
     </div>
 
-    <nav class="d-none bg-learnerf">
+    <!--nav class="d-none bg-learnerf">
         <ul>
             <li><a href="/">home</a></li>
             <li id="languages" class="">
@@ -117,7 +117,7 @@
             <li><a onclick="notifications()">notifications</a></li>
             <li><a href="{% url 'contact_us' %}?next={{request.path}}">contact us</a></li>
         </ul>
-    </nav>
+    </nav-->
     <div class="progress-container">
         <div class="progress-bar bg-learner" id="myBar"></div>
     </div>
@@ -137,8 +137,8 @@
     </div>
 
     <div class="link-group link-gray font-public fw-semibold fs-5 px-3 my-3">
-        <li><a href="javascript:void()" onclick="notifications()"><i class="ti ti-notification fs-4"></i> Notifications <span class="badge {% if request.notifications %}learner-notif{% else %}bg-secondary{% endif %} text-white">{{request.notifications|length}}</span></a></li>
-        <li><a href="{% url "dictionary" %}"><i class="fa-solid fa-book"></i> LA's Dictionary</a></li>
+        <li class="authenticated"><a onclick="notifications()"><i class="ti ti-notification fs-4"></i> Notifications <span class="badge {% if request.notifications %}learner-notif{% else %}bg-secondary{% endif %} text-white">{{request.notifications|length}}</span></a></li>
+        <li><a href="{% url "dictionary" %}"><i class="fa-solid fa-book"></i> Dictionary</a></li>
         <li><a href="{% url "posts" %}"><i class="fa-regular fa-newspaper"></i> Posts</a></li>
     </div>
 
@@ -206,13 +206,17 @@
     let uic = document.getElementById("ui_container")
     let lang = document.getElementById("languages")
 
-    lang.addEventListener("click", function() {
-        var hidden = this.querySelector(".hidden")
-        hidden.classList.toggle("show")
-    });
+    if (lang){
+        lang.addEventListener("click", function() {
+            var hidden = this.querySelector(".hidden")
+            hidden.classList.toggle("show")
+        });
+    };
 
-    uic.addEventListener("click", function() {
-        var hidden = this.querySelector(".hidden")
-        hidden.classList.toggle("show")
-    });
+    if (uic){
+        uic.addEventListener("click", function() {
+            var hidden = this.querySelector(".hidden")
+            hidden.classList.toggle("show")
+        });
+    };
 </script>

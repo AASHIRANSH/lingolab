@@ -203,7 +203,7 @@
 
 <script>//insert select element
     var exercise = document.getElementById("questions"); //parent element of questions
-    var questions = exercise.getElementsByTagName("li"); //question elements array
+    var questions = exercise?exercise.getElementsByTagName("li"):[]; //question elements array
     var exchoices = [];
     var choice_tar = [];
     `{% for ex in post.exercise_set.all %}

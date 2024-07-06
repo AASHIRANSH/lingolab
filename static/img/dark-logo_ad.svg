@@ -5,9 +5,9 @@
 <style type="text/css">
 	.st0{fill:url(#SVGID_1_);stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;}
 	
-		.st1{fill:url(#SVGID_00000135673685118852875180000001289695204439948932_);stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;}
-	.st2{fill:#4570B7;}
-	.st3{fill:#3DB372;}
+		.st1{fill:url(#SVGID_00000033349167516156750750000001789079903189617558_);stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;}
+	.st2{fill:#4570B7;stroke:#4570B7;stroke-width:0.25;stroke-miterlimit:10;}
+	.st3{fill:#3DB372;stroke:#3DB372;stroke-width:0.25;stroke-miterlimit:10;}
 </style>
 <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="26.4747" y1="-1612.2726" x2="2.0615" y2="-1612.2726" gradientTransform="matrix(1 0 0 -1 0 -1602.1101)">
 	<stop  offset="7.458905e-08" style="stop-color:#3CB371"/>
@@ -15,11 +15,11 @@
 </linearGradient>
 <path class="st0" d="M24.3,18.1v-7l-10,5.1c-0.1,0.1-0.3,0.1-0.4,0L2.4,10C2,9.8,2,9.4,2.4,9.2L14,1.9c0.2-0.1,0.3-0.1,0.4,0l12,6.6
 	c0.2,0.1,0.3,0.3,0.3,0.3v9.3c0,0.3-0.2,0.4-0.4,0.4h-1.4C24.5,18.5,24.3,18.3,24.3,18.1z"/>
-<linearGradient id="SVGID_00000112625149208957718270000013205038755424319646_" gradientUnits="userSpaceOnUse" x1="23.06" y1="-1620.3699" x2="4.2194" y2="-1620.3699" gradientTransform="matrix(1 0 0 -1 0 -1602.1101)">
+<linearGradient id="SVGID_00000076594945256430345390000001367578661144986044_" gradientUnits="userSpaceOnUse" x1="23.06" y1="-1620.3699" x2="4.2194" y2="-1620.3699" gradientTransform="matrix(1 0 0 -1 0 -1602.1101)">
 	<stop  offset="4.262231e-08" style="stop-color:#3CB371"/>
 	<stop  offset="1" style="stop-color:#3B71CA"/>
 </linearGradient>
-<path style="fill:url(#SVGID_00000112625149208957718270000013205038755424319646_);stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;" d="
+<path style="fill:url(#SVGID_00000076594945256430345390000001367578661144986044_);stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;" d="
 	M13.9,24.7l-9.5-5.4C4.2,19.2,4.1,19,4.1,19v-6.8c0-0.3,0.3-0.5,0.6-0.3l9.3,5.2l8.4-4.3c0.3-0.2,0.6,0.1,0.6,0.3v6.8
 	c0,0.2-0.1,0.3-0.3,0.3l-8.5,4.4C14.1,24.7,14.1,24.7,13.9,24.7z"/>
 <g>

@@ -3,34 +3,29 @@
 {% block body %}
 {% include 'english/flashcards/styles/flashcards.html' %}
 {% include "header.html" %}
-<div id="scr" class="d-none position-absolute top-0 start-0 bg-learner rounded" style="width:600px">
-    <div class="position-absolute top-0 w-100 bg-primary bg-opacity-50 p-1 rounded"></div>
-    <div class="position-relative text-center p-3">
-        <div class="fs-1 fw-bold text-light mb-1">{{word.word}}{% if word.pos %} <span class="text-secondary fs-5 fst-italic fw-normal">{{word.pos}}</span>{% endif %}</div>
-        {% if word.pronounciation %}
-        <div class="mb-3 ff-arial">
-            <span class="text-primary">UK {{word.pronounciation.uk.texts|join:", "}}</span>
-            <span class="text-danger">US {{word.pronounciation.us.texts|join:", "}}</span>
-        </div>
-        {% endif %}
-        <hr class="my-3">
-        <div class="col-10 fs-5 text-light mx-auto mb-3">: {{word.senses.0.9.en.0.0}}</div>
-        <hr class="my-3">
-        <div class="fs-6 text-start text-dark">
-            <ul>
-            {% for e in word.senses.0.10 %}
-            <li>{{e}}</li>
-            {% endfor %}
-            </ul>
-        </div>
-    </div>
-    <div class="position-absolute bottom-0 w-100 bg-primary bg-opacity-50 p-1 rounded"></div>
-</div>
-<div class="container-fluid bg-light py-4">
+
+<div class="position-relative container-fluid bg-light py-4">
     <div class="row">
         <div class="col-12 col-lg-9 px-4 pe-lg-0 mb-5">
             {% include 'messages.html' %}
-            <div class="bg-light p-3 mb-3 rounded shadow overflow-hidden">
+            <div class="" style="z-index:10">
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </symbol>
+                    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                    </symbol>
+                    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </symbol>
+                </svg>
+                
+                <div id="popupnotifications" class="d-flex flex-column-reverse">
+                </div>
+            </div>
+
+            <div class="bg-light p-3 py-4 mb-3 rounded shadow overflow-hidden">
                 <div class="d-flex justify-content-between rounded">
                     <div class="row col-11">
                         <!-- Word Pos-->
@@ -130,11 +125,10 @@
                     <!-- Option Buttons -->
                     <div class="col-1">
                         {% if visible == "disabled" %}
-                            <button title="Already Added" disabled class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/data?data=new&word={{word.id}}')"><i class="fa-solid fa-heart"></i></button>
+                            <button title="Remove all senses of the word" disabled class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/data?data=new&word={{word.id}}')"><i class="fa-solid fa-heart"></i></button>
                         {% else %}
-                            <button title="Add it" class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
+                            <button title="Add all senses of the word" class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
                         {% endif %}
-                        <button title="Revise/Practise" class="btn btn-outline-success col-12 fs-5 mt-2" onclick="window.location.assign('/english/revisemain/?back={{request.path}}')"><i class="fa fa-history"></i></button>
                         <button title="Share it" class="btn btn-outline-primary col-12 fs-5 mt-2" data-bs-toggle="collapse" data-bs-target="#collapseShare" aria-expanded="false" aria-controls="collapseShare"><i class="fa-solid fa-share-nodes"></i></button>
                         <div class="card col-auto shadow-sm" style="position:absolute;translate:-105% -50%;z-index:1;">
                             <div class="collapse" id="collapseShare">
@@ -143,7 +137,7 @@
                                   <hr class="my-0">
                                   <div class="p-2 scr" data-ele="scr">Save It</div>
                                   <hr class="my-0">
-                                  <div class="p-2" onclick="window.location.assign(`https://api.whatsapp.com/send?text=https://learnersacademy.pythonanywhere.com{{request.path}}`)">WhatsApp</div>
+                                  <div class="p-2" onclick="window.location.assign(`https://api.whatsapp.com/send?text=https://www.lingolab.in{{request.path}}`)">WhatsApp</div>
                                 </div>
                             </div>
                         </div>
@@ -184,12 +178,12 @@
                         <div>
                             {% if fav %}
                                 {% if sense.0 in fav %}
-                                    <button title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense={{sense.0}}')"><i class="fa-solid fa-heart"></i></button>
+                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i class="fa-solid fa-trash"></i></button>
                                     {% else %}
-                                    <button title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense={{sense.0}}')"><i class="fa-regular fa-heart"></i></button>
+                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
                                 {% endif %}
                             {% else %}
-                            <button title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded-pill" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense={{sense.0}}')"><i class="fa-regular fa-heart"></i></button>
+                            <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
                             {% endif %}
                         </div>
                     </div>
@@ -468,21 +462,6 @@
     </div>
 </div>
 
-<!-- Image -->
-<div class="modal fade" id="fullImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-1">
-        <div class="">
-            {% if word.pic %}
-                <img class="border border-4 border-secondary rounded" style="width:100%;height:auto;" src="{{word.pic.url}}"/>
-            {% else %}
-                <img class="border border-4 border-secondary rounded" style="width:100%;height:auto;" src="{{word.pic_url}}"/>
-            {% endif %}
-        </div>
-        </div>
-    </div>
-</div>
-
 {% if perms.languages.add_word %}
     <div class="position-fixed bottom-0 right-0 m-3" style="z-index:1;">
         <a href="{% url 'word_entry' %}?add=true&word={{word.pk}}&sense=0" class="btn btn-secondary text-white">
@@ -493,22 +472,4 @@
 
 {% include 'tts_2.html' %}
 {% include 'english/flashcards/scripts/script.html' %}
-<script src="/static/js/dom-to-image.min.js"></script>
-<script src="/static/js/FileSaver.min.js"></script>
-<script>
-    $(document).ready(function(){
-        $(".scr").click(function(){
-            $("#scr").removeClass("d-none");
-            domtoimage.toBlob(document.getElementById($(this).attr("data-ele")))
-            .then(function (blob) {
-                window.saveAs(blob, '{{word.word}} {{word.pos}}.png');
-            });
-        });
-        $(".scr").click(function(){
-            setTimeout(function(){
-                $("#scr").addClass("d-none")
-            }, 1000);
-        });
-    });
-</script>
 {% endblock body %}

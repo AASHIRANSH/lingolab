@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Register / Sign Up{% endblock title %}
+{% block title %}Create an account / Register | {% endblock title %}
 
 {% block body %}
 {% include 'header.html' %}
 
-<div class="bg-check animation-polka">
+<div class="bg-check animation-polka mb-3">
     <div class="bg-grd-gray font-public text-center text-primary pt-5 pb-3">
         <h1 class="fw-semibold">Create Account</h1>
         <span class="text-secondary">Sign up now and get free account instant.</span>
@@ -43,8 +43,8 @@
                 <label class="form-check-label text-secondary small" for="showpass">Show Password</label>
             </div>
 
-            <button type="submit" class="btn btn-primary mb-3">Sign Up</button>
-            <div>Already have an account? <a href="{% url 'sign_in' %}">Sign In here.</a></div>
+            <button type="submit" class="btn btn-primary mb-3">Create Account</button>
+            <div>Already have an account? <a href="{% url 'sign_in' %}">Login</a> here.</div>
         </div>
     </div>
 </form>

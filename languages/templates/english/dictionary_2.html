@@ -1,12 +1,5 @@
 {% extends 'base.html' %}
 {% block head %}
-<style>
-    /*when navigating through the items using the arrow keys:*/
-    .autocom-box-active {
-        background-color: DodgerBlue; 
-        color: #ffffff;
-    }
-</style>
 {% endblock head %}
 {% block body %}
 {% include 'header.html' %}
@@ -14,7 +7,7 @@
 
 <div class="bg-polka-learner-sm animation-polka-glow">
     <div class="bg-white bg-opacity-75 text-primary text-center p-4">
-        <span class="display-4 fw-semibold learner"><i class="fa-solid fa-book"></i> LA's Dictionary</span>
+        <span class="display-4 fw-semibold learner"><i class="fa-solid fa-book"></i> LingoLab's Dictionary</span>
     </div>
 <div class="rule pt-1 rounded-bottom"></div>
 </div>
@@ -73,6 +66,7 @@
 {% endif %}
 
 <!-- table -->
+{% if wordsp %}
 <div class="container mb-5">
     <div class="col-11 col-lg-8 mx-auto">
         <table id="" class="table table-hover">
@@ -153,7 +147,7 @@
         <div id="pagination" class="d-flex justify-content-center"></div>
     </div>
 </div>
-
+{% endif %}
 <div class="mb-5"></div>
 
 <script>// modal animator
@@ -216,26 +210,9 @@
     </div>
 {% endif %}
 
-
+<script src="/static/js/suggsh.js"></script>
 <script>
-    let suggsh = {% include "english/dictionary/suggsh.json" %};
-
-    function loadDoc() {
-        var data = document.getElementById("id_company").value;
-
-        const xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var data = JSON.parse(this.responseText)
-                var fields = JSON.parse(this.responseText)[0]["fields"]
-                id_name.value = fields["name"];
-            } else {
-                id_name.value = "";
-            }
-        };
-        xhttp.open("GET", "?action=company&company="+data, true);
-        xhttp.send();
-    }
+    //let suggsh = {% include "english/dictionary/suggsh.json" %};
 
     // getting all required elements
     const searchWrapper = document.querySelector(".search-input");
@@ -312,7 +289,7 @@
                 });
 
                 emptyArray2 = suggsh.filter((data)=>{
-                    return data[1].toLocaleLowerCase() != userData && data[1].replace(/[^a-zA-Z0-9 ]/g,'').startsWith(userData.toLocaleLowerCase());
+                    return data[1].toLocaleLowerCase() != userData && data[1].replace(/[^a-zA-Z0-9 ]/g,'').includes(userData.toLocaleLowerCase());
                 });
 
                 emptyArray = emptyArray.concat(emptyArray2);

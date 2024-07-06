@@ -31,6 +31,10 @@
             <div class="d-flex flex-row align-items-center gap-3 customizer-box mb-1" role="group">
                 <span class="">Learn</span>
                 <select class="form-select form-select-sm" id="lpd">
+                    <option value="1" {% if learn == 1 %}selected{% endif %}>1 word</option>
+                    <option value="2" {% if learn == 2 %}selected{% endif %}>2 words</option>
+                    <option value="3" {% if learn == 3 %}selected{% endif %}>3 words</option>
+                    <option value="4" {% if learn == 4 %}selected{% endif %}>4 words</option>
                     <option value="5" {% if learn == 5 %}selected{% endif %}>5 words</option>
                     <option value="10" {% if learn == 10 %}selected{% endif %}>10 words</option>
                     <option value="15" {% if learn == 15 %}selected{% endif %}>15 words</option>

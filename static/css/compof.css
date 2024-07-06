@@ -224,6 +224,12 @@
     padding: 1.5rem 1.5rem 2.5rem 2.5rem;
 }
 
+/*when navigating through the items using the arrow keys:*/
+.autocom-box-active {
+    background-color: DodgerBlue; 
+    color: #ffffff;
+}
+
 @media screen and (max-width: 767px) {
     #vocabd{
         height: 50%;

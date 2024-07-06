@@ -1,4 +1,42 @@
 <script>
+    var itrash = '<i class="fa-regular fa-trash"></i>';
+    var iplus = '<i class="fa-regular fa-plus"></i>';
+
+    var notifBox = document.getElementById("popupnotifications");
+    function notifc(action){
+        //let vars = arguments;
+        let message = action == 'fav'?'The sense was added!':'The sense was removed';
+        let notif = document.createElement("div");
+        notif.innerHTML = `
+            <div class="alert alert-${action=='fav'?'success':'danger'} alert-dismissible d-flex align-items-center animate__animated animate__fadeIn">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                    ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        notifBox.appendChild(notif);
+    }
+    function favSet(action,id,sense){
+        let xhttp = new XMLHttpRequest();
+        xhttp.onload = ()=>{
+            notifc(action);
+            let fele = document.getElementById("btn"+sense);
+            if (action == "fav"){
+                fele.classList.remove("btn-outline-primary");
+                fele.classList.add("btn-outline-danger");
+                fele.setAttribute("onclick","favSet('remove',"+id+","+sense+")");
+                fele.innerHTML = itrash;
+            } else {
+                fele.classList.remove("btn-outline-danger");
+                fele.classList.add("btn-outline-primary");
+                fele.setAttribute("onclick","favSet('fav',"+id+","+sense+")");
+                fele.innerHTML = iplus;
+            }
+        }
+        xhttp.open("GET","{% url 'data_main' %}?data="+action+"&word="+id+"&sense="+sense, true);
+        xhttp.send();
+    }
+
     // Pronounce
     let wds = document.getElementsByClassName("wd");
     let letter = "{{word.word_details.0.0}}";
@@ -83,15 +121,21 @@
     }
 </script>
 
-<!--AUTO REFRESHER SCRIPT-->
-<!--script>
-    if ("{{refresh}}" == "True") {
-        setTimeout(function() {
-            location.reload();
-        }, 4000);
-    } else {
-        setTimeout(function() {
-            location.reload();
-        }, 60000);
-    };
-</script-->
+<script src="/static/js/dom-to-image.min.js"></script>
+<script src="/static/js/FileSaver.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".scr").click(function(){
+            $("#scr").removeClass("d-none");
+            domtoimage.toBlob(document.getElementById($(this).attr("data-ele")))
+            .then(function (blob) {
+                window.saveAs(blob, '{{word.word}} {{word.pos}}.png');
+            });
+        });
+        $(".scr").click(function(){
+            setTimeout(function(){
+                $("#scr").addClass("d-none")
+            }, 2000);
+        });
+    });
+</script>

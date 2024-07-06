@@ -56,7 +56,11 @@
     </style>
 </head>
 <body class="bg-body">
+    <div class="loader-wrapper">
+        <span class="loader-124"></span>
+    </div>
     <div id="top"></div>
+    
     {% include "static/components/notifications.html" %}
     
     {% block body %}{% endblock body %}
@@ -67,16 +71,16 @@
     <!--div class="loader-wrapper">
         <span class="loader-124"><span class="loader-inner"></span></span>
     </div-->
-    <div class="loader-wrapper">
-        <span class="loader-124"></span>
-    </div>
     <!-- LOADING ANIMATION STOP -->
     <script>
         $(window).on("load", function() {
             $(".loader-wrapper").fadeOut("slow");
         });
-        $('a').on('click',function(){
+        $('a[href]').on('click',function(){
             $(".loader-wrapper").fadeIn();
+            window.addEventListener("visibilitychange", function(event){
+                $(".loader-wrapper").fadeOut();
+            });
         });
         $('*').on('click',function(){
             if ($(this).attr('data-cl') == "lk"){
