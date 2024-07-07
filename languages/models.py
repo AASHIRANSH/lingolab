@@ -10,14 +10,11 @@ def content_file_name(instance, filename):
     return os.path.join('uploads/posts', filename)
 
 ''' Posts and Exercises'''
-# class Topic(models.Model):
-#     name = models.CharField(max_length=50)
-#     # cefr = models.CharField(("CEFR"), max_length=50, blank=True, null=True)
-#     # word = models.ForeignKey("languages.Dictionary", verbose_name=("Word"), on_delete=models.CASCADE)
-#     # sense = models.CharField(("Sense"), max_length=50, blank=True, null=True)
+class Topic(models.Model):
+    name = models.CharField(max_length=50)
 
-#     def __str__(self):
-#         return f'{self.name}'
+    def __str__(self):
+        return f'{self.name}'
 
 class Thesaurus(models.Model):
     name = models.CharField(max_length=100)
@@ -89,7 +86,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     published = models.BooleanField(default=False)
-    # topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     content = models.TextField()

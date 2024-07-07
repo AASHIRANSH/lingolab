@@ -210,17 +210,23 @@
         text-shadow: 2px 2px 6px #000000, -2px -2px 6px #000000;
     }
 
+    .post {
+        letter-spacing: 0.08rem;
+        word-spacing: 0.05rem;
+    }
     .post .top-m {
-        background-color: rgb(13, 110, 253,0.1);
-        /*background-color: rgb(111,66,193,0.2);*/
-        font-weight: bold;
-        font-size: 1.3rem;
+        width: 80%;
+        background-color: var(--bs-purple);
+        color: var(--bs-gray-200);
+        font-weight: 350;
+        font-size: 1.2rem;
         padding: 1.5rem;
         border-radius: 1rem;
-        margin: 1rem 0;
+        margin: 2rem auto;
     }
     .post h3 {
         font-weight: bold;
+        color: var(--bs-gray-800);
     }
     .post .top-m .h {
         color: rgb(13, 110, 253);
@@ -238,6 +244,7 @@
         {% comment %} line-height: 1.3rem; {% endcomment %}
     }
     .post ul.examples {
+        list-style-type: none;
         background-color: var(--bs-gray-200);
         color: var(--bs-body-color);
         font-weight: bold;
@@ -267,9 +274,10 @@
         padding: 1rem;
         border-radius: 1rem;
     }
-    #post-title-cont {
-        background-color: #f1f1f2;
-        border-radius: 1rem 1rem 0 0;
+    #post-title {
+        background-color: var(--bs-gray-200);
+        border-radius: 1rem;
+        overflow: hidden;
     }
     #post-stamp {
         font-style: italic;

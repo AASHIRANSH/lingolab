@@ -35,25 +35,23 @@
         <hr>
     {% endif %}
     
-    <div id="post-title-cont">
-        <div id="post-title">
-            <div class="d-flex justify-content-between p-4">
-                <div>
-                    <h1 class="fw-bold fs-1 text-primary"><!--i class="fa-solid fa-pen-nib"></i--> {{ post.title }}</h1>
-                    <div class="mt-1" id="post-stamp">Posted on {{post.created_at|date:"j-m-y"}} by {{post.author}}</div>
-                </div>
-                <div>
-                    <div>{% include 'static/components/like.html' %}</div>
-                    <div class="d-flex align-item-center text-secondary"><i class="ti ti-eye fs-3 me-1"></i> {{post.views}}</div>
-                </div>
+    <div id="post-title">
+        <div class="p-4">
+            <div>
+                <h1 class="fw-bold fs-1 text-primary"><!--i class="fa-solid fa-pen-nib"></i--> {{ post.title }}</h1>
+                <div class="mt-1" id="post-stamp">Posted on {{post.created_at|date:"j-m-y"}} by {{post.author}}</div>
             </div>
         </div>
+        <div class="rule pt-1 rounded-bottom"></div>
     </div>
-    <div class="rule pt-1 rounded-bottom"></div>
+    <div class="d-flex justify-content-between align-items-center gap-3 px-3 my-3">
+        <div class="d-flex align-item-center text-secondary"><i class="ti ti-eye fs-3 me-1"></i> {{post.views}} views</div>
+        <div>{% include 'static/components/like.html' %}</div>
+    </div>
 
     {% if post.image %}<div class="post-img"><img src="{{post.image.url}}"/></div>{% endif %}
     
-    <div id="post-content" class="px-3 my-5">
+    <div id="post-content" class="px-3 mb-5">
         {{ post.content|safe }}
     </div>
     

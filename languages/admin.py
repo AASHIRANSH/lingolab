@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Post, Comment, Like, Dislike, Exercise
-from .models import Quote, Thesaurus, Collocation, Dictionary, TopicDictionary, Fav, ZeroToHero
+from .models import Quote, Thesaurus, Collocation, Dictionary, TopicDictionary, Topic, Fav, ZeroToHero
 
 # Register your models here.
 @admin.register(Exercise)
@@ -48,6 +48,10 @@ class PostView(admin.ModelAdmin):
 
     # class Media:
     #     js= ('/static/js/tinyinject.js',)
+
+@admin.register(Topic)
+class TopicView(admin.ModelAdmin):
+    list_display = ['name']
 
 @admin.register(Comment)
 class CommentView(admin.ModelAdmin):
