@@ -84,7 +84,7 @@ class ZeroToHero(models.Model):
 '''Posts'''
 class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     published = models.BooleanField(default=False)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -94,12 +94,26 @@ class Post(models.Model):
     fill_values = models.CharField(max_length=200, blank=True, null=True)
     views = models.IntegerField(default=0)
     level = models.CharField(choices=(('a1','Beginner'),('a2','Pre Intermediate'),('b1','Intermediate'),('b2','Upper Intermediate'),('c1','Advanced'),('c2','Proficient')), max_length=50, blank=True, null=True)
-
-    # def is_pub(self):
-    #     return f"{'published' if self.published else 'unpublished'}"
     
     def __str__(self):
         return f"{self.title} ({'published' if self.published else 'unpublished'})"
+
+class GK(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    published = models.BooleanField(default=False)
+    topic = models.CharField(max_length=100, blank=True, null=True)
+    sub_topic = models.CharField(max_length=50, blank=True, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    image = models.ImageField(upload_to=content_file_name, blank=True, null=True)
+    highlights = models.CharField(max_length=200, blank=True, null=True)
+    source = models.CharField(max_length=200, blank=True, null=True)
+    views = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
 
 class Exercise(models.Model):
     category = models.CharField(max_length=50, choices=(('english','English'),('general_knowledge','GK')), blank=True, null=True)
@@ -132,6 +146,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.content

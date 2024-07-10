@@ -1171,8 +1171,8 @@ def revise_main(request):
 
     today = datetime.datetime.today().date() # today.strftime("%Y-%m-%d") # string date
 
-    rv_set = Fav.objects.filter(rvdata__has_key=username)
-    lv_set = sorted(Dictionary.objects.filter(cefr="b1") | Dictionary.objects.filter(cefr="b2") | Dictionary.objects.filter(cefr="c1"), key=lambda x: random.random())
+    rv_set = sorted(Fav.objects.filter(rvdata__has_key=username), key=lambda x: random.random())
+    lv_set = sorted(Dictionary.objects.filter(cefr="a2") | Dictionary.objects.filter(cefr="b1") | Dictionary.objects.filter(cefr="b2") | Dictionary.objects.filter(cefr="c1"), key=lambda x: random.random())
     lv_set = lv_set if lv_set else sorted(Dictionary.objects.filter(cefr="a2"), key=lambda x: random.random())
     
     learn = user.learnerprofile.plan[1]
@@ -1180,6 +1180,7 @@ def revise_main(request):
     learned = int(request.COOKIES.get("wlt","0"))
 
     rvp_obj = []
+    rvvp = []
     if rv_set:
         for x in rv_set:
             rvdata = x.rvdata[username]
@@ -1204,8 +1205,7 @@ def revise_main(request):
                             "priority":rvdata["pr"][dn],
                             "actionable": False if (today==yd and rvdata["rvcounts"][dn] < 2) else True
                         })
-                    if len(rvp_obj) == revise:
-                        break
+                    break
             if len(rvp_obj) == revise:
                 break
     
@@ -1312,9 +1312,14 @@ def data_main(request):
             seni = rvdata["senses"].index(sense)
             pr = rvdata["pr"][seni]
             rvcount = rvdata["rvcounts"][seni]
+            if rvcount == 20:
+                rvdata["mastered"][seni] = True
+                rvcount = 30
+            else:
+                rvdata["rvcounts"][seni] += 1
             td = datetime.timedelta(days=rvcount) if pr == 4 else datetime.timedelta(days=rvcount+pr) if pr == 6 else datetime.timedelta(days=rvcount+3)
             rvdata["dates"][seni] = (today+td).strftime("%Y-%m-%d")
-            rvdata["rvcounts"][seni] += 1
+            
             fav_obj.save()
             return HttpResponse("Done")
     

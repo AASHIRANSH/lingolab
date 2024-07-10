@@ -4,7 +4,7 @@
     {% if user.first_name %}
         {{user.first_name|capfirst}}'s
     {% else %}
-        {{user.first_name}}'s
+        {{user.username}}'s
     {% endif %}
     Profile | 
 {% endblock title %}
@@ -12,215 +12,239 @@
 {% block body %}
 {% include 'header.html' %}
 
-    <div class="container_fluid p-4 bg-gray-100 shadow">
-        <div class="d-flex justify-content-center">
-            <div class="profile-pic me-3">
-                <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow bg-white"/><!-- former class rounded-circle, account-img -->
-            </div>
-
-            <div class="d-flex flex-column">
-                <div class="">
-                    {% if user.first_name %}
-                        <h1>{{user.first_name|capfirst}}</h1>
-                    {% else %}
-                        <h1>{{user.username|capfirst}}</h1>
-                    {% endif %}
-                </div>
-                
-                <div>
-                    {% if user.is_superuser %}
-                    Administrator
-                    {% endif %}
-                </div>
-            </div>
+<div class="container_fluid p-5 bg-secondary bg-opacity-90 text-light shadow">
+    <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+        <div class="profile-pic text-center">
+            <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow-lg bg-white" style="width:15rem;height:auto"/>
         </div>
 
-        <!--PERMS BUTTONS-->
-        <div class="d-flex justify-content-between">
+        <div class="d-flex flex-column text-center text-md-start">
             <div class="">
-                <button class="btn btn-dark" id="last-seen">Last seen: {% if user.profile.last_seen %}{{user.profile.last_seen|date:'H:i - F j'}}{% else %}{{user.last_login|date:'H:i - F j'}}{% endif %}</button>
-                <!--script>
-                    var last_seen = new Date("");
-                    var upd = last_seen.setMinutes(last_seen.getMinutes()+2);
-                    var date_uls = new Date();
-                    var last_seen_ele = document.getElementById("last-seen");
-                    
-                    if (date_uls > upd) {
-                        last_seen_ele.innerText = `Last seen: {{user.profile.last_seen|date:'H:i - F j'}}`; //${last_seen.getHours()}:${last_seen.getMinutes()} on (${last_seen.getDate()}-${last_seen.getMonth()})
-                    } else {
-                        last_seen_ele.classList.toggle("bg-success");
-                        last_seen_ele.innerText = "Online";
-                    }
-                </script-->
-                <script>
-                    setInterval(updls, 5000);
-                    function updls() {
-                        const userlog = new XMLHttpRequest();
-                        userlog.onreadystatechange = function() {
-                            if (this.readyState == 4 && this.status == 200) {
-                                var data = this.responseText;
-                                last_seen = new Date(data);
-                                upd = last_seen.setSeconds(last_seen.getSeconds()+30);
-                                date_uls = new Date();
-                                last_seen_ele = document.getElementById("last-seen");
-
-                                if (date_uls > upd) {
-                                    last_seen_ele.innerText = `Last seen: ${data}`; //`Last seen: ${last_seen.getHours()}:${last_seen.getMinutes()} ${last_seen.getDate()}-${last_seen.getMonth()}`;
-                                } else {
-                                    last_seen_ele.classList.toggle("bg-success");
-                                    last_seen_ele.innerText = "Online";
-                                }
-                                console.log(data)
-                            }
-                          };
-                        userlog.open("GET","{% url 'userlog' %}?user={{user.id}}", true);
-                        userlog.send();
-                    };
-                    console.log(last_seen)
-                </script>
+                <span class="bg-dark bg-opacity-25 px-2 py-1 rounded">
+                    @{{user.username}}
+                </span>
             </div>
-
-            <div>
-                {% if is_friend %}
-                    {% if fr_req == "request_received" %}
-                        <div class="btn-group dropup">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
-                                Befriend
-                            </button>
-                            <div class="dropdown-menu p-2">
-                                You have a friend request from {{user.username}}.
-                                <button onclick="window.location.assign('?action=accept')" class="btn btn-sm btn-secondary">Accept</button>
-                                <button onclick="window.location.assign('?action=cancel')" class="btn btn-sm btn-secondary">Reject</button>
-                            </div>
-                        </div>
-                    {% else %}
-                    {% if fr_req == "request_sent" %}
-                        <div class="btn-group dropup">
-                            <button type="button" onclick="" class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-message"></i> Message</button>
-                            <div class="dropdown-menu p-2">
-                                You can send messages after they have accepted your friend request.
-                            </div>
-
-                            <button type="button" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
-                              Befriend
-                            </button>
-                            <div class="dropdown-menu p-2">
-                              You have already sent friend request to <span class="text-primary">{{user.username}}</span>.
-                              <button onclick="window.location.assign('?action=cancel')" class="btn btn-outline-danger">Cancel Request</button>
-                            </div>
-                        </div>
-                    {% else %}
-                        <button onclick="window.location.assign('?action=unfriend')" class="btn btn-danger"><i class="fa-solid fa-hands"></i> Unfriend</button>
-                    {% endif %}
-                    {% endif %}
+            
+            <div class="fs-1 text-uppercase my-2">
+                {% if user.first_name %}
+                    {{user.first_name}} {{user.last_name}}
                 {% else %}
-                <div class="btn-group dropup">
-                    <button type="button" onclick="" class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-message"></i> Message</button>
-                    <div class="dropdown-menu p-2">
-                        You can send messages after they have accepted your friend request.
-                    </div>
-                    <button onclick="window.location.assign('?action=befriend')" class="btn btn-primary"><i class="fa-solid fa-handshake"></i> Befriend</button>
-                </div>
+                    {{user.username}}
                 {% endif %}
             </div>
+            
+            <div class="fs-5 mb-2">
+                <div class="bg-light bg-opacity-10 px-2 py-1 rounded">
+                    {% if user.pk == 1 %}Servant at Learners' Academy{% else %}Normal User{% endif %}
+                </div>
+            </div>
+
+            <div class="my-2">
+                <div class="bg-dark bg-opacity-25 px-2 py-1 rounded" id="last-seen">Last seen: {% if user.profile.last_seen %}{{user.profile.last_seen|date:'H:i - F j'}}{% else %}{{user.last_login|date:'H:i - F j'}}{% endif %}</div>
+            </div>
         </div>
-        <!--END PROFILE BUTTONS-->
     </div>
-    {% include 'messages.html' %}
+
+    <!--Profile BUTTONS-->
+    <div class="mt-4 d-flex justify-content-between">
+        <div class="">
+        </div>
+
+        <div>
+            {% if is_friend %}
+                {% if fr_req == "request_received" %}
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                            Befriend
+                        </button>
+                        <div class="dropdown-menu p-2">
+                            You have a friend request from {{user.username}}.
+                            <button onclick="window.location.assign('?action=accept')" class="btn btn-sm btn-secondary">Accept</button>
+                            <button onclick="window.location.assign('?action=cancel')" class="btn btn-sm btn-secondary">Reject</button>
+                        </div>
+                    </div>
+                {% else %}
+                {% if fr_req == "request_sent" %}
+                    <div class="btn-group dropup">
+                        <button type="button" onclick="" class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-message"></i> Message</button>
+                        <div class="dropdown-menu p-2">
+                            You can send messages after they have accepted your friend request.
+                        </div>
+
+                        <button type="button" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                          Befriend
+                        </button>
+                        <div class="dropdown-menu p-2">
+                          You have already sent friend request to <span class="text-primary">{{user.username}}</span>.
+                          <button onclick="window.location.assign('?action=cancel')" class="btn btn-outline-danger">Cancel Request</button>
+                        </div>
+                    </div>
+                {% else %}
+                    <button onclick="window.location.assign('?action=unfriend')" class="btn btn-danger"><i class="fa-solid fa-hands"></i> Unfriend</button>
+                {% endif %}
+                {% endif %}
+            {% else %}
+            <div class="btn-group dropup">
+                <button type="button" onclick="" class="btn btn-success" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-message"></i> Message</button>
+                <div class="dropdown-menu p-2">
+                    You can send messages after they have accepted your friend request.
+                </div>
+                <button onclick="window.location.assign('?action=befriend')" class="btn btn-primary"><i class="fa-solid fa-handshake"></i> Befriend</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <!--END PROFILE BUTTONS-->
+</div>
+
+{% include 'messages.html' %}
     
-    <div class="container mt-5">
-        <div class="row">
-            <div class="row col-sm-12 col-md-6">
-                <div class="mb-4">
-                    <h3>Contact Information:</h3>
-                </div>
-                
-                <div class="col-3 mb-3">
-                    {{form.username.label_tag}}
-                </div>
-                <div class="col-9 mb-3">
-                    {{form.username.value}}
-                    {{form.username.errors}}
-                </div>
+<div class="container my-5">
+    <!-- Statistics -->
+    <div class="row mb-3">
+        <h3 class="fw-bold"><i class="fa-solid fa-chart-column"></i> Statistics</h3>
+    </div>
 
-                <div class="col-3 mb-3">
-                    {{form.first_name.label_tag}}
-                </div>
-                <div class="col-9 mb-3">
-                    {{form.first_name.value}}
-                    {{form.first_name.errors}}
-                </div>
-
-                <div class="col-3 mb-3">
-                    {{form.last_name.label_tag}}
-                </div>
-                <div class="col-9 mb-3">
-                    {{form.last_name.value}}
-                    {{form.last_name.errors}}
-                </div>
-
-
-                <div class="col-3 mb-3 is-friend">
-                    {{p_form.phone.label_tag}}
-                </div>
-                <div class="col-9 mb-3 is-friend">
-                    {{p_form.phone.value}}
-                    {{p_form.phone.errors}}
-                </div>
-
-
-                <div class="col-3 mb-3">
-                    {{form.email.label_tag}}
-                </div>
-                <div class="col-9 mb-3">
-                    {{form.email.value}}
-                    {{form.email.errors}}
-                </div>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-center gap-2">
+        <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
+            <div><i class="fa-solid fa-fire fs-1 text-danger"></i></div>
+            <div>
+                <div class="fw-bold text-dark fs-2">{{user.learnerprofile.plan.0.0}}</div>
+                <div class="text-secondary">Day streak</div>
             </div>
-            <div class="row col-sm-12 col-md-6">
-                <div class="mb-4">
-                    <h3>Academic Information:</h3>
-                </div>
+        </div>
 
-                <div class="col-3 mb-3">
-                    {{p_form.profession.label_tag}}
-                </div>
-                <div class="col-8 mb-3">
-                    {{p_form.profession.value|capfirst}}
-                    {{p_form.profession.errors}}
-                </div>
-
-
-                <div class="col-3 mb-3">
-                    {{p_form.highest_degree.label_tag}}
-                </div>
-                <div class="col-8 mb-3">
-                    {{p_form.highest_degree.value}}
-                    {{p_form.highest_degree.errors}}
-                </div>
-                <div class="col-3 mb-3">
-                    {{p_form.reputation.label_tag}}
-                </div>
-                <div class="col-8 mb-3">
-                    {{p_form.reputation.value}} <button type="button" class="btn btn-sm btn-outline-info ms-2" data-bs-toggle="popover" data-bs-title="Reputation?" data-bs-content="Reputation increases each time you answer an exercise question anywhere on the Website.">Click to know more!</button>
-                    {{p_form.reputation.errors}}
-                </div>
-
-                <div class="col-3 mb-3">
-                    {{p_form.languages.label_tag}}
-                </div>
-                <div class="col-8 mb-3">
-                    {{p_form.languages.value}}
-                    {{p_form.languages.errors}}
-                </div>
-                
+        <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "leaderboard" %}')">
+            <div><i class="fa-solid fa-bolt fs-1 text-warning"></i></div>
+            <div>
+                <div class="fw-bold text-dark fs-2">{{user.learnerprofile.plan.0.2}}</div>
+                <div class="text-secondary">Total XP</div>
             </div>
-            <hr>
+        </div>
+        
+        <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
+            <div><i class="fa-solid fa-diamond fs-1 text-info"></i></div>
+            <div>
+                <div class="fw-bold text-dark fs-2">NA</div>
+                <div class="text-secondary">Current League</div>
+            </div>
+        </div>
+
+        <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
+            <div><i class="fa-solid fa-medal fs-1 text-warning"></i></div>
+            <div>
+                <div class="fw-bold text-dark fs-2">Never</div>
+                <div class="text-secondary">Top 3 Finished</div>
+            </div>
         </div>
     </div>
 
-    {% include 'footer.html' %}
+    <hr class="my-5">
+
+    <div class="row gx-0">
+        <!-- Contact Information -->
+        <div class="row col-10 col-md-6 mx-auto gx-0 mb-5">
+            <div class="mb-3">
+                <h3 class="fw-bold"><i class="ti ti-address-book"></i> Contact Information</h3>
+            </div>
+            
+            <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                <i class="ti ti-user-scan"></i> Username
+            </div>
+            <div class="col-6 col-md-9 mb-3 text-end text-md-start">
+                {{user.username}}
+            </div>
+
+            <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                <i class="ti ti-user"></i> Name
+            </div>
+            <div class="col-6 col-md-9 mb-3 text-end text-md-start">
+                {{user.first_name}} {{user.last_name}}
+            </div>
+
+
+            <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                <i class="ti ti-phone"></i> Phone
+            </div>
+            <div class="col-6 col-md-9 mb-3 text-end text-md-start">
+                {{user.profile.phone}}
+            </div>
+
+
+            <div class="col-6 col-md-3 text-secondary px-2 rounded">
+                <i class="ti ti-mail"></i> Email
+            </div>
+            <div class="col-6 col-md-9 text-end text-md-start">
+                {{user.email}}
+            </div>
+        </div>
+
+        <!-- Academic Information -->
+        <div class="row col-10 col-md-6 mx-auto gx-0 mb-5">
+            <div class="mb-3">
+                <h3 class="fw-bold"> <i class="ti ti-school"></i> Academic Information</h3>
+            </div>
+
+            <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                <i class="ti ti-briefcase"></i> Profession
+            </div>
+            <div class="col-6 col-md-8 mb-3 text-end text-md-start">
+                {{user.profile.profession|capfirst}}
+            </div>
+
+
+            <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                <i class="fa-outline fa-graduation-cap"></i> Highest Education
+            </div>
+            <div class="col-6 col-md-8 mb-3 text-end text-md-start">
+                {{user.profile.highest_degree}}
+            </div>
+
+            <div class="col-6 col-md-3 text-secondary px-2 rounded mb-3">
+                <i class="ti ti-stars"></i> Reputation
+            </div>
+            <div class="col-6 col-md-8 mb-3 text-end text-md-start">
+                {{user.profile.reputation}} <button type="button" class="btn btn-sm btn-outline-info ms-2" data-bs-toggle="popover" data-bs-title="Reputation?" data-bs-content="Reputation increases each time you answer an exercise question anywhere on the Website.">Click to know more!</button>
+            </div>
+            
+            <div class="col-6 col-md-3 text-secondary px-2 rounded">
+                <i class="ti ti-language"></i> Languages
+            </div>
+            <div class="col-6 col-md-8 text-end text-md-start">
+                {{user.profile.languages}}
+            </div>
+        </div>
+    </div>
+</div>
+    
+<script>
+    setInterval(updls, 5000);
+    function updls() {
+        const userlog = new XMLHttpRequest();
+        userlog.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var data = this.responseText;
+                last_seen = new Date(data);
+                upd = last_seen.setSeconds(last_seen.getSeconds()+30);
+                date_uls = new Date();
+                last_seen_ele = document.getElementById("last-seen");
+
+                if (date_uls > upd) {
+                    last_seen_ele.innerText = `Last seen: ${data}`; //`Last seen: ${last_seen.getHours()}:${last_seen.getMinutes()} ${last_seen.getDate()}-${last_seen.getMonth()}`;
+                } else {
+                    last_seen_ele.classList.toggle("bg-success");
+                    last_seen_ele.innerText = "Online";
+                }
+                console.log(data)
+            }
+            };
+        userlog.open("GET","{% url 'userlog' %}?user={{user.id}}", true);
+        userlog.send();
+    };
+    console.log(last_seen)
+</script>
+{% include 'footer.html' %}
 {% endblock body %}
 
 </body>

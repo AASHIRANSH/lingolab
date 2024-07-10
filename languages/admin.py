@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Post, Comment, Like, Dislike, Exercise
-from .models import Quote, Thesaurus, Collocation, Dictionary, TopicDictionary, Topic, Fav, ZeroToHero
+from .models import Quote, Thesaurus, Collocation, Dictionary, TopicDictionary, Topic, Fav, ZeroToHero, GK
 
 # Register your models here.
 @admin.register(Exercise)
@@ -44,6 +44,13 @@ class ThesaurusView(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostView(admin.ModelAdmin):
+    list_display = ('title','created_at','author')
+
+    # class Media:
+    #     js= ('/static/js/tinyinject.js',)
+
+@admin.register(GK)
+class GKView(admin.ModelAdmin):
     list_display = ('title','created_at','author')
 
     # class Media:

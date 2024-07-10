@@ -25,176 +25,7 @@
     <!-- Scripts -->
     <script src="/static/js/web/jquery-3.6.3.min.js"></script>
     <script src="/static/js/tinymce.min.js" referrerpolicy="origin"></script>
-    <link rel="manifest" href="/static/js/manifest.json">
-    {% block head %}{% endblock head %}
-    <style>
-        .loader-124 {
-            width: 50px;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            border: 8px solid #00000050;
-            border-right-color: #3cb37197;
-            position: relative;
-            animation: l24 1s infinite linear;
-        }
-        .loader-124:before,
-        .loader-124:after {
-        content: "";
-        position: absolute;
-        inset: -8px;
-        border-radius: 50%;
-        border: inherit;
-        animation: inherit;
-        animation-duration: 2s;
-        }
-        .loader-124:after {
-        animation-duration: 4s;
-        }
-        @keyframes l24 {
-        100% {transform: rotate(1turn)}
-        }
-    </style>
-</head>
-<body class="bg-body">
-    <div class="loader-wrapper">
-        <span class="loader-124"></span>
-    </div>
-    <div id="top"></div>
-    
-    {% include "static/components/notifications.html" %}
-    
-    {% block body %}{% endblock body %}
-    
-    <div id="bottom"></div>
-
-    <!-- LOADING ANIMATION -->
-    <!--div class="loader-wrapper">
-        <span class="loader-124"><span class="loader-inner"></span></span>
-    </div-->
-    <!-- LOADING ANIMATION STOP -->
     <script>
-        $(window).on("load", function() {
-            $(".loader-wrapper").fadeOut("slow");
-        });
-        $('a[href]').on('click',function(){
-            $(".loader-wrapper").fadeIn();
-            window.addEventListener("visibilitychange", function(event){
-                $(".loader-wrapper").fadeOut();
-            });
-        });
-        $('*').on('click',function(){
-            if ($(this).attr('data-cl') == "lk"){
-                $(".loader-wrapper").fadeIn();
-            }
-        });
-    </script>
-    
-    {% comment %} {% include "pwa_installer.html" %} {% endcomment %}
-
-    {% comment %} <script src="/static/js/sw.js"></script> {% endcomment %}
-    <script>
-        // Hide Header on on scroll down
-        var didScroll;
-        var lastScrollTop = 0;
-        var delta = 5;
-        var navbarHeight = document.getElementById('title_bar').getBoundingClientRect().height //$('theader').outerHeight();
-        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-
-        window.addEventListener("scroll", function(event){
-            didScroll = true;
-        });
-        //$(window).scroll(function(event){
-        //    didScroll = true;
-        //});
-
-        setInterval(function() {
-            if (didScroll) {
-                hasScrolled();
-                didScroll = false;
-            }
-        }, 250);
-
-        function hasScrolled() {
-            var st = $(this).scrollTop();
-            
-            // Make sure they scroll more than delta
-            if(Math.abs(lastScrollTop - st) <= delta)
-                return;
-            
-            // If they scrolled down and are past the navbar, add class .nav-up.
-            // This is necessary so you never see what is "behind" the navbar.
-            if (st > lastScrollTop && st > navbarHeight){
-                // Scroll Down
-                $('theader').css('transform','translate(0, -'+navbarHeight+'px)');
-                $('.sticky').css({"top":"1rem"}); // for Word Page Nearby Words
-                if (document.documentElement.scrollTop > height-20){
-                    $('#ft').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')");
-                } else {
-                    $('#ft').css({"transform":"rotate(0)"}).attr("onclick","window.location.assign('#bottom')");
-                }
-            } else {
-                // Scroll Up
-                if(st + $(window).height() < $(document).height()) {
-                    $('theader').css('transform','translate(0, 0)');
-                    $('.sticky').css({"top":"4rem"});
-                    $('#ft').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')")
-                }
-            }
-
-            lastScrollTop = st;
-        }
-    </script>
-    
-    <script>
-        // Connection Online / Offline Status
-        function updateOnlineStatus(){
-            let content = document.getElementById("content");
-            let textContent = `Your network status is ${navigator.onLine ? "Online" : "Offline"} `;
-            //content.textContent = textContent;
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-            updateOnlineStatus();
-            window.addEventListener('online',  updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-        });
-    </script>
-
-    <script>
-        //localStorage.setItem("name", "John Doe");
-        //localStorage.getItem("name");
-
-        //sessionStorage.setItem("name", "John Doe");
-        //sessionStorage.getItem("name");
-
-    </script>
-    
-    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        window.onload = function() {
-            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-        }
-    </script>
-
-    {% if request.user.is_authenticated %}
-    <script>
-        setInterval(updls, 60000);
-        function updls() {
-            const userlog = new XMLHttpRequest();
-            userlog.open("GET","{% url 'userlog' %}?user={{request.user.pk}}", true);
-            userlog.send();
-        };
-    </script>
-    {% endif %}
-
-    <script>
-        /*!
-        * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
-        * Copyright 2011-2024 The Bootstrap Authors
-        * Licensed under the Creative Commons Attribution 3.0 Unported License.
-        */
-
         (() => {
             'use strict'
         
@@ -270,5 +101,132 @@
             })
         })()
     </script>
+    <link rel="manifest" href="/static/js/manifest.json">
+
+    {% block head %}{% endblock head %}
+</head>
+<body class="bg-body">
+    <div class="loader-wrapper">
+        <span class="loader-124"></span>
+    </div>
+    <div id="top"></div>
+    
+    {% include "static/components/notifications.html" %}
+    
+    {% block body %}{% endblock body %}
+    
+    <div id="bottom"></div>
+
+    <!-- LOADING ANIMATION -->
+    <!--div class="loader-wrapper">
+        <span class="loader-124"><span class="loader-inner"></span></span>
+    </div-->
+    <!-- LOADING ANIMATION STOP -->
+    <script>
+        $(window).on("load", function() {
+            $(".loader-wrapper").fadeOut("slow");
+        });
+        $('a[href]').on('click',function(){
+            $(".loader-wrapper").fadeIn();
+            window.addEventListener("visibilitychange", function(event){
+                $(".loader-wrapper").fadeOut();
+            });
+        });
+        $('*').on('click',function(){
+            if ($(this).attr('data-cl') == "lk"){
+                $(".loader-wrapper").fadeIn();
+            }
+        });
+    </script>
+    
+    {% comment %} {% include "pwa_installer.html" %}
+    <script src="/static/js/sw.js"></script> {% endcomment %}
+
+    <script>
+        // Hide Header on on scroll down
+        var didScroll;
+        var lastScrollTop = 0;
+        var delta = 5;
+        var navbarHeight = document.getElementById('title_bar').getBoundingClientRect().height //$('theader').outerHeight();
+        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+        window.addEventListener("scroll", function(event){
+            didScroll = true;
+        });
+        //$(window).scroll(function(event){
+        //    didScroll = true;
+        //});
+
+        setInterval(function() {
+            if (didScroll) {
+                hasScrolled();
+                didScroll = false;
+            }
+        }, 250);
+
+        function hasScrolled() {
+            var st = $(this).scrollTop();
+            
+            // Make sure they scroll more than delta
+            if(Math.abs(lastScrollTop - st) <= delta)
+                return;
+            
+            // If they scrolled down and are past the navbar, add class .nav-up.
+            // This is necessary so you never see what is "behind" the navbar.
+            if (st > lastScrollTop && st > navbarHeight){
+                // Scroll Down
+                $('theader').css('transform','translate(0, -'+navbarHeight+'px)');
+                $('.sticky').css({"top":"1rem"}); // for Word Page Nearby Words
+                if (document.documentElement.scrollTop > height-20){
+                    $('#ft').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')");
+                } else {
+                    $('#ft').css({"transform":"rotate(0)"}).attr("onclick","window.location.assign('#bottom')");
+                }
+            } else {
+                // Scroll Up
+                if(st + $(window).height() < $(document).height()) {
+                    $('theader').css('transform','translate(0, 0)');
+                    $('.sticky').css({"top":"4rem"});
+                    $('#ft').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')")
+                }
+            }
+
+            lastScrollTop = st;
+        }
+    </script>
+    
+    <script>
+        // Connection Online / Offline Status
+        function updateOnlineStatus(){
+            let content = document.getElementById("content");
+            let textContent = `Your network status is ${navigator.onLine ? "Online" : "Offline"} `;
+            //content.textContent = textContent;
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            updateOnlineStatus();
+            window.addEventListener('online',  updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        });
+    </script>
+    
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.onload = function() {
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        }
+    </script>
+
+    {% if request.user.is_authenticated %}
+    <script>
+        setInterval(updls, 60000);
+        function updls() {
+            const userlog = new XMLHttpRequest();
+            userlog.open("GET","{% url 'userlog' %}?user={{request.user.pk}}", true);
+            userlog.send();
+        };
+    </script>
+    {% endif %}
 </body>
 </html>

@@ -93,7 +93,7 @@
                     </div>
                     <div class="te-circle bg-navy bg-opacity-50 shadow">
                         <div>
-                            <div class="text-primary">{{rv_total_count}}</div>
+                            <!--div class="text-primary">{{rv_total_count}}</div-->
                             <div class="text-light">${rv_count}/{{rv_count}}</div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                         </div>
 
                         <div id="examples" class="py-2 pe-3">
-                            <ul class="m-0">
+                            <ul class="fs-5 m-0">
                                 ${examples.length?'<hr class="my-2">'+examples.slice(0,3).join("").replaceAll("*",""):""}
                             </ul>
                         </div>
@@ -143,9 +143,9 @@
                         </div>
 
 
-                        <div class="exmenu d-flex justify-content-between bg-gray py-2 px-3">
-                            <div><button class="btn btn-primary fs-6 py-1 rounded-circle" accesskey="i" onclick="window.open('/english/word/${r_obj.pk}/${r_obj.rvsense}/','_blank')" data-action=""><i class="fa-solid fa-info" style="width:0.6rem;"></i></button></div>
-                            <div><button class="btn btn-primary rounded-circle" data-action="next" data-ele="vocabc" accesskey="n"><i class="fa-solid fa-chevron-right"></i></button></div>
+                        <div class="exmenu d-flex justify-content-between bg-gray p-3">
+                            <div></div>
+                            <div><button class="btn btn-primary fs-5" data-action="next" data-ele="vocabc" accesskey="n"><i class="fa-solid fa-chevron-right"></i></button></div>
                         </div>
                     </div>
                     
@@ -167,11 +167,11 @@
                         </div>
 
                         <div class="w-100 position-absolute bottom-0 start-0 bg-gray px-3 py-2">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center text-secondary">
                                 <div>
                                     <div class="form-check form-switch" data-action="mastered">
-                                        <label class="" for="revise">Mastered</label>
-                                        <input type="checkbox" class="form-check-input" id="revise" autocomplete="off">
+                                        <label class="cursor-pointer" for="revise">Mastered</label>
+                                        <input type="checkbox" class="form-check-input cursor-pointer" id="revise" autocomplete="off">
                                     </div>
                                 </div>
 
@@ -194,7 +194,7 @@
 
                     <div id="score" class="d-none position-relative bg-gray bg-opacity-75 col-10 col-md-4 rounded-3 overflow-hidden shadow-lg animate__animated animate__fadeIn">
 
-                        <div class="w-100 position-absolute top-0 start-0 px-3 py-2">
+                        <div class="w-100 position-absolute top-0 start-0 p-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class=""><button class="btn btn-primary fs-6 py-1 rounded-circle" accesskey="i" onclick="window.open('/english/word/${r_obj.pk}/${r_obj.rvsense}/','_blank')" data-action=""><i class="fa-solid fa-info" style="width:0.6rem;"></i></button></div>
                                 <div class=""><button class="btn btn-primary rounded-circle" data-action="next" data-ele="vocabd" accesskey="n"><i class="fa-solid fa-chevron-right"></i></button></div>
@@ -288,7 +288,7 @@
             };
             learned_today.push(r_obj.pk);
             if (attr == "hard"){
-                $(this).parent().addClass('bg-danger text-danger animate__animated animate__shakeX');
+                $(this).parent().addClass('text-danger animate__animated animate__shakeX');
                 hard_arr.push(r_obj.pk);
             };
             if (attr == "easy"){
