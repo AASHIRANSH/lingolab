@@ -3,7 +3,7 @@
     {% if request.path != "/english/dictionary/" %}
     <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
       <span class="fst-italic">I wanna look up a word...</span>
-      <div class="fw-bold fs-5 text-center">LA's Dictionary</div>
+      <div class="fw-bold fs-5 text-center">Lingo's Dictionary</div>
       <div class="ts-b bg-primary"></div>
     </div>
     {% endif %}

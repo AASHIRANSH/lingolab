@@ -215,7 +215,7 @@
         word-spacing: 0.05rem;
     }
     .post .top-m {
-        width: 80%;
+        max-width: 600px;
         background-color: var(--bs-purple);
         color: var(--bs-gray-200);
         font-weight: 350;
@@ -243,7 +243,7 @@
         word-spacing: 0.1rem;
         {% comment %} line-height: 1.3rem; {% endcomment %}
     }
-    .post ul.examples {
+    ul.post-examples {
         list-style-type: none;
         background-color: var(--bs-gray-200);
         color: var(--bs-body-color);
@@ -259,12 +259,12 @@
         border-left: 0.5rem solid var(--bs-primary);
     }
 
-    .post .examples li:not(:last-child) {
+    .post-examples li:not(:last-child) {
         padding-bottom: 0.5rem;
         margin-bottom: 0.5rem;
         border-bottom: 1px solid #cccccc;
     }
-    .post .examples li lii {
+    .post-examples li lii {
         display: block;
         font-weight: bold;
         font-size: 0.8rem;

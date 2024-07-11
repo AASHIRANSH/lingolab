@@ -291,6 +291,11 @@ ol.circle_filled li div {
   background: #efefef;
 }
 
+.autocom-box-active {
+  background-color: var(--bs-blue); 
+  color: #ffffff;
+}
+
 .search-input .icon {
   position: absolute;
   right: 0px;

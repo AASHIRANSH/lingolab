@@ -6,9 +6,10 @@ import datetime
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
+    datestr = datetime.datetime.today().date().strftime("%Y-%m-%d")
     if created:
         Profile.objects.create(user=instance)
-        LearnerProfile.objects.create(user=instance, plan=[[0,datetime.datetime.today().date().strftime("%Y-%m-%d"),0],5,10])
+        LearnerProfile.objects.create(user=instance, plan=[[0,datestr,0],[5,5],[datestr,[]]])
         instance.profile.learnings = {"courses": {"current": 0, "enrolled": [1]}, "vocab": [5,5], "stats":[]}
 
 @receiver(post_save, sender=User)

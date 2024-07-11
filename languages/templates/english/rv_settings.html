@@ -260,12 +260,12 @@
             document.cookie=key+"="+val;
         }
     };
-    function setPlan(key,val){
+    function setPlan(key,val,sense){
         let xhttp = new XMLHttpRequest();
-        xhttp.onload = ()=>{
-            document.getElementById("popup").innerHTML = val+" words per day";
-        }
-        xhttp.open("GET","{% url 'set_plan' %}?key="+key+"&val="+val, true);
+        //xhttp.onload = ()=>{
+        //    document.getElementById("popup").innerHTML = val+" words per day";
+        //}
+        xhttp.open("GET","{% url 'set_plan' %}?key="+key+"&val="+val+"&sense="+sense, true);
         //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // required with POST request
         xhttp.send(); //xhttp.send(`csrfmiddlewaretoken={{csrf_token}}&data=${JSON.stringify(entry).replaceAll("&","ampp")}`);
     }

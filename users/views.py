@@ -348,13 +348,26 @@ def subscription(request):
 def plan(request):
     get = request.GET
     user = LearnerProfile.objects.get(user_id=request.user.pk)
-    if get.get("key") == "streak":
+    key = get.get("key")
+    val = int(get.get("val"))
+    sen = int(get.get("sense"))
+
+    if key == "lt":
+        user.plan[2][1].append([val,sen])
+        user.save()
+        return HttpResponse("true")
+
+    elif key == "points":
+        user.plan[0][2] += val
+        user.save()
+        return HttpResponse("true")
+    
+    elif key == "streak":
         date = datetime.datetime.strptime(user.plan[0][1],"%Y-%m-%d").date()
         today = datetime.datetime.today().date()
         if date == today-datetime.timedelta(days=1):
             user.plan[0][0] += 1
             user.plan[0][1] = today.strftime("%Y-%m-%d")
-            user.plan[0][2] += int(get.get("val"))
             user.save()
             return HttpResponse("true")
         elif date == today:
@@ -365,14 +378,15 @@ def plan(request):
             user.save()
             return HttpResponse("false")
     
-    elif get.get("key") == "learn":
-        user.plan[1] = int(get.get("val"))
+    elif key == "learn":
+        user.plan[1][0] = val
+        user.save()
+        return HttpResponse("true")
     
-    elif get.get("key") == "revise":
-        user.plan[2] = int(get.get("val"))
-   
-    user.save()
-    return HttpResponse("Plan preferences changed")
+    elif key == "revise":
+        user.plan[1][1] = val
+        user.save()
+        return HttpResponse("true")
 
 def leaderboard(request):
     users = LearnerProfile.objects.order_by("-plan__0__2")

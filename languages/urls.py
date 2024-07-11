@@ -56,7 +56,7 @@ urlpatterns = [
 
     # User
     path('mywords/', views.my_words, name="my_words"),
-    path('myword/<int:word>', views.my_word, name="my_word"),
+    path('myword/<int:word>/', views.my_word, name="my_word"),
     path('myposts/', views.post_entry, name='my_posts'),
 
     # Comments & Voting

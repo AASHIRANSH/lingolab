@@ -48,7 +48,7 @@
                         <li><a class="dropdown-item" href="{% url 'users' %}?users=friends"><i class="fa-solid fa-user-group"></i> My Friends <span id="fr" class="badge bg-secondary">{{friends.count}}</span></a></li>
                         <li><a class="dropdown-item" href="{% url "chat" %}"><i class="fa-solid fa-message"></i> Messages <span id="msgs" class="badge bg-secondary">0</span></a></li>
                         <li><div class="dropdown-divider"></div></li>
-                        <li><a class="dropdown-item" href="{% url 'my_words' %}"><i class="fa-solid fa-book"></i> My Words</a></li>
+                        <li><a class="dropdown-item" href="{% url 'my_words' %}"><i class="fa-solid fa-book"></i> Learnings</a></li>
                         <li><a class="dropdown-item" href="{% url 'notes' %}"><i class="fa-solid fa-book"></i> Notes</a></li>
                         <li><div class="dropdown-divider"></div></li>
                         <li><a class="dropdown-item" href="{% url 'users' %}?users=users"><i class="fa-solid fa-user-group"></i> Find People </a></li>
@@ -59,11 +59,8 @@
             <div class="d-none d-md-flex justify-content-center gap-3">
                 <button onclick="window.location.assign('{% url 'users' %}?users=friends')" class="btn btn-outline-light"><i class="fa-solid fa-user-group"></i> Friends <span id="fr-md" class="badge bg-secondary"></span></button>
                 <button onclick="window.location.assign('{% url 'users' %}')" class="btn btn-outline-light"><i class="fa-solid fa-people-group"></i> Find People</button>
-                {% if perms.languages.add_post %}
-                    <button onclick="window.location.assign('{% url 'my_posts' %}')" class="btn btn-outline-light"><i class="fa-solid fa-pen"></i> My Posts</button>
-                {% endif %}
                 <button onclick="window.location.assign('{% url 'chat' %}')" class="btn btn-outline-light"><i class="fa-solid fa-message"></i> Messages <span id="msg" class="badge bg-secondary">0</span></button>
-                <button onclick="window.location.assign('{% url 'my_words' %}')" class="btn btn-outline-light"><i class="fa-solid fa-book"></i> My Words</button>
+                <button onclick="window.location.assign('{% url 'my_words' %}')" class="btn btn-outline-light"><i class="fa-solid fa-book"></i> Learnings</button>
                 <button onclick="window.location.assign('{% url 'notes' %}')" class="btn btn-outline-light"><i class="fa-solid fa-note"></i> Notes</button>
             </div>
         </div>
@@ -198,12 +195,6 @@
                 {{user.profile.languages}}
             </div>
         </div>
-    </div>
-
-    <hr class="mb-5">
-    
-    <div class="mb-3">
-        <h3 class="fw-bold">Friend suggestions</h3>
     </div>
 
     <hr class="my-5">

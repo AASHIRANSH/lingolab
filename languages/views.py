@@ -969,33 +969,40 @@ def word_entry(request):
 @login_required
 def my_words(request):
     get = request.GET
-    search_query = get.get("q","").strip()
+    today = True if get.get("td") == "true" else False
 
-    if search_query:
-        words = Fav.objects.filter(rvdata__has_key=request.user.username, word__contains=search_query)
+    if not today:
+        search_query = get.get("q","").strip()
+        if search_query:
+            words = Fav.objects.filter(rvdata__has_key=request.user.username, word__word__contains=search_query)
+        else:
+            words = Fav.objects.filter(rvdata__has_key=request.user.username)
     else:
-        words = Fav.objects.filter(rvdata__has_key=request.user.username)
-    
-    wordd = []
-    for x in words:
-        rvdata = x.rvdata[request.user.username]
-        for y in range(len(rvdata["senses"])):
-            rvs = rvdata["rvcounts"][y]
-            wordd.append({
-                "word":x.word,
-                #"pos":x.pos,
-                "pk":x.pk,
-                "sense":rvdata["senses"][y],
-                "progress":rvs*10 if rvs < 11 else 100
-            })
-    paginator = Paginator(wordd, 10)  # Show 6 contacts per page.
+        tw = request.user.learnerprofile.plan[2][1]
+        words = [Fav.objects.get(pk=x[0]) for x in tw]
+
+
+    paginator = Paginator(words, 10)  # Show 6 contacts per page.
     page_number = get.get("page") if get.get("page") else 1
     page_navi = int(page_number)-1
     page_obj = paginator.get_page(page_number)
 
+    wordd = []
+    for x in page_obj:
+        rvdata = x.rvdata[request.user.username]
+        rvs = rvdata["rvcounts"]
+        wordd.append({
+            "word":x.word,
+            #"pos":x.pos,
+            "pk":x.pk,
+            "sense":[len(rvdata["senses"]),len(x.word.senses)],
+            "progress":sum(rvs)*5 if sum(rvs) < (len(rvs)*20) else 100
+        })
+
     vars = {
-        "wordscount":words.count(),
+        "wordscount":len(words),
         "wordsp":page_obj,
+        "words":wordd,
         "pagen":page_navi,
     }
     return render(request, "english/my_words.html", vars)
@@ -1003,10 +1010,15 @@ def my_words(request):
 @login_required
 def my_word(request,word):
     word = Dictionary.objects.get(pk=word)
-    
     fav_obj = Fav.objects.get(pk=word.pk)
-    fav = [x+1 for x in fav_obj.rvdata[request.user.username]["senses"]] if request.user.username in fav_obj.rvdata.keys() else None
-        
+    rvdata = fav_obj.rvdata[request.user.username]
+    fav = [x+1 for x in rvdata["senses"]] if rvdata else None
+    
+    # senses = []
+    # if rvdata:
+    #     for x in rvdata["senses"]:
+    #         rv = rvdata["rvcounts"][rvdata["senses"].index(x)]
+    #         senses.append([x,rv*5 if rv < 20 else 100])
     vars = {
         "word":word,
         "fav":fav
@@ -1175,8 +1187,8 @@ def revise_main(request):
     lv_set = sorted(Dictionary.objects.filter(cefr="a2") | Dictionary.objects.filter(cefr="b1") | Dictionary.objects.filter(cefr="b2") | Dictionary.objects.filter(cefr="c1"), key=lambda x: random.random())
     lv_set = lv_set if lv_set else sorted(Dictionary.objects.filter(cefr="a2"), key=lambda x: random.random())
     
-    learn = user.learnerprofile.plan[1]
-    revise = user.learnerprofile.plan[2]
+    learn = user.learnerprofile.plan[1][0]
+    revise = user.learnerprofile.plan[1][1]
     learned = int(request.COOKIES.get("wlt","0"))
 
     rvp_obj = []
@@ -1203,7 +1215,7 @@ def revise_main(request):
                             "word_details":x.word.word_details,
                             "note":rvdata["notes"][dn],
                             "priority":rvdata["pr"][dn],
-                            "actionable": False if (today==yd and rvdata["rvcounts"][dn] < 2) else True
+                            "actionable": False if rvdata["rvcounts"][dn] < 2 else True
                         })
                     break
             if len(rvp_obj) == revise:

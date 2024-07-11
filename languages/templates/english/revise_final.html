@@ -17,7 +17,6 @@
 <script>
     const objs = JSON.parse("{{objs|escapejs}}");
     const len = []; //used for current page if there are more than one card
-    const learned_today = [];
     const easy_arr = [];
     const hard_arr = [];
     var rv_count = 1;
@@ -285,21 +284,27 @@
                 } else {
                     document.cookie = "wrt="+(parseInt(wrt)+1)+";expires="+d.toUTCString();
                 };
+
+                setPlan("lt",r_obj.pk,r_obj.senses[0]);
             };
-            learned_today.push(r_obj.pk);
+
             if (attr == "hard"){
                 $(this).parent().addClass('text-danger animate__animated animate__shakeX');
                 hard_arr.push(r_obj.pk);
+                exAction("hard");
             };
+
             if (attr == "easy"){
                 easy_arr.push(r_obj.pk);
-                //$('#choices').css('pointer-events','none');
-                
+                if (r_obj.actionable) exAction("easy");
                 vc.classList.add('d-none');
                 document.querySelector('#vocabd').classList.remove('d-none');
                 score.classList.remove('d-none');
                 points.classList.remove('d-none');
                 points.innerText = "+2 XP";
+                
+                setPlan("points",2,0);
+
                 setTimeout(function (){
                     points.classList.add('animate__fadeOutUp');
                 },1500);
@@ -308,15 +313,7 @@
 
         $('*').on('click', function() {
             if (this.getAttribute("data-action")=="next"){
-                if (hard_arr.includes(r_obj.pk)){
-                    exAction("hard");
-                    navigate(this.getAttribute("data-ele"));
-                } else if (easy_arr.includes(r_obj.pk)){
-                    if (r_obj.actionable) exAction("easy");
-                    navigate(this.getAttribute("data-ele"));
-                } else {
-                    navigate(this.getAttribute("data-ele"));
-                }
+                navigate(this.getAttribute("data-ele"));
             }
             if (this.getAttribute("data-action")=="defpage"){
                 $("#vocab").addClass("d-none");
@@ -355,9 +352,8 @@
         score.classList.add("animate__fadeOut");
         sl.addEventListener("animationend",()=>{
             if (len.length == objs.length-1) {
-                setPlan("streak",easy_arr.length);
+                setPlan("streak",0,0)
                 window.location.reload();
-                //complete
             } else {
                 rv_count++;
                 len.push(r_num);
