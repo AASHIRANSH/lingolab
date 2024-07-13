@@ -178,16 +178,16 @@
                 $('theader').css('transform','translate(0, -'+navbarHeight+'px)');
                 $('.sticky').css({"top":"1rem"}); // for Word Page Nearby Words
                 if (document.documentElement.scrollTop > height-20){
-                    $('#ft').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')");
+                    $('#tbt').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')");
                 } else {
-                    $('#ft').css({"transform":"rotate(0)"}).attr("onclick","window.location.assign('#bottom')");
+                    $('#tbt').css({"transform":"rotate(0)"}).attr("onclick","window.location.assign('#bottom')");
                 }
             } else {
                 // Scroll Up
                 if(st + $(window).height() < $(document).height()) {
                     $('theader').css('transform','translate(0, 0)');
                     $('.sticky').css({"top":"4rem"});
-                    $('#ft').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')")
+                    $('#tbt').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')")
                 }
             }
 

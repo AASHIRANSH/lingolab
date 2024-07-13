@@ -1010,18 +1010,21 @@ def my_words(request):
 @login_required
 def my_word(request,word):
     word = Dictionary.objects.get(pk=word)
-    fav_obj = Fav.objects.get(pk=word.pk)
-    rvdata = fav_obj.rvdata[request.user.username]
-    fav = [x+1 for x in rvdata["senses"]] if rvdata else None
+    rvdata = word.fav.rvdata[request.user.username]
+    rvcounts = rvdata["rvcounts"]
+    progress = int((100/(len(rvdata["rvcounts"])*20))*sum(rvcounts))
     
-    # senses = []
-    # if rvdata:
-    #     for x in rvdata["senses"]:
-    #         rv = rvdata["rvcounts"][rvdata["senses"].index(x)]
-    #         senses.append([x,rv*5 if rv < 20 else 100])
+    senses = []
+    if rvdata:
+        for x in rvdata["senses"]:
+            rv = rvdata["rvcounts"][rvdata["senses"].index(x)]
+            senses.append(word.senses[x])
+            senses[-1].append([x,rv*5 if rv < 20 else 100])
+    
     vars = {
         "word":word,
-        "fav":fav
+        "senses":senses,
+        "progress":progress
     }
     return render(request, "english/my_word.html", vars)
 
@@ -1183,9 +1186,14 @@ def revise_main(request):
 
     today = datetime.datetime.today().date() # today.strftime("%Y-%m-%d") # string date
 
-    rv_set = sorted(Fav.objects.filter(rvdata__has_key=username), key=lambda x: random.random())
-    lv_set = sorted(Dictionary.objects.filter(cefr="a2") | Dictionary.objects.filter(cefr="b1") | Dictionary.objects.filter(cefr="b2") | Dictionary.objects.filter(cefr="c1"), key=lambda x: random.random())
-    lv_set = lv_set if lv_set else sorted(Dictionary.objects.filter(cefr="a2"), key=lambda x: random.random())
+    if get.get("td") == "true":
+        rv_set = [Fav.objects.get(pk=x[0]) for x in request.user.learnerprofile.plan[2]]
+        if not rv_set: return HttpResponseRedirect(get.get("back","/"))
+        lv_set = None
+    else:
+        rv_set = sorted(Fav.objects.filter(rvdata__has_key=username), key=lambda x: random.random())
+        lv_set = sorted(Dictionary.objects.filter(cefr="a2") | Dictionary.objects.filter(cefr="b1") | Dictionary.objects.filter(cefr="b2") | Dictionary.objects.filter(cefr="c1"), key=lambda x: random.random())
+        lv_set = lv_set if lv_set else sorted(Dictionary.objects.filter(cefr="a2"), key=lambda x: random.random())
     
     learn = user.learnerprofile.plan[1][0]
     revise = user.learnerprofile.plan[1][1]
@@ -1215,7 +1223,7 @@ def revise_main(request):
                             "word_details":x.word.word_details,
                             "note":rvdata["notes"][dn],
                             "priority":rvdata["pr"][dn],
-                            "actionable": False if rvdata["rvcounts"][dn] < 2 else True
+                            "actionable": True #False if rvdata["rvcounts"][dn] < 2 else True
                         })
                     break
             if len(rvp_obj) == revise:

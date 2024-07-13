@@ -30,7 +30,7 @@
                     <div class="row col-11">
                         <!-- Word Pos-->
                         <div class="col-12 mb-1">
-                            <div id="word" class="col-auto {% if word.is_complete %} text-success {% else %} text-primary {% endif %}d-inline-block me-2" onclick="window.location.assign('http://localhost:8000/admin/languages/dictionary/{{word.pk}}/change/')">
+                            <div id="word" class="col-auto {% if word.is_complete %} text-success {% else %} text-primary {% endif %}d-inline-block me-2" {% if request.user.is_superuser %}onclick="window.location.assign('/admin/languages/dictionary/{{word.pk}}/change/')"{% endif %}>
                                 {{word.word}}
                             </div>
                             <div id="pos" class="col-auto fs-5 d-inline-block text-secondary me-2">
@@ -178,9 +178,9 @@
                         <div>
                             {% if fav %}
                                 {% if sense.0 in fav %}
-                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i id="ft" class="fa-solid fa-trash"></i><i id="fp" class="d-none fa-solid fa-plush"></i></button>
                                     {% else %}
-                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
+                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i id="fp" class="fa-regular fa-plus"></i><i id="ft" class="d-none fa-solid fa-trash"></i></button>
                                 {% endif %}
                             {% else %}
                             <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>

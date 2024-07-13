@@ -353,7 +353,10 @@ def plan(request):
     sen = int(get.get("sense"))
 
     if key == "lt":
-        user.plan[2][1].append([val,sen])
+        if [val,sen] in user.plan[2]:
+            user.plan[2].remove([val,sen])
+        else:
+            user.plan[2].append([val,sen])
         user.save()
         return HttpResponse("true")
 
