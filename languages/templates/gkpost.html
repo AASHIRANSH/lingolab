@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block og %}
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://dev.to/earthcomfy/getting-started-custom-user-model-5hc" />
+    <meta property="og:title" content="Custom User Model in Django" />
+    <meta property="og:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve..." />
+    <meta property="og:site_name" content="DEV Community" />
+    <meta name="twitter:site" content="@thepracticaldev">
+    <meta name="twitter:creator" content="@earthcomfy">
+    <meta name="twitter:title" content="Custom User Model in Django">
+    <meta name="twitter:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve...">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta property="og:image" content="https://dev.to/social_previews/article/1024949.png" />
+    <meta name="twitter:image:src" content="https://dev.to/social_previews/article/1024949.png">
+
+{% endblock og %}
+
+{% block body %}
+{% include 'static/css/styles.html' %}
+{% include "header.html" %}
+
+{% include 'messages.html' %}
+
+<div class="container post py-5">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            {% if perms.languages.change_post %}
+                <div class="row">
+                    <div class="col-auto">
+                        <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_entry' %}?action=editpost&pk={{post.pk}}`)">Edit Post</button>
+                        <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'exercise_entry' %}`)">Add Exercise</button>
+                    </div>
+                </div>
+                <hr>
+            {% endif %}
+            
+            <div id="post-title">
+                <div class="p-4">
+                    <div>
+                        <h1 class="fw-bold fs-1 text-primary"><!--i class="fa-solid fa-pen-nib"></i--> {{ post.title }}</h1>
+                        <div class="mt-1" id="post-stamp">Posted on {{post.created_at|date:"j-m-y"}} by {{post.author}}</div>
+                    </div>
+                </div>
+                <div class="rule pt-1 rounded-bottom"></div>
+            </div>
+
+            {% if post.image %}<div class="post-img"><img src="{{post.image.url}}"/></div>{% endif %}
+
+            <div class="d-flex justify-content-between align-items-center px-1 my-3">
+                <div class="d-flex align-item-center text-secondary">
+                    <i class="ti ti-eye fs-3 me-1"></i> {{post.views}} views
+                </div>
+                <div class="d-flex gap-1">
+                    <div>{% include 'static/components/like.html' %}</div>
+                    <button class="btn btn-outline-secondary fs-5"><i class="fa-solid fa-share-nodes"></i></button>
+                </div>
+            </div>
+
+            <div id="post-content" class="px-1 mb-3">
+                {{ post.content|safe }}
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a target="_blank" href="{{post.source}}" role="button" class="btn btn-primary px-5">SOURCE <i class="fa-solid fa-chevron-right"></i></a>
+                {% include 'static/components/copy_to_clipboard.html' %}
+            </div>
+            <hr>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="bg-gray-200 text-light px-2 py-1 rounded">you might also like</div>
+            {% for post in posts %}
+            {{post.title}}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onscroll = function() {scrollInd()};
+
+    function scrollInd() {
+        var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var scrolled = (winScroll / height) * 100;
+        document.getElementById("myBar").style.width = scrolled + "%";
+    }
+</script>
+{% include 'footer.html' %}
+{% endblock body %}

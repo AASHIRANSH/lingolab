@@ -224,6 +224,17 @@
     padding: 1.5rem 1.5rem 2.5rem 2.5rem;
 }
 
+.table-hover>tbody>tr:hover{
+    border-left: 0.2rem solid var(--bs-primary);
+}
+.table>tbody>tr .hover{
+    visibility: hidden;
+}
+.table>tbody>tr:hover .hover{
+    visibility: visible;
+}
+
+
 .loader-124 {
     width: 50px;
     aspect-ratio: 1;

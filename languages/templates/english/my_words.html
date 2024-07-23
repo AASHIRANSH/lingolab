@@ -4,24 +4,26 @@
 
 <div class="container-fluid bg-gray-200 text-primary text-center p-3">
     <span class="fs-1 fw-bold learner">My Learnings</span>
+
+    <div class="px-2">
+        <div class="pnav">
+            <li class="{% if not request.GET.td %}active{% endif %}">
+                <div class="ts-b"></div>
+                <a href="{% url "my_words" %}">WORDS LIST</a>
+            </li>
+            
+            <li class="{% if request.GET.td %}active{% endif %}">
+                <div class="ts-b"></div>
+                <a href="{% url "my_words" %}?td=true">REVIEW LIST</a>
+            </li>
+        </div>
+    </div>
 </div>
 <div class="rule pt-1"></div>
 
-<div class="position-relative px-2 my-5">
-    <div class="pnav">
-        <li class="{% if not request.GET.td %}active{% endif %}">
-            <a href="{% url "my_words" %}">WORDS LIST</a>
-        </li>
-        
-        <li class="{% if request.GET.td %}active{% endif %}">
-            <a href="{% url "my_words" %}?td=true">TODAY's LEARNINGS</a>
-        </li>
-    </div>
-</div>
-
 <!-- search -->
 <div class="container my-5">
-    <div class="wrapper col-10 col-md-8">
+    <div class="swrapper col-10 col-md-8">
         <form>
             <div class="search-input">
                 <input type="search" name="q" class="form-control" placeholder="Type to search in your words list..." value="{{request.GET.q}}" autocomplete="off"/>
@@ -50,8 +52,8 @@
         </div>
 
         <div class="card card-body bg-primary-subtle mb-3">
-            <div class="d-flex justify-content-between">
-                <div class="d-flex gap-3 fs-5 fw-semibold text-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 fw-semibold text-primary">
                     <span>Filter</span>
                 </div>
 
@@ -62,20 +64,20 @@
         </div>
 
         <!-- table -->
-        <table id="" class="table table-hover" style="width:100%;">
+        <table id="" class="table table-hover rounded overflow-hidden" style="width:100%;">
             <thead>
-                <tr class="table-primary bg-opacity-50">
-                    <th style="width:5%;">#</th>
-                    <th style="width:45%;">Word</th>
-                    <th style="width:20%;">Sense</th>
-                    <th style="width:20%;">Progress</th>
-                    <th style="width:10%;">List</th>
+                <tr class="table-primary">
+                    <th class="text-primary" style="width:5%;">#</th>
+                    <th class="text-primary" style="width:45%;">Word</th>
+                    <th class="text-primary" style="width:20%;">Sense</th>
+                    <th class="text-primary" style="width:20%;">Progress</th>
+                    <th class="text-primary" style="width:10%;"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for word in words %}
                 <tr>
-                    <td>{% if forloop.last %}{{request.GET.page|default:1}}0{% else %}{{pagen}}{{forloop.counter}}{% endif %}</td>
+                    <td>{% if not forloop.counter == 10%}{{request.GET.page}}{{forloop.counter}}{% else %}{{forloop.counter}}{% endif %}</td>
                     <td onclick="window.location.assign(`{% url 'my_word' word.pk %}`)" class="cursor-pointer">{{word.word}} {% if word.pos %}<span class="text-secondary fst-italic">({{word.pos}})</span>{% endif %}</td>
                     <td>{{word.sense.0}}/{{word.sense.1}}</td>
                     <td>{{word.progress}}%</td>

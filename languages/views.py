@@ -5,7 +5,7 @@ from django.http import JsonResponse
 
 #WordsDB Model
 from .models import Collocation, Dictionary, TopicDictionary, Fav, ZeroToHero
-from .models import Post, Exercise, Comment, Like, Dislike
+from .models import Post, GK, Exercise, Comment, Like, Dislike
 from .forms import PostForm, ExerciseForm, CommentForm, CollocationEntryForm, DictionaryForm
 
 from django.core import serializers
@@ -418,6 +418,20 @@ def post_list(request):
     }
     return render(request, 'english/post_list.html', vars)
 
+def gkpost_list(request):
+    get = request.GET
+    posts = GK.objects.filter(published=True)
+        
+    paginator = Paginator(posts, 5)
+    page_number = get.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    vars = {
+        "posts": posts,
+        "page_obj": page_obj
+    }
+    return render(request, 'gkposts.html', vars)
+
 def post_detail(request, pk):
     # user_obj = User.objects.get(username=request.user.username)
     post = get_object_or_404(Post, pk=pk)
@@ -446,6 +460,22 @@ def post_detail(request, pk):
         "premium":True
         }
     return render(request, 'post_detail.html', vars)
+
+def gkpost_detail(request, pk):
+    post = get_object_or_404(GK, pk=pk)
+    post.views += 1
+    post.save()
+
+    posts = GK.objects.filter(topic=post.topic)
+    # user_in_like_set = post.like_set.filter(user__username=request.user.username).exists()
+    
+    vars = {
+        'post': post,
+        'posts': posts,
+        # 'user_in_like_set': user_in_like_set,
+        "premium":True
+        }
+    return render(request, 'gkpost.html', vars)
 
 def exercise(request, pk):
     # user_obj = User.objects.get(username=request.user.username)
@@ -978,13 +1008,12 @@ def my_words(request):
         else:
             words = Fav.objects.filter(rvdata__has_key=request.user.username)
     else:
-        tw = request.user.learnerprofile.plan[2][1]
+        tw = request.user.learnerprofile.plan[2]
         words = [Fav.objects.get(pk=x[0]) for x in tw]
 
 
     paginator = Paginator(words, 10)  # Show 6 contacts per page.
     page_number = get.get("page") if get.get("page") else 1
-    page_navi = int(page_number)-1
     page_obj = paginator.get_page(page_number)
 
     wordd = []
@@ -1003,7 +1032,6 @@ def my_words(request):
         "wordscount":len(words),
         "wordsp":page_obj,
         "words":wordd,
-        "pagen":page_navi,
     }
     return render(request, "english/my_words.html", vars)
 
@@ -1163,7 +1191,7 @@ def dict_filt(request):
     elif data == "sayings":
         words = Dictionary.objects.filter(listing=4)
 
-    paginator = Paginator(words, 50)
+    paginator = Paginator(words)
     page_number = get.get("page") if get.get("page") else 1
     page_navi = int(page_number)-1
     page_obj = paginator.get_page(page_number)
@@ -1171,8 +1199,7 @@ def dict_filt(request):
     vars = {
         "wordscount":words.count(),
         "wordsp":page_obj,
-        "pagen":page_navi,
-        "usr":"usr"+str(request.user.pk)
+        "pagen":page_navi
     }
     return render(request,"english/dictionary_filtered.html",vars)
 
@@ -1180,16 +1207,19 @@ def dict_filt(request):
 @login_required
 def revise_main(request):
     get = request.GET
+    td = True if get.get("td") == "true" else False
     user = request.user
     username = user.username
     cefr = ["a1","a2","b1","b2","c1","c2"]
 
     today = datetime.datetime.today().date() # today.strftime("%Y-%m-%d") # string date
 
-    if get.get("td") == "true":
-        rv_set = [Fav.objects.get(pk=x[0]) for x in request.user.learnerprofile.plan[2]]
-        if not rv_set: return HttpResponseRedirect(get.get("back","/"))
+    if td:
+        rv_set = [x for x in request.user.learnerprofile.plan[2]]
         lv_set = None
+        if not rv_set:
+            messages.success(request,f"You have no words due for review!")
+            return HttpResponseRedirect(get.get("back","/"))
     else:
         rv_set = sorted(Fav.objects.filter(rvdata__has_key=username), key=lambda x: random.random())
         lv_set = sorted(Dictionary.objects.filter(cefr="a2") | Dictionary.objects.filter(cefr="b1") | Dictionary.objects.filter(cefr="b2") | Dictionary.objects.filter(cefr="c1"), key=lambda x: random.random())
@@ -1200,12 +1230,33 @@ def revise_main(request):
     learned = int(request.COOKIES.get("wlt","0"))
 
     rvp_obj = []
-    rvvp = []
-    if rv_set:
+    if td:
         for x in rv_set:
-            rvdata = x.rvdata[username]
-            for dn, d in enumerate(rvdata["dates"]):
-                if not rvdata["mastered"][dn]:
+            f = Fav.objects.get(pk=x[0])
+            rvdata = f.rvdata[username]
+            print(x)
+            dn = rvdata["senses"].index(x[1])
+            rvp_obj.append({
+                "pk":f.pk,
+                "rvsense":x[1],
+                "rvcount":rvdata["rvcounts"][dn],
+                "from":"Learned",
+                "word":f.word.word,
+                "pos":f.word.pos,
+                "cefr":f.word.cefr,
+                "forms":f.word.forms,
+                "pronunciation":f.word.pronounciation,
+                "senses":f.word.senses[x[1]],
+                "word_details":f.word.word_details,
+                "note":rvdata["notes"][dn],
+                "priority":rvdata["pr"][dn],
+                "actionable": True #False if rvdata["rvcounts"][dn] < 2 else True
+            })
+    else:
+        if rv_set:
+            for x in rv_set:
+                rvdata = x.rvdata[username]
+                for dn, d in enumerate(rvdata["dates"]):
                     yd = datetime.datetime.strptime(d,"%Y-%m-%d").date()
                     if today >= yd:
                         # print(x.word, x.pk)
@@ -1225,23 +1276,39 @@ def revise_main(request):
                             "priority":rvdata["pr"][dn],
                             "actionable": True #False if rvdata["rvcounts"][dn] < 2 else True
                         })
-                    break
-            if len(rvp_obj) == revise:
-                break
-    
-    lv_counter = 0
-    if lv_set:    
-        for x in lv_set:
-            if x.senses:
-                if lv_counter >= learn-learned:
-                    break
-                while True:
-                    rsense = random.randrange(len(x.senses))
-                    if x.senses[rsense][2] in cefr:
                         break
-                if username in x.rvdata.keys():
-                    rvd = x.rvdata[username]["senses"]
-                    if rsense not in rvd:
+                if len(rvp_obj) == revise:
+                    break
+        
+        lv_counter = 0
+        if lv_set:    
+            for x in lv_set:
+                if x.senses:
+                    if lv_counter >= learn-learned:
+                        break
+                    while True:
+                        rsense = random.randrange(len(x.senses))
+                        if x.senses[rsense][2] in cefr:
+                            break
+                    if username in x.rvdata.keys():
+                        rvd = x.rvdata[username]["senses"]
+                        if rsense not in rvd:
+                            rvp_obj.append({
+                                "pk":x.pk,
+                                "rvsense":rsense,
+                                "from":"New Word",
+                                "word":x.word,
+                                "pos":x.pos,
+                                "cefr":x.cefr,
+                                "forms":x.forms,
+                                "pronunciation":x.pronounciation,
+                                "senses":x.senses[rsense],
+                                "word_details":x.word_details,
+                                "priority":3,
+                                "actionable":True
+                            })
+                            lv_counter += 1
+                    else:
                         rvp_obj.append({
                             "pk":x.pk,
                             "rvsense":rsense,
@@ -1257,22 +1324,6 @@ def revise_main(request):
                             "actionable":True
                         })
                         lv_counter += 1
-                else:
-                    rvp_obj.append({
-                        "pk":x.pk,
-                        "rvsense":rsense,
-                        "from":"New Word",
-                        "word":x.word,
-                        "pos":x.pos,
-                        "cefr":x.cefr,
-                        "forms":x.forms,
-                        "pronunciation":x.pronounciation,
-                        "senses":x.senses[rsense],
-                        "word_details":x.word_details,
-                        "priority":3,
-                        "actionable":True
-                    })
-                    lv_counter += 1
 
     # randnums = random.sample(items, 3) #for more than one item, it contains 3 random objects from the model
     vars = {

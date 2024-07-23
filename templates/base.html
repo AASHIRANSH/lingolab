@@ -100,6 +100,8 @@
                 })
             })
         })()
+
+        today = new Date();
     </script>
     <link rel="manifest" href="/static/js/manifest.json">
 
@@ -222,8 +224,12 @@
     <script>
         setInterval(updls, 60000);
         function updls() {
-            const userlog = new XMLHttpRequest();
-            userlog.open("GET","{% url 'userlog' %}?user={{request.user.pk}}", true);
+            let hours = today.getHours();
+            let minutes = today.getMinutes();
+            //let seconds = today.getSeconds();
+
+            let userlog = new XMLHttpRequest();
+            userlog.open("GET",`{% url 'userlog' %}?user={{request.user.pk}}&t=${hours}:${minutes}`, true);
             userlog.send();
         };
     </script>

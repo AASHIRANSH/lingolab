@@ -51,7 +51,6 @@
         notifBox.classList.add("animate__fadeInDown");
         document.querySelector("body").style.overflow = "hidden";
 
-        var today = new Date();
         time.innerText = `${today.getHours()}:${today.getMinutes()<10?'0':''}${today.getMinutes()}`;
         date.innerText = `${weekday[today.getDay()].slice(0,3)}, ${month[today.getMonth()]} ${today.getDate()}`;
         

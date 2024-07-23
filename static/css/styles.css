@@ -225,13 +225,13 @@ ol.circle_filled li div {
 /*____________END GLOBAL___________*/
 
 /* Dict Search */
-.wrapper {
+.swrapper {
   /*max-width: 450px; being used bs cols classes for width*/
   margin: 1rem auto;
   font-family: 'Poppins', sans-serif;
 }
 
-.wrapper .search-input {
+.swrapper .search-input {
   background: #fff;
   width: 100%;
   border-radius: 5px;

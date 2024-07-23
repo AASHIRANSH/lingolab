@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
-
+{% block og %}
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://www.lingolab.in{{request.path}}"/>
+    <meta property="og:title" content="{{word.word}} | Definition | LingoLab"/>
+    <meta property="og:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve..." />
+    <meta property="og:site_name" content="LingoLab"/>
+    <meta name="twitter:site" content="@thepracticaldev">
+    <meta name="twitter:creator" content="@earthcomfy">
+    <meta name="twitter:title" content="Custom User Model in Django">
+    <meta name="twitter:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve...">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta property="og:image" content="https://dev.to/social_previews/article/1024949.png"/>
+    <meta name="twitter:image:src" content="https://dev.to/social_previews/article/1024949.png">
+{% endblock og %}
 {% block body %}
 {% include 'english/flashcards/styles/flashcards.html' %}
 {% include "header.html" %}
@@ -178,9 +193,9 @@
                         <div>
                             {% if fav %}
                                 {% if sense.0 in fav %}
-                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i id="ft" class="fa-solid fa-trash"></i><i id="fp" class="d-none fa-solid fa-plush"></i></button>
+                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i id="ft" class="fa-solid fa-trash"></i><i id="fp" class="d-none fa-solid fa-plush"></i><i class="fa-solid fa-list-ul"></i></button>
                                     {% else %}
-                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i id="fp" class="fa-regular fa-plus"></i><i id="ft" class="d-none fa-solid fa-trash"></i></button>
+                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i id="fp" class="fa-regular fa-plus"></i><i id="ft" class="d-none fa-solid fa-trash"></i><i class="fa-solid fa-list-ul"></i></button>
                                 {% endif %}
                             {% else %}
                             <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
@@ -210,8 +225,8 @@
                         </div>
                     {% endfor %}
                     {% endif %}
-                    <div id="def-container" class="bg-white rounded p-1 mb-1 shadow-sm">
-                        <div id="def" class="position-relative bg-primary bg-opacity-25 fs-4 p-3 rounded">
+                    <div id="def-container" class="bg-light rounded p-1 mb-1 shadow-sm">
+                        <div id="def" class="position-relative bg-primary-subtle fs-4 p-3 rounded">
                             {% if sense.1 %}
                                 <span class="d-inline-block bg-primary text-light text-uppercase fs-8 bg-opacity-75 p-1 mb-1">
                                     {{sense.1}}
@@ -246,8 +261,8 @@
                     </div>
 
                     {% if sense.10 %}
-                        <div class="bg-white rounded p-1 shadow-sm">
-                            <div id="example" class="example fs-5 fst-italic bg-gray bg-opacity-10 rounded pt-1 overflow-auto">
+                        <div class="bg-light rounded p-1 shadow-sm">
+                            <div id="example" class="example fs-5 fst-italic bg-gray-100 bg-opacity-10 rounded pt-1 overflow-x-hidden">
                                 <ul>
                                     <hr class="my-1">
                                     {% for example in sense.10 %}
@@ -326,9 +341,9 @@
                             </span>
                             <div class="ps-3">
                                 {% for x in sense.11 %}
-                                    <div class="d-flex bg-gray rounded mb-1">
-                                        <div class="col-4 bg-secondary bg-opacity-10 text-primary fw-bold px-2 py-1 rounded">{{x.0}}</div> 
-                                        <div class="col-8 px-2 py-1">&#x2022; {{x.1}}</div>
+                                    <div class="mb-3">
+                                        <div class="mb-1"><span class="bg-gray-200 text-primary fw-bold px-2 py-1 rounded">{{x.0}}</span></div> 
+                                        <div class="px-3">&#x2022; {{x.1}}</div>
                                     </div>
                                 {% endfor %}
                             </div>

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from users.models import Contact, Friend, Notification, LearnerProfile, Profile, Notes
 
 from django.http import JsonResponse
-
+from django.core.paginator import Paginator
 
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, SetPasswordForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -17,13 +17,13 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 import datetime, json
 
 def userlog(request):
-    pk = request.GET.get("user") or 1
-    user = User.objects.get(id=pk)
+    get = request.GET
+    pk = get.get("user")
+    user = User.objects.get(pk=pk)
     usr_pr = user.profile.last_seen or user.last_login
     
     return render(request, "userlog.html", {"usr_pr":usr_pr})
 
-from django.core.paginator import Paginator
 def users(request):
     datag = request.GET
     if datag.get("users") == "friends":

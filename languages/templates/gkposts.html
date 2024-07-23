@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block body %}
+{% include "header.html" %}
+
+{% include 'messages.html' %}
+
+<div class="container my-5">
+    {% if perms.languages.add_post %}
+        <h2>Admin Control</h2>
+        <div class="row">
+            <div>
+                <button class="btn btn-secondary" onclick="window.location.assign(`{% url 'post_entry' %}`)">Add Post</button>
+            </div>
+        </div>
+        <hr>
+    {% endif %}
+
+    <div class="d-flex justify-content-between mb-3">
+        <div class="col-auto">
+            <select class="form-select bg-gray text-secondary">
+            <option>Newest</option>
+            <option>Oldest</option>
+            </select>
+        </div>
+    
+        <div class="col-auto">
+            <select class="form-select bg-gray text-secondary">
+                <option>Grammar</option>
+            </select>
+        </div>
+    </div>
+
+    {% for post in page_obj %}
+        <div class="text-light p-3 rounded mb-3" style="background-color:#2b71c9;">
+            <div class="d-flex justify-content-between fs-8 lsp-sm text-uppercase mb-3">
+                <span>{{post.created_at|date:"M d, Y"}}</span>
+                <span class="p-1 rounded" style="background-color:#2867b9;">{{post.topic.name}}</span>
+            </div>
+            <div class="fw-bold fs-3 text-white mb-4 cursor-pointer" onclick="window.location.assign(`{% url "gkpost_detail" post.pk %}`)">
+                {{post.title}}
+            </div>
+            <!--div class="">By: {{post.author}}</div-->
+        
+            <div class="text-end">
+                <span class="d-inline-block bg-light bg-opacity-10 py-1 px-2 rounded-3">
+                {% if usr in word.rvdata.keys %}
+                <button title="Already added" class="btn btn-light fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense=0')"><i class="fa-solid fa-heart"></i></button>
+                {% else %}
+                <button title="Add it" class="btn btn-outline-light fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
+                {% endif %}
+                </span>
+            </div>
+        </div>
+    {% endfor %}
+
+    <hr>
+    <nav aria-label="...">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% include 'footer.html' %}
+{% endblock body %}

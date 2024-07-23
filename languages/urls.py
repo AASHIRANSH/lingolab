@@ -46,9 +46,11 @@ urlpatterns = [
     path('flashcards/', include("languages.english.flashcards.urls")),
     
     # Posts
-    path('', views.post_list, name="posts"),
+    path('posts/', views.post_list, name="posts"),
+    path('gkposts/', views.gkpost_list, name="gkposts"),
     path('post/', views.post_entry, name='post_entry'),
     path('post/<int:pk>/', views.post_detail, name='post_detail'),
+    path('gkpost/<int:pk>/', views.gkpost_detail, name='gkpost_detail'),
     path('test/', views.post_detail_test, name='post_detail_test'),
     path('exercise/<int:pk>/', views.exercise, name='exercise'),
     path('exercise/', views.exercise_entry, name='exercise_entry'),

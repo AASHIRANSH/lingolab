@@ -11,17 +11,6 @@
 {% block body %}
 {% include 'header.html' %}
 {% include 'english/flashcards/styles/flashcards.html' %}
-<!-- LOADING ANIMATION -->
-<div class="loader-wrapper">
-    <span class="loader"><span class="loader-inner"></span></span>
-</div>
-
-<!-- LOADING ANIMATION STOP -->
-<script>
-    $(window).on("load", function() {
-        $(".loader-wrapper").fadeOut("slow");
-    });
-</script>
 
 
 <div class="position-relative bg-polka-learner-sm animation-polka-glow">
@@ -86,10 +75,10 @@
     <div class="col-11 col-lg-8 mx-auto">
         {% for word in wordsp %}
             <tr>
-                <div class="bg-gray-400 p-3 rounded mb-3">
+                <div class="bg-gray-200 p-3 rounded mb-3">
                     <div class="text-end">
                         <span class="d-inline-block bg-light bg-opacity-10 py-1 px-2 rounded-3">
-                        {% if usr in word.rvdata.keys %}
+                        {% if request.user.username in word.fav.rvdata.keys %}
                         <button title="Already added" class="btn btn-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense=0')"><i class="fa-solid fa-heart"></i></button>
                         {% else %}
                         <button title="Add it" class="btn btn-outline-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
