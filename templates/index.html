@@ -121,10 +121,10 @@
 </div-->
 
 
-<div class="p-3 rounded mx-2 shadow border border-4">
+<div class="p-3 rounded mx-2 shadow border border-3">
   <div class="col-12 d-flex justify-content-between mb-3">
     <div class="col-auto">
-      <div class="fs-5 text-secondary fw-bold px-3 py-1 shadow-sm rounded border border-4">Latest English Posts</div>
+      <div class="fs-5 text-secondary fw-bold px-3 py-1 shadow-sm rounded border border-3">Latest English Posts</div>
     </div>
   
     <div class="col-auto">
@@ -165,10 +165,10 @@
   
 <hr class="my-5">
 
-<div class="p-3 rounded mx-2 shadow border border-4">
+<div class="p-3 rounded mx-2 shadow border border-3">
   <div class="col-12 d-flex justify-content-between mb-3">
     <div class="col-auto">
-      <div class="fs-5 text-secondary fw-bold px-3 py-1 shadow-sm rounded border border-4">Latest Facts & GK Posts</div>
+      <div class="fs-5 text-secondary fw-bold px-3 py-1 shadow-sm rounded border border-3">Latest Facts & GK Posts</div>
     </div>
   
     <div class="col-auto">
@@ -178,28 +178,11 @@
   <div class="d-flex flex-column flex-md-row flex-md-wrap justify-content-center">
     {% for post in gks %}
     <div class="card col-12 col-md-5 col-lg mx-md-1 mb-3 shadow-sm">
-      <div id="lesson_cont" class="card-img-top position-relative cursor-pointer" onclick="window.location.assign(`{% url 'gkpost_detail' post.pk %}`)">
-        <div class="position-absolute top-0 start-0 bg-secondary bg-opacity-50 py-1 px-2 fs-7 fst-italic rounded text-light">
-          {{post.created_at|date:"j-m-y"}}
-        </div>
-        <div id="lesson_title" class="d-flex justify-content-center align-items-center">
-          <div class="">
-            <div class="fs-9">■ ■ ■</div>
-            <div class="fs-3 fst-italic" style="font-family:Poppins;">{{post.topic.name|title}}</div>
-            <div class="fs-9">■ ■ ■</div>
-          </div>
-        </div>
-        {% if post.like_set.count > 10 %}
-          <div class="position-absolute bottom-0 end-0 bg-secondary bg-opacity-75 py-1 px-2 rounded-3 text-light">
-            <i class="fa fa-thumbs-up fs-6"></i> <span class="badge text-light">{{post.like_set.count}}</span>
-          </div>
-        {% endif %}
-      </div>
-  
+      <img src="{{post.img}}" class="card-img-top cursor-pointer" onclick="window.location.assign(`{% url 'gkpost_detail' post.pk %}`)"/>
+      
       <div class="card-body">
-        <div class="">
-          <div class="fw-bold fs-4 text-primary cursor-pointer" onclick="window.location.assign(`{% url 'gkpost_detail' post.pk %}`)">{{ post.title }}</div>
-        </div>
+        <h5 class="card-title cursor-pointer" onclick="window.location.assign(`{% url 'gkpost_detail' post.pk %}`)">{{ post.title }}</h5>
+        <p class="card-text">{{post.caption}}</p>
       </div>
     </div>
     {% endfor %}

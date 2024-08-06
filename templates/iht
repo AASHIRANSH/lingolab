@@ -34,10 +34,12 @@
       <div class="ts-b bg-primary"></div>
     </div>
 
+    {% if request.path != "/english/entries/" %}
     <div class="position-relative col-10 col-md-auto bg-success bg-opacity-10 text-success px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('{% url "dict_filt" %}?data=common_phrasal_verbs')">
       <span class="fst-italic">I am here for...</span>
       <div class="fw-bold fs-5 text-center">Common Phrasal Verbs</div>
       <div class="ts-b bg-success"></div>
     </div>
+    {% endif %}
   </div>
 </div>

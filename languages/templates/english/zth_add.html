@@ -22,7 +22,7 @@
 
   <!-- search -->
   <div class="container my-4">
-    <div class="wrapper col-10 col-md-8">
+    <div class="swrapper col-10 col-md-8">
         <div class="search-input">
             <input type="search" name="q" class="form-control" placeholder="Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
             <div id="subox" class="autocom-box mt-1 rounded-bottom shadow">
@@ -62,11 +62,12 @@
                     <option value="">-</option>
                     <option value="word" {% if sense.0 == 'word' %}selected{% endif %}>word</option>
                     <option value="button" {% if sense.0 == 'button' %}selected{% endif %}>button</option>
+                    <option value="sen" {% if sense.0 == 'sen' %}selected{% endif %}>sentence/phrase</option>
                   </select>
                 </div>
 
                 <div class="col-3">
-                  <label for="id_word_{{forloop.counter0}}">WORD:</label>
+                  <label for="id_word_{{forloop.counter0}}">WORD ID:</label>
                   <input type="number" class="form-control" name="word_{{forloop.counter0}}" value="{{sense.3}}" id="id_word_{{forloop.counter0}}"></input>
                 </div>
 
@@ -86,6 +87,7 @@
                     <option value="">-</option>
                     <option value="wcard" {% if sense.1 == 'wcard' %}selected{% endif %}>card</option>
                     <option value="wbutton" {% if sense.1 == 'wbutton' %}selected{% endif %}>button</option>
+                    <option value="tr" {% if sense.1 == 'tr' %}selected{% endif %}>translate</option>
                     <option value="match" {% if sense.1 == 'match' %}selected{% endif %}>match</option>
                   </select>
                 </div>

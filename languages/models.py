@@ -15,6 +15,16 @@ class Topic(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+    
+class Story(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    # img = models.CharField(max_length=200, blank=True, null=True)
+    # tags = models.TextField(blank=True, null=True)
+    views = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.title}'
 
 class Thesaurus(models.Model):
     name = models.CharField(max_length=100)
@@ -76,7 +86,8 @@ class ZeroToHero(models.Model):
     course = models.CharField(max_length=50)
     lang = models.CharField(choices=(('en','English'),('ru','Russian'),('tr','Turkish')),max_length=50)
     origin = models.CharField(choices=(('en','English'),('ur','Urdu'),('hi','Hindi')),max_length=50)
-    data = models.JSONField(default=dict)
+    data = models.JSONField(default=dict, blank=True, null=True)
+    units = models.JSONField(default=dict)
 
     def __str__(self):
         return f"{self.course} ({self.origin})"
@@ -108,7 +119,8 @@ class GK(models.Model):
     title = models.CharField(max_length=200)
     caption = models.TextField(blank=True, null=True)
     content = models.TextField()
-    image = models.ImageField(upload_to=content_file_name, blank=True, null=True)
+    img = models.CharField(max_length=200, blank=True, null=True)
+    # image = models.ImageField(upload_to=content_file_name, blank=True, null=True)
     highlights = models.CharField(max_length=200, blank=True, null=True)
     source = models.CharField(max_length=200, blank=True, null=True)
     views = models.IntegerField(default=0)

@@ -63,15 +63,7 @@
                             </div>
                         </div>
                         <div>
-                            {% if fav %}
-                                {% if sense.0 in fav %}
-                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i class="fa-solid fa-trash"></i></button>
-                                    {% else %}
-                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
-                                {% endif %}
-                            {% else %}
-                            <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
-                            {% endif %}
+                            <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
 

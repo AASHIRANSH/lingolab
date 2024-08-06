@@ -7,7 +7,7 @@
         list-style-type: none;
         position: relative;
         background-color: var(--bs-gray-100);
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: bold;
         border-radius: 0.5rem;
         overflow: hidden;
@@ -27,6 +27,11 @@
         background-color: var(--bs-gray-100);
     }
     .pnav li a{
+        display: inline-block;
+        padding: 0.4rem 1rem;
+    }
+    .pnav li:not(.active) a{
+        color: var(--bs-gray-600);
         display: inline-block;
         padding: 0.4rem 1rem;
     }
@@ -247,6 +252,12 @@
         letter-spacing: 0.08rem;
         word-spacing: 0.05rem;
     }
+    .post .post-img {
+        display: block;
+        max-width: 100%;
+        border-radius: 1rem;
+        margin: 1.5rem auto;
+    }
     .post .top-m {
         max-width: 600px;
         background-color: var(--bs-purple);
@@ -433,6 +444,11 @@
         }
         100% {
             background-position: 0% 50%;
+        }
+    }
+    @media print {
+        *:not(.post) {
+            display: none;
         }
     }
 </style>

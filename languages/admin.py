@@ -1,8 +1,12 @@
 from django.contrib import admin
-from .models import Post, Comment, Like, Dislike, Exercise
+from .models import Post, Comment, Like, Dislike, Exercise, Story
 from .models import Quote, Thesaurus, Collocation, Dictionary, TopicDictionary, Topic, Fav, ZeroToHero, GK
 
 # Register your models here.
+@admin.register(Story)
+class StoryView(admin.ModelAdmin):
+    list_display = ['title']
+
 @admin.register(Exercise)
 class ExerciseView(admin.ModelAdmin):
     list_display = ['question','category','sub_category','cefr']

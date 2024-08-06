@@ -21,45 +21,51 @@
 <!--End MODAL WINDOW-->
 {% include 'tts_2.html' %}
 
+<script>
+    unit = {{unit}};
+    lesson = {{lesson}};
+</script>
 <script src="/static/js/courses/hi_en/globall.js"></script>
 <script src="/static/js/courses/hi_en/prompt_main.js"></script>
 <script>
     var objs = JSON.parse("{{db|escapejs}}");
     var maxNum = objs.length - 1;
-    var unit = {{unit}};
+    //var unit = {{unit}};
+    //var lesson = {{lesson}};
     
     function masters() {
         var vars = arguments;
         let obj = objs[vars[0]];
         let oi = obj[1];
         let ol = obj[5];
+        let fn = vars[0] == maxNum ? 1 : 0;
 
         if (oi == "wcard"){
             let x = obj[2][0];
             let y = [0,0];
             let z = obj[2][1]
-            wcard_prompt_beg(x, y, z, 1, 0);
+            wcard_prompt_beg(x, y, z, 1, fn);
         } else if (oi == "wbutton"){
             let x = obj[2][0];
             let y = [0,0];
             let z = obj[2][1]
-            wbutton_prompt_reverse(x, y, z, 1, 0);
+            wbutton_prompt_reverse(x, y, z, 1, fn);
         } else if (oi == "wbutton_r"){
-            let x = obj.content[0];
+            let x = obj[2][0];
             let y = [0,0];
-            let z = obj.content[1]
-            wbutton_prompt_reverse(x, y, z, 1, 0);
-        } else if (oi == "translate"){
-            let x = obj.content[0];
+            let z = obj[2][1]
+            wbutton_prompt_reverse(x, y, z, 1, fn);
+        } else if (oi == "tr"){
+            let x = obj[2][0];
             let y = [0,0];
-            let z = obj.content[1]
+            let z = obj[2][1]
 
             if (ol==1){
-                translate_beg(x, y, z, 1, 0);
+                translate_beg(x, y, z, 1, fn);
             } else if (ol==2){
-                translate_beg_conf(x, y, z, 1, 0);
+                translate_beg_conf(x, y, z, 1, fn);
             } else if (ol==3){
-                translate_beg_wh(x, y, z, 1, 0);
+                translate_beg_wh(x, y, z, 1, fn);
             }
         }
     }

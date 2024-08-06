@@ -14,7 +14,7 @@
 <div class="container">
     <div class="col-12 col-md-8 mx-auto">
         {% if course_selected %}
-            {% for unit in course.data %}
+            {% for unit in course.units %}
             {% with un=forloop.counter %}
             <div class="my-5">
             <div class="text-bg-primary fs-3 p-3 rounded">Unit {{forloop.counter}} ({{unit.title}})</div>

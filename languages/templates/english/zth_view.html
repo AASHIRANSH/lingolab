@@ -11,21 +11,9 @@
 {% block body %}
 {% include 'header.html' %}
 {% include 'english/flashcards/styles/flashcards.html' %}
-<!-- LOADING ANIMATION -->
-<div class="loader-wrapper">
-    <span class="loader"><span class="loader-inner"></span></span>
-</div>
 
-<!-- LOADING ANIMATION STOP -->
-<script>
-    $(window).on("load", function() {
-        $(".loader-wrapper").fadeOut("slow");
-    });
-</script>
-
-
-<div class="container-fluid bg-gray text-primary text-center py-2">
-    <a href="/english/dictionary/"><span class="display-4 fw-bold learner" style="font-family:Majalla;"><i class="ti book-2"></i> ZTH DB</span></a>
+<div class="container-fluid bg-secondary text-bg-body text-center py-2">
+    <a href="/english/dictionary/"><span class="display-5 fw-bold"><i class="ti book-2"></i> ZTH DB</span></a>
 </div>
 <div class="rule pt-1"></div>
 {% include "messages.html" %}
@@ -34,7 +22,7 @@
 {% endif %}
 <!-- search -->
 <div class="container my-4">
-    <div class="wrapper col-10 col-md-8">
+    <div class="swrapper col-10 col-md-8">
         <div class="search-input">
             <input type="search" name="q" class="form-control" placeholder="Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
             <div id="subox" class="autocom-box mt-1 rounded-bottom shadow">
@@ -95,7 +83,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-4">
-                                {% for unit in word.data %}
+                                {% for unit in word.units %}
                                 {% with un=forloop.counter %}
                                     <div class="cursor-pointer p-3">
                                         <div class="hover-gray py-3" data-bs-toggle="collapse" data-bs-target="#collapseExample{{forloop.counter}}" aria-expanded="false">Unit {{forloop.counter}}</div>

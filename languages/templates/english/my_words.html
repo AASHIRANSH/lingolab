@@ -2,14 +2,14 @@
 {% block body %}
 {% include 'header.html' %}
 
-<div class="container-fluid bg-gray-200 text-primary text-center p-3">
-    <span class="fs-1 fw-bold learner">My Learnings</span>
+<div class="container-fluid bg-gray-200 p-3">
+    <div class="text-center text-learner display-4 fw-semibold pb-2"><i class="fa-solid fa-list"></i> My Learnings</div>
 
     <div class="px-2">
         <div class="pnav">
             <li class="{% if not request.GET.td %}active{% endif %}">
                 <div class="ts-b"></div>
-                <a href="{% url "my_words" %}">WORDS LIST</a>
+                <a href="{% url "my_words" %}">MY WORDS LIST</a>
             </li>
             
             <li class="{% if request.GET.td %}active{% endif %}">
@@ -38,23 +38,21 @@
 
 <div class="container my-5">
     <div class="col-12 col-md-8 mx-auto my-3">
+        {% if request.GET.q %}
         <div class="card card-body bg-primary-subtle mb-3">
-            {% if request.GET.q %}
-                <div class="my-1">
-                    Showing results for <span class="text-primary">&quot;{{request.GET.q}}&quot;</span>
-                </div>
-            {% endif %}
-            <div class="d-flex gap-3 fs-5 fw-semibold text-primary" onclick="window.location.assign('{% url "revisemain" %}?back=/english/dictionary')">
-                <span>Total Words</span>
-                <span class="text-secondary">:</span>
-                <span>{{wordscount}}</span>
+            <div class="text-center">
+                <div class="mb-1">Showing results for &quot;<span class="text-primary fw-bold">{{request.GET.q}}</span>&quot; ({{searchcount}} entries found)</div>
+                <a href="{{request.path}}" role="btn" class="btn btn-sm btn-primary">Clear Search</a>
             </div>
         </div>
+        {% endif %}
 
         <div class="card card-body bg-primary-subtle mb-3">
             <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-3 fw-semibold text-primary">
-                    <span>Filter</span>
+                <div class="d-flex gap-3 fs-5 fw-semibold text-primary" onclick="window.location.assign('{% url "revisemain" %}?back=/english/dictionary')">
+                    <span>Total Words</span>
+                    <span class="text-secondary">:</span>
+                    <span>{{favscount}}</span>
                 </div>
 
                 <div>
@@ -64,7 +62,7 @@
         </div>
 
         <!-- table -->
-        <table id="" class="table table-hover rounded overflow-hidden" style="width:100%;">
+        <table id="" class="table table-hover rounded overflow-hidden shadow-sm" style="width:100%;">
             <thead>
                 <tr class="table-primary">
                     <th class="text-primary" style="width:5%;">#</th>
@@ -76,14 +74,12 @@
             </thead>
             <tbody>
                 {% for word in words %}
-                <tr>
-                    <td>{% if not forloop.counter == 10%}{{request.GET.page}}{{forloop.counter}}{% else %}{{forloop.counter}}{% endif %}</td>
-                    <td onclick="window.location.assign(`{% url 'my_word' word.pk %}`)" class="cursor-pointer">{{word.word}} {% if word.pos %}<span class="text-secondary fst-italic">({{word.pos}})</span>{% endif %}</td>
-                    <td>{{word.sense.0}}/{{word.sense.1}}</td>
-                    <td>{{word.progress}}%</td>
-                    <td>
-                        <button title="Already dded" class="btn btn-outline-danger fs-6" onclick="window.location.assign('/english/datamain?data=remove&word={{word.pk}}&sense={{word.sense}}')"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                <tr onclick="window.location.assign(`{% url 'my_word' word.pk %}`)" class="cursor-pointer">
+                    <td class="text-secondary">{% if not forloop.counter == 10%}{{request.GET.page}}{{forloop.counter}}{% else %}{{forloop.counter}}{% endif %}</td>
+                    <td>{{word.word}} {% if word.pos %}<span class="text-secondary fst-italic">({{word.pos}})</span>{% endif %}</td>
+                    <td><div class="badge text-bg-secondary">{{word.sense.0}}/{{word.sense.1}}</div></td>
+                    <td><div class="badge text-bg-primary">{{word.progress}}%</div></td>
+                    <td></td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -12,14 +12,12 @@ sorryy = ["Yeh Nahi Tha!", "Nahi!", "Wrong!", "Incorrect!", "Sorry!"];
     headings = ["की English चुनें","की Hindi Translation चुनें","शब्दों के सही जोड़े बनाएं"];
 }
 
-
 num = 0;//used for page navigations
 nump = num+1;//used for showing page number
 right = 0;//used for counting correct cards
 wrong = 0;//used for counting incorrect cards
 cards_db = [];
 len = [];//used for current page if there are more than one card
-
 
 {//CARD_PROMPT
     function card_prompt_beg_img() {
@@ -670,7 +668,7 @@ len = [];//used for current page if there are more than one card
 
         body.innerHTML = `
             <div class="inf">
-                <div class="col-3 fs-4">lesson - ${unit}</div>
+                <div class="col-3 fs-4">lesson - ${lesson}</div>
                 <div class="col-6 text-center fs-3">${card_title}</div>
                 <div class="col-3 text-end fs-4">page - ${num + 1}</div>
             </div>
@@ -3024,22 +3022,25 @@ function write_int() {
 function translate_beg() {
     {//variables
         var vars = arguments;
-        var cardm = vars[0];
         card_title = "TRANSLATION";
-        var card_content = cardm;
-        if (vars[1][1]==0){
-            var card_content_les = card_content.slice(vars[1][0],card_content.length); //cardm.slice(cardm.indexOf('$$') + 2, cardm.length)
-        }else{
-            var card_content_les = card_content.slice(vars[1][0], vars[1][1]);//cardm.slice(cardm.indexOf('$$') + 2, cardm.length)
-        }
-        var len_card_content = card_content_les.length;
-        var randline = Math.floor(Math.random() * (len_card_content));
-        var progress = Math.round((100 / len_card_content) * len.length);
-        while (len.includes(randline)) {
-            var randline = Math.floor(Math.random() * (len_card_content - 0)) + 0;
-        }
-        var card = card_content_les[randline][0];
-        //added later need to update in others as well
+        var len_card_content = 0;
+
+        // var cardm = vars[0];
+        // var card_content = cardm;
+        // if (vars[1][1]==0){
+        //     var card_content_les = card_content.slice(vars[1][0],card_content.length); //cardm.slice(cardm.indexOf('$$') + 2, cardm.length)
+        // }else{
+        //     var card_content_les = card_content.slice(vars[1][0], vars[1][1]);//cardm.slice(cardm.indexOf('$$') + 2, cardm.length)
+        // }
+        // var len_card_content = card_content_les.length;
+        // var randline = Math.floor(Math.random() * (len_card_content));
+        // var progress = Math.round((100 / len_card_content) * len.length);
+        // while (len.includes(randline)) {
+        //     var randline = Math.floor(Math.random() * (len_card_content - 0)) + 0;
+        // }
+        // var card = card_content_les[randline][0];
+
+        var card = vars[0];
         var english_array = card[0];
         var hindi_array = card[1];
         //--------------------------------------------
@@ -3051,10 +3052,10 @@ function translate_beg() {
     }
 
     {//generating confusing words DISABLED FOR THIS
-        // var crdlw = card_content_les[randline][1].split(':');
-        // for (x of crdlw) {
-        //     card_s.push(x);
-        // }
+        var crdlw = vars[2];
+        for (x of crdlw) {
+            card_s.push(x);
+        }
         // var crdl = card_s.map(word => word.toLowerCase());//converting the entire array(card_s) to lowercase
         // if (crdl.includes('a')) {
         //     card_s.push('an');
@@ -3068,32 +3069,33 @@ function translate_beg() {
         //     card_s.push('are');
         // }
     }
+    
     {//getting words meaning from db
-        var dbwordsObj = english.db.words;//object to iterate in
-        var dbwords_dump = [];//all lists from above Object
-        for (x in dbwordsObj) {
-            var y = dbwordsObj[x];
-            dbwords_dump.push(y);
-        };
-        var dbwords = dbwords_dump.reduce((r, e) => (r.push(...e), r), [])//while 'list' has multiple lists, this code converting them into single item by joining them
-        var card_heads_mean = [];
-        for (x in card_h_spl) {
-            for (y in dbwords) {
-                var dbx = dbwords[y].split(':');
-                if (dbx.includes(card_h_spl[x])) {
-                    card_heads_mean.push(dbx[0]);
-                }
-            }
-            if (card_heads_mean.length==x) {
-                card_heads_mean.push(card_h_spl[x]);
-            }
-        }
+        // var dbwordsObj = english.db.words;//object to iterate in
+        // var dbwords_dump = [];//all lists from above Object
+        // for (x in dbwordsObj) {
+        //     var y = dbwordsObj[x];
+        //     dbwords_dump.push(y);
+        // };
+        // var dbwords = dbwords_dump.reduce((r, e) => (r.push(...e), r), [])//while 'list' has multiple lists, this code converting them into single item by joining them
+        // var card_heads_mean = [];
+        // for (x in card_h_spl) {
+        //     for (y in dbwords) {
+        //         var dbx = dbwords[y].split(':');
+        //         if (dbx.includes(card_h_spl[x])) {
+        //             card_heads_mean.push(dbx[0]);
+        //         }
+        //     }
+        //     if (card_heads_mean.length==x) {
+        //         card_heads_mean.push(card_h_spl[x]);
+        //     }
+        // }
     }
     {//generating hi-meaning heads
         var card_h_array = ``;
         for (x in card_h_spl) {
             var mean = card_h_spl[x];
-            card_h_array += `<div class="tooltip_container"><h1>${mean}</h1><div class="tooltip_text">${card_heads_mean[x]}</div></div>`;
+            card_h_array += `<div class="tooltip_container"><h1>${mean}</h1><div class="tooltip_text">card_heads_mean[x]</div></div>`;
         }
     }
 
@@ -3106,28 +3108,29 @@ function translate_beg() {
             var mean = card_s[x];
             cas.push('#btn_' + x);
             meaning += `
-                <button onmousedown="clkk()" id="btn_${x}" value="${mean}" class="nfocus">${mean}</button>
+                <button class="ebutton" onmousedown="clkk()" id="btn_${x}" value="${mean}" class="nfocus">${mean}</button>
             `;
         }
     }
 
     body.innerHTML = `
         <div class="inf">
-            <div class="col-3 fs-4">lesson - ${unit}</div>
+            <div class="col-3 fs-4">lesson - ${lesson}</div>
             <div class="col-6 text-center fs-3">${card_title} <svg onclick="toggleModal(${vars[2]})" style="filter:drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.3));fill:#f1f1f1;color:green;float:right;" xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 96 960 960" width="34"><path d="M160 856v-60h386v60H160Zm0-166v-60h640v60H160Zm0-167v-60h640v60H160Zm0-167v-60h640v60H160Z"/></svg></div>
             <div class="col-3 text-end fs-4">page - ${num + 1}</div>
         </div>
         <div class="content">
-            <div class="flex_center">${len.length}/${len_card_content}</div>
             <div id="cardm" class="cardm_learn">
                 <div class="trans">
                     <div class="box_shadow progress" id="progress">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100" style="transition:all 0.5s ease;width:${progress}%;">${progress}% Complete</div>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{progress}" aria-valuemin="0" aria-valuemax="100" style="transition:all 0.5s ease;width:{progress}%;">{progress}% Complete</div>
                     </div>
                     <div class="flex_center"><div id="speaker" style="scale:0.6;cursor:pointer;"><img src="/static/img/svg/loudspeaker_duo.svg"/></div>${card_h_array}</div>
                     <div class="tr_content">
-                        <div class="line"></div>
-                        <div id="check" onmousedown="clkk()">OK</div>
+                        <div class="line flex gap-2"></div>
+                    </div>
+                    <div class="px-3 text-end">
+                    <button id="check" class="btn btn-primary" onmousedown="clkk()">OK</button>
                     </div>
                     <div class="flex_center">${meaning}</div>
                 </div>
@@ -3144,7 +3147,7 @@ function translate_beg() {
         var id_array = [];
         var buttons_array = [];
 
-        $('button').on('click', function () {
+        $('.ebutton').on('click', function () {
             var buttons = ``;
             var thiss = $(this);
             var thiss_text = thiss.text();
@@ -3154,7 +3157,7 @@ function translate_beg() {
                 id_array.splice(id_array.indexOf(thiss_id), 1);
                 buttons_array.splice(buttons_array.indexOf(thiss_text), 1);
                 for (x in id_array) {
-                    buttons += `<button onclick="btn_remove('${id_array[x]}')" class="nfocus">${document.querySelector('#'+id_array[x]).innerText}</button>`;
+                    buttons += `<button class="ebutton" onclick="btn_remove('${id_array[x]}')" class="nfocus">${document.querySelector('#'+id_array[x]).innerText}</button>`;
                 }
                 thiss.css({
                     'visibility':'visible',
@@ -3167,9 +3170,9 @@ function translate_beg() {
                 buttons_array.push(thiss_text);
                 for (x in id_array) {
                     if (x==id_array.length-1){//last button
-                        buttons += `<button onclick="btn_remove('${id_array[x]}')" class="nfocus">${document.querySelector('#'+id_array[x]).innerText}</button>`;
+                        buttons += `<button onclick="btn_remove('${id_array[x]}')" class="ebutton nfocus animate__animated animate__fadeIn">${document.querySelector('#'+id_array[x]).innerText}</button>`;
                     }else{
-                        buttons += `<button onclick="btn_remove('${id_array[x]}')" class="nfocus">${document.querySelector('#'+id_array[x]).innerText}</button>`;
+                        buttons += `<button onclick="btn_remove('${id_array[x]}')" class="ebutton nfocus">${document.querySelector('#'+id_array[x]).innerText}</button>`;
                     }
                 }
                 thiss.css({
@@ -3180,22 +3183,26 @@ function translate_beg() {
                 $('.line').html(buttons); //=document.querySelector('.line').innerHTML = buttons;
                 textToSpeech(thiss_text);
             }
-            if (buttons_array.length > 0) {
-                $('#check').css({
-                    'display': 'inline'
-                });
-            } else {
-                $('#check').css({
-                    'display': 'none'
-                });
-            };
+
+            // check button visibility
+            {
+                if (buttons_array.length > 0) {
+                    $('#check').css({
+                        'visibility': 'visible'
+                    });
+                } else {
+                    $('#check').css({
+                        'visibility': 'hidden'
+                    });
+                };
+            }
         });
 
         $('#check').on('click', function () {
             for (cardx of english_array) {
                 var cardx = cardx.split(' ');
                 if (buttons_array.join(';') == cardx.join(';')) {
-                    len.push(randline);
+                    // len.push(randline);
                     right += 1;
                     prompt.style.display = "block";
                     $('#prm').css({
@@ -3215,7 +3222,7 @@ function translate_beg() {
                     if (len.length == len_card_content) {
                         len = [];
                         if (vars[4] == 1) {
-                            location.assign(`/learn/${lesson + 1}`);
+                            window.location.assign("/english/learnz/2/1/"+(lesson+1));
                         } else {
                             navigate('next');
                         }

@@ -764,38 +764,9 @@ def exercise(request):
 
     today = datetime.datetime.today().date() # today.strftime("%Y-%m-%d") # string date
 
-    # rv_set = Exercise.objects.all()
-    lv_set = sorted(Exercise.objects.all(), key=lambda x: random.random())
+    lv_set = sorted(Exercise.objects.all()[0:1], key=lambda x: random.random())
     
-    # learn = user.learnerprofile.plan[1]
-    # revise = user.learnerprofile.plan[2]
-    # learned = int(request.COOKIES.get("wlt","0"))
-
     rvp_obj = []
-    # if rv_set.exists():
-    #     for x in rv_set:
-    #         rvdata = x.rvdata[username]
-    #         for dn, d in enumerate(rvdata["dates"]):
-    #             if not rvdata["mastered"][dn]:
-    #                 yd = datetime.datetime.strptime(d,"%Y-%m-%d").date()
-    #                 if today >= yd:
-    #                     rvp_obj.append({
-    #                         "pk":x.pk,
-    #                         "rvsense":rvdata["senses"][dn],
-    #                         "from":"Learned",
-    #                         "question":x.question,
-    #                         "answer":x.answer,
-    #                         "choices":x.choice,
-    #                         "cefr":x.cefr,
-    #                         "senses":x.word.senses[rvdata["senses"][dn]],
-    #                         "priority":rvdata["pr"][dn],
-    #                         "actionable": False if (today==yd and rvdata["rvcounts"][dn] < 3) else True
-    #                     })
-    #                 if len(rvp_obj) == revise:
-    #                     break
-    #         if len(rvp_obj) == revise:
-    #             break
-    
     lv_counter = 0
     if lv_set:    
         for x in lv_set:
@@ -1000,19 +971,20 @@ def word_entry(request):
 def my_words(request):
     get = request.GET
     today = True if get.get("td") == "true" else False
+    favs = Fav.objects.filter(rvdata__has_key=request.user.username)
 
     if not today:
         search_query = get.get("q","").strip()
         if search_query:
-            words = Fav.objects.filter(rvdata__has_key=request.user.username, word__word__contains=search_query)
+            words = favs.filter(word__word__contains=search_query)
         else:
-            words = Fav.objects.filter(rvdata__has_key=request.user.username)
+            words = favs
     else:
         tw = request.user.learnerprofile.plan[2]
         words = [Fav.objects.get(pk=x[0]) for x in tw]
 
 
-    paginator = Paginator(words, 10)  # Show 6 contacts per page.
+    paginator = Paginator(words, 10)
     page_number = get.get("page") if get.get("page") else 1
     page_obj = paginator.get_page(page_number)
 
@@ -1029,7 +1001,8 @@ def my_words(request):
         })
 
     vars = {
-        "wordscount":len(words),
+        "favscount":favs.count(),
+        "searchcount":len(words),
         "wordsp":page_obj,
         "words":wordd,
     }
@@ -1184,14 +1157,14 @@ def dict_filt(request):
 
     if data == "common_phrasal_verbs":
         words = Dictionary.objects.filter(listing=1)
-    elif data == "conversational_phrases":
+    elif data == "common_phrases":
         words = Dictionary.objects.filter(listing=2)
     elif data == "common_idioms":
         words = Dictionary.objects.filter(listing=3)
     elif data == "sayings":
         words = Dictionary.objects.filter(listing=4)
 
-    paginator = Paginator(words)
+    paginator = Paginator(words,200)
     page_number = get.get("page") if get.get("page") else 1
     page_navi = int(page_number)-1
     page_obj = paginator.get_page(page_number)
@@ -1509,26 +1482,34 @@ def zero_to_hero_start(request,course):
 def zero_to_hero(request,lang,unit,lesson):
     obj = ZeroToHero.objects.get(pk=lang)
     code = obj.origin
-    # with open("languages/"+lang+"/data/en.json","rt",encoding='UTF-8') as endb:
-    #     endb = json.load(fp=endb)
-    with open("languages/data/"+obj.course+"/db.json","rt",encoding='UTF-8') as tp:
+ 
+    with open("languages/data/"+obj.course+"_db.json","rt",encoding='UTF-8') as tp:
         tp = json.load(fp=tp)
 
     lesson_db = []
-    for x in obj.data[unit-1]["lessons"][lesson-1]: #endb["unit_"+unit]:
-        et = x[0]   
-        if et=="word":
-            it = Dictionary.objects.get(pk=x[3])
-            topic = it.senses[x[4]][16][0][0] if it.senses[x[4]][16][0] else None
 
-            x[2] = [[it.word,it.senses[x[4]][9][code][1]],tp[topic] if topic else ""]
-            lesson_db.append(x)
-
-        elif et=="translate":
-            lesson_db.append(x)
-
+    # for x in obj.units[unit-1]["lessons"][lesson-1]: #endb["unit_"+unit]:
+    #     etype = x[0]   
+        # if etype=="word":
+            # it = Dictionary.objects.get(pk=x[3])
+            # topic = it.senses[x[4]][16][0][0] if it.senses[x[4]][16][0] else None
+            # x[2] = [[it.word,it.senses[x[4]][9][code][1]],tp[topic] if topic else ""]
+            # lesson_db.append(x)
+        
+            # elif etype=="translate":
+            # lesson_db.append(x)
+    
+    for x in tp["units"][unit-1]["lessons"][lesson-1]:
+        etype = x[0]
+        if etype == "word":
+            for y in tp[x[2][2]]:
+                x[2][1].append(y)
+        
+        lesson_db.append(x)
+        
     vars = {
         "unit":unit,
+        "lesson":lesson,
         "db":json.dumps(lesson_db)
     }
     return render(request, "english/learn_main.html", vars)
@@ -1542,7 +1523,7 @@ def zth_entry(request):
         word_obj = ZeroToHero.objects.get(pk=get.get("course"))
         lsn = int(get.get("lesson"))
         unit = int(get.get("unit"))-1
-        lesson = word_obj.data[unit]["lessons"][lsn]
+        lesson = word_obj.units[unit]["lessons"][lsn]
 
     if request.method == "POST":
         post = request.POST
@@ -1555,7 +1536,7 @@ def zth_entry(request):
             s = str(s)
             sen.append(data.get('type_'+s))
             sen.append(data.get('interface_'+s))
-            sen.append(data.get('content_'+s))
+            sen.append(eval(data.get('content_'+s)))
             sen.append(data.get('word_'+s))
             sen.append(data.get('sense_'+s))
             sen.append(data.get('level_'+s))
@@ -1563,8 +1544,8 @@ def zth_entry(request):
             senses.append(sen)
 
         if edit:
-            word_obj.data[unit]["unit_title"] = data.get("unit_title")
-            word_obj.data[unit]["lessons"][lsn] = senses
+            word_obj.units[unit]["unit_title"] = data.get("unit_title")
+            word_obj.units[unit]["lessons"][lsn] = senses
             word_obj.save()
             messages.success(request, f'Unit {word_obj.pk} was updated')
             return HttpResponseRedirect(f'/english/zth/')
@@ -1581,7 +1562,7 @@ def zth_entry(request):
             return render(request, "english/zth_add.html", vars)
     vars = {
         # "form":form,
-        "title":word_obj.data[unit]["title"],
+        "title":word_obj.units[unit]["title"],
         "word":word_obj if edit else None,
         "wsense":lesson if edit else None,
         "edit":edit

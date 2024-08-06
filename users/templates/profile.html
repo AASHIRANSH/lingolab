@@ -6,7 +6,7 @@
 
 {% include 'header.html' %}
 
-<div class="container_fluid p-5 bg-secondary bg-opacity-90 text-light shadow">
+<div class="container_fluid p-5 bg-secondary text-light shadow">
     <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
         <div class="profile-pic text-center">
             <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow-lg bg-white" style="width:10rem;height:auto"/>
@@ -90,7 +90,7 @@
         <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
             <div><i class="fa-solid fa-fire fs-1 text-danger"></i></div>
             <div>
-                <div class="fw-bold text-dark fs-2">{{user.learnerprofile.plan.0.0}}</div>
+                <div class="fw-bold fs-2">{{user.learnerprofile.plan.0.0}}</div>
                 <div class="text-secondary">Day streak</div>
             </div>
         </div>
@@ -98,7 +98,7 @@
         <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "leaderboard" %}')">
             <div><i class="fa-solid fa-bolt fs-1 text-warning"></i></div>
             <div>
-                <div class="fw-bold text-dark fs-2">{{user.learnerprofile.plan.0.2}}</div>
+                <div class="fw-bold fs-2">{{user.learnerprofile.plan.0.2}}</div>
                 <div class="text-secondary">Total XP</div>
             </div>
         </div>
@@ -106,7 +106,7 @@
         <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
             <div><i class="fa-solid fa-diamond fs-1 text-info"></i></div>
             <div>
-                <div class="fw-bold text-dark fs-2">NA</div>
+                <div class="fw-bold fs-2">NA</div>
                 <div class="text-secondary">Current League</div>
             </div>
         </div>
@@ -114,7 +114,7 @@
         <div class="position-relative d-flex align-items-center gap-3 col-5 col-md-3 bg-light p-3 rounded cursor-pointer border border-3 shadow-sm" onclick="window.location.assign('{% url "dictionary" %}')">
             <div><i class="fa-solid fa-medal fs-1 text-warning"></i></div>
             <div>
-                <div class="fw-bold text-dark fs-2">Never</div>
+                <div class="fw-bold fs-2">Never</div>
                 <div class="text-secondary">Top 3 Finished</div>
             </div>
         </div>

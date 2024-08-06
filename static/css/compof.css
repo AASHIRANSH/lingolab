@@ -7,6 +7,37 @@
     font-family: var(--font-jakarta);
 }
 
+.text-gray {
+    color: var(--bs-gray);
+}
+.text-gray-900 {
+    color: var(--bs-gray-900);
+}
+.text-gray-800 {
+    color: var(--bs-gray-800);
+}
+.text-gray-700 {
+    color: var(--bs-gray-700);
+}
+.text-gray-600 {
+    color: var(--bs-gray-600);
+}
+.text-gray-500 {
+    color: var(--bs-gray-500);
+}
+.text-gray-400 {
+    color: var(--bs-gray-400);
+}
+.text-gray-300 {
+    color: var(--bs-gray-300);
+}
+.text-gray-200 {
+    color: var(--bs-gray-200,0.5);
+}
+.text-gray-100 {
+    color: var(--bs-gray-100);
+}
+
 .bg-gray {
     background-color: var(--bs-gray);
 }
@@ -119,7 +150,7 @@
     overflow: hidden;
 }
 
-.learner {
+.text-learner {
     background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
     color: transparent;
     -webkit-background-clip: text;

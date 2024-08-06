@@ -24,7 +24,7 @@
 
 {% include 'messages.html' %}
 
-<div class="container post py-5">
+<div class="container post py-5" print="true">
     <div class="row">
         <div class="col-12 col-md-8">
             {% if perms.languages.change_post %}
@@ -47,7 +47,9 @@
                 <div class="rule pt-1 rounded-bottom"></div>
             </div>
 
-            {% if post.image %}<div class="post-img"><img src="{{post.image.url}}"/></div>{% endif %}
+            {% if post.img %}
+                <img src="{{post.img}}" class="post-img"/>
+            {% endif %}
 
             <div class="d-flex justify-content-between align-items-center px-1 my-3">
                 <div class="d-flex align-item-center text-secondary">
@@ -59,18 +61,21 @@
                 </div>
             </div>
 
-            <div id="post-content" class="px-1 mb-3">
+            <div id="post-content" class="px-1 mb-5">
                 {{ post.content|safe }}
             </div>
             
+            <hr>
             <div class="d-flex justify-content-between">
                 <a target="_blank" href="{{post.source}}" role="button" class="btn btn-primary px-5">SOURCE <i class="fa-solid fa-chevron-right"></i></a>
                 {% include 'static/components/copy_to_clipboard.html' %}
             </div>
             <hr>
         </div>
+
+        <div class="d-md-none mb-5"></div>
         <div class="col-12 col-md-4">
-            <div class="bg-gray-200 text-light px-2 py-1 rounded">you might also like</div>
+            <div class="bg-gray-200 body-text px-2 py-1 rounded">you might also like</div>
             {% for post in posts %}
             {{post.title}}
             {% endfor %}
