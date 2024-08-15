@@ -57,8 +57,8 @@ class PostView(admin.ModelAdmin):
 class GKView(admin.ModelAdmin):
     list_display = ('title','created_at','author')
 
-    # class Media:
-    #     js= ('/static/js/tinyinject.js',)
+    class Media:
+        js= ('/static/js/tinyinject.js',)
 
 @admin.register(Topic)
 class TopicView(admin.ModelAdmin):

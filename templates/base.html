@@ -5,6 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
+    <meta property="og:title" content="LingoLab"/>
+    <meta property="og:url" content="https://www.lingolab.in/"/>
+    <meta property="og:description" content="learnersacademy@asia.com"/>
+    <meta property="og:image" content="/static/img/lingolab.png"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="LingoLab"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
     <title>{% block title %}{% endblock title %}LingoLab</title>
 
     <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
@@ -13,8 +22,8 @@
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/static/css/styles_fll.css"/>
     <link rel="stylesheet" href="/static/css/styles.css"/>
-    <link rel="stylesheet" href="/static/css/compof.css"/>
     <link rel="stylesheet" href="/static/css/responsive.css"/>
+    <link rel="stylesheet" href="/static/css/compof.css"/>
     <link rel="stylesheet" href="/static/fonts/tabler-icons-2.36.0/webfont/tabler-icons.min.css"/>
     {% include 'static/css/styles.html' %}
     {% block css %}{% endblock css %}
@@ -104,7 +113,6 @@
         today = new Date();
     </script>
     <link rel="manifest" href="/static/js/manifest.json">
-
     {% block head %}{% endblock head %}
 </head>
 <body class="bg-body">
@@ -126,13 +134,14 @@
     <!-- LOADING ANIMATION STOP -->
     <script>
         $(window).on("load", function() {
-            $(".loader-wrapper").fadeOut("slow");
+            $(".loader-wrapper").fadeOut();
         });
+        window.addEventListener("visibilitychange", function(event){
+            $(".loader-wrapper").fadeOut();
+        });
+
         $('a[href]').on('click',function(){
             $(".loader-wrapper").fadeIn();
-            window.addEventListener("visibilitychange", function(event){
-                $(".loader-wrapper").fadeOut();
-            });
         });
         $('*').on('click',function(){
             if ($(this).attr('data-cl') == "lk"){

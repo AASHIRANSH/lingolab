@@ -298,6 +298,12 @@
     #score{
         height: 30%;
     }
+    #words{
+        height: 60%;
+    }
+    #worde{
+        height: 40%;
+    }
 }
 @media screen and (min-width: 768px) {
     #vocabd{

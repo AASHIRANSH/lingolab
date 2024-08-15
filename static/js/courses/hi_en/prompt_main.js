@@ -736,7 +736,7 @@ len = [];//used for current page if there are more than one card
                 prm.innerHTML = prompt_msg;
 
                 if (vars[4] == 1) {
-                    location.assign(`/learn/${lesson + 1}`);
+                    location.assign(`/english/learnz/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
@@ -3120,11 +3120,11 @@ function translate_beg() {
             <div class="col-3 text-end fs-4">page - ${num + 1}</div>
         </div>
         <div class="content">
+            <div class="box_shadow progress" id="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{progress}" aria-valuemin="0" aria-valuemax="100" style="transition:all 0.5s ease;width:{progress}%;">{progress}% Complete</div>
+            </div>
             <div id="cardm" class="cardm_learn">
                 <div class="trans">
-                    <div class="box_shadow progress" id="progress">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{progress}" aria-valuemin="0" aria-valuemax="100" style="transition:all 0.5s ease;width:{progress}%;">{progress}% Complete</div>
-                    </div>
                     <div class="flex_center"><div id="speaker" style="scale:0.6;cursor:pointer;"><img src="/static/img/svg/loudspeaker_duo.svg"/></div>${card_h_array}</div>
                     <div class="tr_content">
                         <div class="line flex gap-2"></div>

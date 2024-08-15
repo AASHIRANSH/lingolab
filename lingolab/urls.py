@@ -27,6 +27,7 @@ urlpatterns = [
     path('arabic/', include("languages.arabic.urls")),
     path('english/', include("languages.urls")),
     path('coding/', include("coding.urls")),
+    path('game/', views.word_game),
     path('vaccum/', views.vacuum_db),
     path('test/', views.test)
 ]

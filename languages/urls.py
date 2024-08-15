@@ -66,4 +66,9 @@ urlpatterns = [
     path('post/<int:pk>/dislike/', views.dislike, name='dislike'),
     path('post/<int:pk>/edit_comment/', views.edit_comment, name='edit_comment'),
     path('post/<int:pk>/delete_comment/', views.delete_comment, name='delete_comment'),
+
+    # Games
+    path('games/', views.games, name='games'),
+    path('game/wordscapes/', views.game_wordscapes, name='wordscapes'),
+    path('game/wordsearch/', views.game_wordsearch, name='wordsearch'),
 ]

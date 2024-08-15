@@ -179,8 +179,9 @@
               <label for="id_type_${elems}">TYPE:</label>
               <select class="form-select" name="type_${elems}" id="id_type_${elems}">
                 <option value="">-</option>
-                <option value="word" {% if sense.0 == 'word' %}selected{% endif %}>word</option>
-                <option value="button" {% if sense.0 == 'button' %}selected{% endif %}>button</option>
+                <option value="word">word</option>
+                <option value="button">button</option>
+                <option value="sen">sentence/phrase</option>
               </select>
             </div>
 
@@ -203,9 +204,10 @@
               <label for="id_interface_${elems}">INTERFACE:</label>
               <select class="form-select" name="interface_${elems}" id="id_interface_${elems}">
                 <option value="">-</option>
-                <option value="card" {% if sense.1 == 'wcard' %}selected{% endif %}>card</option>
-                <option value="button" {% if sense.1 == 'wbutton' %}selected{% endif %}>button</option>
-                <option value="match" {% if sense.1 == 'match' %}selected{% endif %}>match</option>
+                <option value="card">card</option>
+                <option value="button">button</option>
+                <option value="tr">translate</option>
+                <option value="match">match</option>
               </select>
             </div>
             

@@ -921,20 +921,9 @@ def word_entry(request):
                 word_obj.plural = plural
                 word_obj.senses[sensen] = senses[0]
                 word_obj.word_details = eval(word_details)
-                if listing != 0:
+                if listing != "0":
                     if len(word_obj.word_details[0])==2:
-                        word_obj.word_details[0].append(["","","",""])
-                        match listing:
-                            case "1":
-                                word_obj.word_details[0][2][0] = [sensen]
-                            case "2":
-                                word_obj.word_details[0][2][1] = [sensen]
-                            case "3":
-                                word_obj.word_details[0][2][2] = [sensen]
-                            case "4":
-                                word_obj.word_details[0][2][3] = [sensen]
-                            case "5":
-                                word_obj.word_details[0][2][4] = [sensen]
+                        word_obj.word_details[0].append([sensen])
                 word_obj.related_post.add(related_post)
                 word_obj.save()
                 messages.success(request, f'sense "{sensen+1}" of "{word}" was updated')
@@ -1001,7 +990,7 @@ def my_words(request):
         })
 
     vars = {
-        "favscount":favs.count(),
+        "favscount":len(words),
         "searchcount":len(words),
         "wordsp":page_obj,
         "words":wordd,
@@ -1102,6 +1091,16 @@ def dictionaryTopicView(request,name):
     }
     return render(request,"english/dictionary_topic_view.html",vars)
 
+def dictionaryRussia(request):
+    with open("languages/data/russian_db.json","rt",encoding='UTF-8') as f:
+        db_file = json.load(fp=f)
+    dictionary = db_file["words"]
+
+    vars = {
+        "dict":dictionary
+    }
+    return render(request,"russian/dictionary.html",vars)
+
 ''' Word Page'''
 from django.views.decorators.clickjacking import xframe_options_exempt
 def word_main(request,word):
@@ -1156,23 +1155,25 @@ def dict_filt(request):
     data = get.get("data","")
 
     if data == "common_phrasal_verbs":
-        words = Dictionary.objects.filter(listing=1)
-    elif data == "common_phrases":
         words = Dictionary.objects.filter(listing=2)
-    elif data == "common_idioms":
+    elif data == "lingo_words_list":
+        words = Dictionary.objects.filter(listing=1) | Dictionary.objects.filter(listing=2) | Dictionary.objects.filter(listing=3) | Dictionary.objects.filter(listing=4) | Dictionary.objects.filter(listing=5)
+    elif data == "common_phrases":
         words = Dictionary.objects.filter(listing=3)
-    elif data == "sayings":
+    elif data == "common_idioms":
         words = Dictionary.objects.filter(listing=4)
+    elif data == "sayings":
+        words = Dictionary.objects.filter(listing=5)
 
-    paginator = Paginator(words,200)
-    page_number = get.get("page") if get.get("page") else 1
-    page_navi = int(page_number)-1
-    page_obj = paginator.get_page(page_number)
+    # paginator = Paginator(words,200)
+    # page_number = get.get("page") if get.get("page") else 1
+    # page_navi = int(page_number)-1
+    # page_obj = paginator.get_page(page_number)
 
     vars = {
         "wordscount":words.count(),
-        "wordsp":page_obj,
-        "pagen":page_navi
+        "words":words, #page_obj
+        # "pagen":page_navi
     }
     return render(request,"english/dictionary_filtered.html",vars)
 
@@ -1181,6 +1182,7 @@ def dict_filt(request):
 def revise_main(request):
     get = request.GET
     td = True if get.get("td") == "true" else False
+    favlist = True if get.get("favs") == "true" else False
     user = request.user
     username = user.username
     cefr = ["a1","a2","b1","b2","c1","c2"]
@@ -1254,7 +1256,7 @@ def revise_main(request):
                     break
         
         lv_counter = 0
-        if lv_set:    
+        if lv_set and not favlist:    
             for x in lv_set:
                 if x.senses:
                     if lv_counter >= learn-learned:
@@ -1499,13 +1501,26 @@ def zero_to_hero(request,lang,unit,lesson):
             # elif etype=="translate":
             # lesson_db.append(x)
     
-    for x in tp["units"][unit-1]["lessons"][lesson-1]:
+    for x in obj.units[unit-1]["lessons"][lesson-1]:
         etype = x[0]
         if etype == "word":
-            for y in tp[x[2][2]]:
-                x[2][1].append(y)
+            word = tp["words"][int(x[3])]
+            inst = [[word[0],word[1]],[]]
+
+            for y in tp["words"]:
+                if word[2] in y:
+                    inst[1].append(y)
+        x[2] = inst
+    
+    # for x in tp["units"][unit-1]["lessons"][lesson-1]:
+    #     etype = x[0]
+    #     if etype == "word":
+    #         for y in tp[x[2][2]]:
+    #             x[2][1].append(y)
         
         lesson_db.append(x)
+    
+    print(lesson_db)
         
     vars = {
         "unit":unit,
@@ -1552,7 +1567,7 @@ def zth_entry(request):
         # elif add:
         else:
             # form.save()
-            ZeroToHero.objects.create(course="unit_title",data="senses")
+            ZeroToHero.objects.create(course="unit_title",data="senses",units="units")
             messages.success(request, f'the entry was added')
             vars = {
                 # "form":form,
@@ -1571,19 +1586,46 @@ def zth_entry(request):
 
 def zth_view(request):
     get = request.GET
-    # filt = get.get("lang","en")
-    words = ZeroToHero.objects.all() #filter(data__has_key=filt)
+    courses = ZeroToHero.objects.all()
 
-    paginator = Paginator(words, 10)
+    paginator = Paginator(courses, 10)
     page_number = get.get("page") if get.get("page") else 1
     page_navi = int(page_number)-1
     page_obj = paginator.get_page(page_number)
 
     vars = {
-        "wordscount":words.count(),
+        "wordscount":courses.count(),
         "wordsp":page_obj,
         "pagen":page_navi,
         "usr":"usr"+str(request.user.pk)
-        # "fav":fav
     }
     return render(request, "english/zth_view.html", vars)
+
+''' GAMES '''
+
+def games(request):
+    games = ["wordscapes","wordsearch"]
+    vars = {
+        "games":games
+    }
+    return render(request,"english/games/index.html",vars)
+
+def game_wordscapes(request):
+    get = request.GET
+    with open("database/games/levels.json") as f:
+        game_db = json.load(fp=f)
+    vars = {
+        "game_db":json.dumps(game_db),
+        "level":int(get.get("level","0"))
+    }
+    return render(request,"english/games/wordscapes.html",vars)
+
+def game_wordsearch(request):
+    get = request.GET
+    with open("database/games/levels.json") as f:
+        game_db = json.load(fp=f)
+    vars = {
+        "game_db":json.dumps(game_db),
+        "level":int(get.get("level"))
+    }
+    return render(request,"english/games/wordsearch.html",vars)

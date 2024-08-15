@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "header.html" %}
+<div class="bg-gray-200 p-3">
+    <div class="text-center display-4 fw-semibold text-learner pb-1">
+        <i class="fa-solid fa-gamepad"></i> Games
+    </div>
+</div>
+<div class="rule pt-1 rounded-bottom"></div>
+
+<div class="container">
+    {% for game in games %}
+    <div class="mb-3">
+        <a href="{% url game %}" class="fs-1">{{game|upper}}</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock body %}

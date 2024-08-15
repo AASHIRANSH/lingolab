@@ -15,10 +15,15 @@
 
 <!--div class="position-relative bg-polka-learner-sm animation-polka-glow"-->
 <div class="bg-gray-200 p-3">
-    <div class="text-center text-learner display-4 fw-semibold p-4 rounded"><i class="fa-solid fa-book"></i> Common Phrasal Verbs</span></div>
+    <div class="text-center text-learner display-4 fw-semibold m-3 rounded"><i class="fa-solid fa-book"></i> Common & Selected Words</span></div>
 
-    <div class="px-2">
+    <div class="px-3">
         <div class="pnav">
+            <li class="{% if request.GET.data == "lingo_words_list" %}active{% endif %}">
+                <div class="ts-b"></div>
+                <a href="{% url "dict_filt" %}?data=lingo_words_list">LINGO's WORDS LIST</a>
+            </li>
+
             <li class="{% if request.GET.data == "common_phrasal_verbs" %}active{% endif %}">
                 <div class="ts-b"></div>
                 <a href="{% url "dict_filt" %}?data=common_phrasal_verbs">COMMON PHRASAL VERBS</a>
@@ -39,79 +44,45 @@
 <div class="rule pt-1 rounded-bottom"></div>
 
 {% include "messages.html" %}
-{% if not request.GET.q %}
-    {% include "iht" %}
-{% endif %}
-<!-- search -->
-<div class="container my-5">
-    <div class="swrapper col-10 col-md-8">
-        <div class="search-input">
-            <input type="search" name="q" class="form-control" placeholder="Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
-            <div id="subox" class="autocom-box mt-1 rounded-bottom shadow">
-                <!-- here list is inserted from javascript -->
-            </div>
-            <a><div class="icon"><i class="fas fa-search"></i></div></a>
-        </div>
-
-        <div class="card bg-gray bg-opacity-25 w-50 mx-auto my-2">
-            <div class="card-body py-1">
-                <div class="row align-items-center">
-                    <div class="col-auto">Filter:</div>
-                    <div class="col">
-                        <select id="filter" name="in" class="form-select form-select-sm" aria-label="Default select example">
-                            <option value="" selected>---------</option>
-                            <option value="a1"{%if request.GET.filter == "a1" %} selected{% endif %}>A1</option>
-                            <option value="a2"{%if request.GET.filter == "a2" %} selected{% endif %}>A2</option>
-                            <option value="b1"{%if request.GET.filter == "b1" %} selected{% endif %}>B1</option>
-                            <option value="b2"{%if request.GET.filter == "b2" %} selected{% endif %}>B2</option>
-                            <option value="c1"{%if request.GET.filter == "c1" %} selected{% endif %}>C1</option>
-                            <option value="c2"{%if request.GET.filter == "c2" %} selected{% endif %}>C2</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- advanced search options here -->
-
-{% if request.GET.q %}
-    <div class="text-center mb-3">
-        Showing results for 
-        <span class="text-primary">&quot;{{request.GET.q}}&quot;</span> 
-        ({{wordscount}} entries found)<br>
-        {% if request.GET.filter %}
-            <span class="text-primary">try removing filter for more results.</span>
-        {% endif %}
-    </div>
-{% endif %}
 
 <!-- table -->
-<div class="container mb-5">
+<div class="container my-5">
     <div class="col-11 col-lg-8 mx-auto">
-        {% for word in wordsp %}
-            <tr>
-                <div class="bg-gray-200 p-3 rounded mb-3">
-                    <div class="d-flex justify-content-between">
-                        <div class="bg-gray-300 px-2 py-1 rounded">{{forloop.counter}}</div>
-                        <div>
-                            {% if request.user.username in word.fav.rvdata.keys %}
-                            <button title="Already added" class="btn btn-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense=0')"><i class="fa-solid fa-trash"></i></button>
-                            {% else %}
-                            <button title="Add it" class="btn btn-outline-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="text-primary text-center fw-bold fs-3 mb-4" {% if word.senses|length < 2 %}onclick="window.location.assign(`{% url "word" word.pk %}`)" {% else %} data-bs-toggle="modal" data-bs-target="#wModal{{word.pk}}"{% endif %}>
-                        {{word.word}}
-                    </div>
-                    <hr>
-                    <div class="text-center mb-3">
-                        <span class="d-inline-block bg-light bg-opacity-25 p-1 rounded">{{word.senses.0.9.en.0.0}}</span>
+
+        <div class="card card-body bg-primary-subtle mb-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3 fs-5 fw-semibold text-primary">
+                    <span>Total Words</span>
+                    <span class="text-secondary">:</span>
+                    <span>{{wordscount}}</span>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" onclick="window.location.assign('')">Add All to My List <i class="fa-solid fa-plus"></i> <i class="fa-solid fa-list-ul"></i></button>
+                </div>
+            </div>
+        </div>
+
+        {% for word in words %}
+            <div class="bg-gray-200 p-3 rounded mb-3">
+                <div class="d-flex justify-content-between">
+                    <div class="bg-gray-300 px-2 py-1 rounded">{{forloop.counter}}</div>
+                    <div>
+                        {% if request.user.username in word.fav.rvdata.keys %}
+                        <button title="Already added" class="btn btn-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense=0')"><i class="fa-solid fa-trash"></i></button>
+                        {% else %}
+                        <button title="Add it" class="btn btn-outline-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
+                        {% endif %}
                     </div>
                 </div>
-            </tr>
+                <div class="text-primary text-center fw-bold fs-3 mb-4" {% if word.senses|length < 2 %}onclick="window.location.assign(`{% url "word" word.pk %}`)" {% else %} data-bs-toggle="modal" data-bs-target="#wModal{{word.pk}}"{% endif %}>
+                    {{word.word}}
+                </div>
+                <hr>
+                <div class="text-center mb-3">
+                    <span class="d-inline-block bg-light bg-opacity-25 p-1 rounded">{{word.senses.0.9.en.0.0}}</span>
+                </div>
+            </div>
 
             <div class="modal fade animate__animated" id="wModal{{word.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -158,8 +129,6 @@
     </div>
 </div>
 
-<div class="mb-5"></div>
-
 <script>// modal animator
     //$('td').on('click',function(){
     //    let mod = document.querySelector(this.getAttribute("data-bs-target"));
@@ -169,212 +138,6 @@
     //$('.modal').on('show.bs.modal',function(){
     //    $('.modal').addClass('animate__tada')
     //});
-</script>
-<script>// Page Numbers
-    let pageEle = document.getElementById("pagination");
-    let totalPages = {{wordsp.paginator.num_pages}};
-    let currentPage = {{request.GET.page|default:"1"}};
-    let pages = ``;
-    pages += `<nav aria-label="..."><ul class="pagination">`;
-    {//if has Previous
-        `{% if wordsp.has_previous %}
-            ${pages += '<li class="page-item"><a class="page-link" href="?q={{request.GET.q}}&filter={{request.GET.filter}}&page={{ wordsp.previous_page_number }}" accesskey="z">Previous</a></li>'}
-        {% else %}
-            ${pages += '<li class="page-item disabled"><span class="page-link">Previous</span></li>'}
-        {% endif %}`;
-    }
-    {//first page
-        if (currentPage>3){
-            pages += '<li class="page-item"><a class="page-link" href="?q={{request.GET.q}}&filter={{request.GET.filter}}&page=1">&laquo;</a></li>';
-        }
-    }
-    // middle pages
-    for (let x = currentPage-2; x < currentPage+3; x++){
-        if (x<1 || x>totalPages){continue;}
-        if (x==currentPage){
-            pages += `<li class="page-item active"><a class="page-link" href="?q={{request.GET.q}}&filter={{request.GET.filter}}&page=${x}">${x}</a></li>`;
-        }else{
-            pages += `<li class="page-item"><a class="page-link" href="?q={{request.GET.q}}&filter={{request.GET.filter}}&page=${x}">${x}</a></li>`;
-        }
-    }
-    //last page
-    if (currentPage<totalPages-2){
-        pages += '<li class="page-item"><a class="page-link" href="?q={{request.GET.q}}&filter={{request.GET.filter}}&page={{ wordsp.paginator.num_pages }}">&raquo;</a></li>';
-    }
-    {//if has Next
-        `{% if wordsp.has_next %}
-            ${pages += '<li class="page-item"><a class="page-link" href="?page={{ wordsp.next_page_number }}&q={{request.GET.q}}&filter={{request.GET.filter}}" accesskey="x">Next</a></li>'}
-        {% else %}
-            ${pages += '<li class="page-item disabled"><span class="page-link">Next</span></li>'}
-        {% endif %}`;
-    }
-    pages += `</ul></nav>`;
-    pageEle.innerHTML = pages;
-</script>
-
-<script>
-    let suggsh = {% include "english/dictionary/suggsh.json" %};
-
-    function loadDoc() {
-        var data = document.getElementById("id_company").value;
-
-        const xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var data = JSON.parse(this.responseText)
-                var fields = JSON.parse(this.responseText)[0]["fields"]
-                id_name.value = fields["name"];
-            } else {
-                id_name.value = "";
-            }
-        };
-        xhttp.open("GET", "?action=company&company="+data, true);
-        xhttp.send();
-    }
-
-    // getting all required elements
-    const searchWrapper = document.querySelector(".search-input");
-    const inputBox = searchWrapper.querySelector("input");
-    const suggBox = searchWrapper.querySelector(".autocom-box");
-    const icon = searchWrapper.querySelector(".icon");
-    var linkTag = searchWrapper.querySelector("a");
-    var webLink;
-    var currentFocus = -1;
-    var scval = 0;
-    var filt = document.getElementById("filter");
-
-    // if user press any key and release
-    filt.onchange = ()=>{
-        window.location.assign('?q='+inputBox.value+'&filter='+filt.value);
-    }
-    inputBox.onkeyup = (e)=>{
-        let userData = e.target.value; //user enetered data
-
-        /*execute a function presses a key on the keyboard:*/
-        var x = document.getElementById("subox");
-        if (x) x = x.getElementsByTagName("li");
-        if (e.keyCode == 40) {
-            /*If the arrow DOWN key is pressed,
-            increase the currentFocus variable:*/
-            currentFocus++;
-            /*and and make the current item more visible:*/
-            addActive(x);
-
-            //scroll on keydown
-            if (currentFocus>4){
-                scval += 47;
-                suggBox.scrollTo(0, scval);
-            } else if (currentFocus==0){
-                scval = 0;
-                suggBox.scrollTo(0, 0);
-            }
-        } else if (e.keyCode == 38) { //up
-            /*If the arrow UP key is pressed,
-            decrease the currentFocus variable:*/
-            currentFocus--;
-            /*and and make the current item more visible:*/
-            addActive(x);
-            //scroll on keyup
-            if (currentFocus==x.length-1){
-                scval = suggBox.scrollHeight;
-                suggBox.scrollTo(0, scval);
-            } else if (currentFocus<x.length) {
-                scval -= 47;
-                suggBox.scrollTo(0, scval);
-            }
-        } else if (e.keyCode == 13) {
-            /*If the ENTER key is pressed, prevent the form from being submitted,*/
-            e.preventDefault();
-            if (currentFocus > -1) {
-                /*and simulate a click on the "active" item:*/
-                if (x) x[currentFocus].click();
-            } else {
-                window.location.assign("?q="+userData+'&filter={{request.GET.filter}}');
-            }
-        } else {
-            let emptyArray = [];
-            if(userData){
-                icon.onclick = ()=>{
-                    webLink = `?q=${userData}`;
-                    linkTag.setAttribute("href", webLink);
-                    linkTag.click();
-                    $(".loader-wrapper").fadeIn("slow");
-                }
-
-                emptyArray = suggsh.filter((data)=>{
-                    //filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
-                    return data[1].replace(/[^a-zA-Z0-9]/g,'').toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
-                });
-
-                //emptyArray2 = suggsh.filter((data)=>{
-                //    return data[1].toLocaleLowerCase().endsWith(userData.toLocaleLowerCase());
-                //});
-
-                //emptyArray = emptyArray.concat(emptyArray2);
-                emptyArray = emptyArray.slice(0,20).map((data)=>{ //remove slice method to return all matches
-                    // passing return data inside li tag
-                    //return data = `<li onclick="window.location.assign('?q=${suggestions_comma[suggestions.indexOf(data)]}')">${suggestions_comma[suggestions.indexOf(data)]} <span class="fst-italic" style="font-size:0.8rem">(${pos[suggestions.indexOf(data)]})</span></li>`;
-                    return data = `<li onclick="window.location.assign('/english/word/${data[0]}')">${data[1]} ${data[2]?'<span class="text-secondary fst-italic fs-8">('+data[2]+')</span></li>':''}`;
-                });
-
-                searchWrapper.classList.add("active"); //show autocomplete box
-                showSuggestions(emptyArray);
-                
-                // NOTE: use the below code to edit or overwrite the results "li tag"
-                //let allList = suggBox.querySelectorAll("li");
-                //for (let i = 0; i < allList.length; i++) {
-                //    //adding onclick attribute in all li tag
-                //    allList[i].setAttribute("onclick", "window.location.assign('?q='+this.textContent)");//setAttribute("onclick", "select(this)");
-                //}
-            }else{
-                searchWrapper.classList.remove("active"); //hide autocomplete box
-            }
-            currentFocus = -1; // reset currentFocus
-        }
-    }
-
-    window.onclick = (e)=>{
-        searchWrapper.classList.remove("active");
-    }
-    
-    function select(element){
-        let selectData = element.textContent;
-        inputBox.value = selectData;
-        icon.onclick = ()=>{
-            webLink = `?q=${selectData}`;
-            linkTag.setAttribute("href", webLink);
-            linkTag.click();
-        }
-        searchWrapper.classList.remove("active");
-    }
-
-    function showSuggestions(list){
-        let listData;
-        if(!list.length){
-            userValue = inputBox.value;
-            listData = `<li>${userValue}</li>`;
-        }else{
-        listData = list.join('');
-        }
-        suggBox.innerHTML = listData;
-    }
-    
-    function addActive(x) {
-        /*a function to classify an item as "active":*/
-        if (!x) return false;
-        /*start by removing the "active" class on all items:*/
-        removeActive(x);
-        if (currentFocus >= x.length) currentFocus = 0;
-        if (currentFocus < 0) currentFocus = (x.length - 1);
-        /*add class "autocomplete-active":*/
-        x[currentFocus].classList.add("autocom-box-active");
-    }
-    function removeActive(x) {
-        /*a function to remove the "active" class from all autocomplete items:*/
-        for (var i = 0; i < x.length; i++) {
-            x[i].classList.remove("autocom-box-active");
-        }
-    }
 </script>
 
 {% include "footer.html" %}

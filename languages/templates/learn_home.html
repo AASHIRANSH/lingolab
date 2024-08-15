@@ -19,7 +19,19 @@
             <div class="my-5">
             <div class="text-bg-primary fs-3 p-3 rounded">Unit {{forloop.counter}} ({{unit.title}})</div>
                 {% for lesson in unit.lessons %}
-                    <div class="text-center fs-1 mx-auto my-3" style="width:5rem;height:5rem">{% if un <= ul.1 and forloop.counter <= ul.2 %}<div class="bg-success p-2 rounded-circle cursor-pointer" onclick="window.location.assign('{% url 'learn' course.pk un forloop.counter %}')"><i class="fa-solid fa-star text-white"></i></div>{% else %}<div class="bg-gray-200 p-2 rounded-circle"><i class="fa-solid fa-lock text-secondary"></i></div>{% endif %}</div>
+                    <div class="text-center fs-1 mx-auto my-3" style="width:5rem;height:5rem">
+                    {% if un <= ul.1 and forloop.counter <= ul.2 %}
+                        <div class="dropdown-center">
+                            <div class="bg-success p-2 rounded-circle cursor-pointer shadow" data-bs-toggle="dropdown"><i class="fa-solid fa-star text-white"></i></div>
+                            <ul class="dropdown-menu p-3" style="width:300px">
+                                <li>Lesson 1 of {{unit.lessons|length}}</li>
+                                <li><button class="col-12 btn btn-primary" onclick="window.location.assign('{% url 'learn' course.pk un forloop.counter %}')">START +10 XPs</button></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="bg-gray-200 p-2 rounded-circle"><i class="fa-solid fa-lock text-secondary"></i></div>
+                    {% endif %}
+                    </div>
                 {% endfor %}
             </div>
             {% endwith %}

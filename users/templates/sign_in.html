@@ -8,13 +8,13 @@
 <div class="bg-check">
     <div class="bg-grd-gray font-public text-center text-primary pt-5 pb-3">
         <h1 class="fw-semibold">Sign In / Login</h1>
-        <span class="text-secondary">Sign in to your account.</span>
+        <span class="bg-primary text-light px-2 py-1 rounded">Sign in to your account.</span>
     </div>
 </div>
 
 {% include 'messages.html' %}
 
-<div class="container my-3">
+<div class="container my-5">
     <div class="card card-body col-10 col-md-6 mx-auto shadow">
         <form id="login_form" action="" method="post" novalidate>
             {% csrf_token %}

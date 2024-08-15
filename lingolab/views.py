@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib import messages
 from languages.models import Dictionary, Post, Quote, GK
 from django.contrib.auth.models import User
-import time
+import time, json
 
 def index(request):
     user = request.user
@@ -22,8 +22,18 @@ def index(request):
     }
     return render(request,"index.html", vars)
 
+def word_game(request):
+    return render(request,"WordSearchGame.htm")
+
 def test(request):
-    return render(request,"_test.html")
+    get = request.GET
+    with open("database/games/levels.json") as f:
+        game_db = json.load(fp=f)
+    vars = {
+        "game_db":json.dumps(game_db),
+        "level":int(get.get("level"))
+    }
+    return render(request,"_test.html",vars)
 # from django.conf import settings
 def vacuum_db(request):
     # print("Vacuuming database...")

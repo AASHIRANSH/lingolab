@@ -3,18 +3,23 @@
 {% include 'header.html' %}
 
 <div class="container-fluid bg-gray-200 p-3">
-    <div class="text-center text-learner display-4 fw-semibold pb-2"><i class="fa-solid fa-list"></i> My Learnings</div>
+    <div class="text-center text-learner display-4 fw-semibold pb-2 mb-2"><i class="fa-solid fa-list"></i> My Learnings</div>
 
     <div class="px-2">
         <div class="pnav">
             <li class="{% if not request.GET.td %}active{% endif %}">
                 <div class="ts-b"></div>
-                <a href="{% url "my_words" %}">MY WORDS LIST</a>
+                <a href="{% url "my_words" %}"><i class="fa-solid fa-list"></i> MY WORDS LIST</a>
             </li>
             
             <li class="{% if request.GET.td %}active{% endif %}">
                 <div class="ts-b"></div>
-                <a href="{% url "my_words" %}?td=true">REVIEW LIST</a>
+                <a href="{% url "my_words" %}?td=true"><i class="fa-solid fa-history"></i> REVIEW LIST</a>
+            </li>
+
+            <li class="{% if request.GET.td %}active{% endif %}">
+                <div class="ts-b"></div>
+                <a href="{% url "my_words" %}?td=true">MAKE NEW LIST <i class="fa-solid fa-plus"></i></a>
             </li>
         </div>
     </div>
@@ -49,14 +54,14 @@
 
         <div class="card card-body bg-primary-subtle mb-3">
             <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-3 fs-5 fw-semibold text-primary" onclick="window.location.assign('{% url "revisemain" %}?back=/english/dictionary')">
+                <div class="d-flex gap-3 fs-5 fw-semibold text-primary">
                     <span>Total Words</span>
                     <span class="text-secondary">:</span>
                     <span>{{favscount}}</span>
                 </div>
 
                 <div>
-                    <button class="btn btn-primary" onclick="window.location.assign('{% url "revisemain" %}?back=/english/mywords/{% if request.GET.td %}&td=true{% endif %}')"><i class="fa-solid fa-history"></i></button>
+                    <button class="btn btn-primary" onclick="window.location.assign('{% url "revisemain" %}?back=/english/mywords/{% if request.GET.td %}&td=true{% endif %}')">Practice <i class="fa-solid fa-dumbbell"></i></button>
                 </div>
             </div>
         </div>

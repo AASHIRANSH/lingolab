@@ -210,33 +210,26 @@
                         </div>
                     </div>
 
-                    <div id="def-container" class="bg-white rounded p-1 mb-1 shadow-sm">
-                        <div id="def" class="bg-primary position-relative bg-opacity-25 fs-4 p-2 rounded">
-
-                            <div class="fs-6 mb-1">
-                                {% if sense.6 %}<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">{{sense.6}}</span>{% endif %}
-                                {% if sense.8 %}<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">{{sense.8}}</span>{% endif %}
-                                {% if sense.7 %}<span class="d-inline-block bg-light bg-opacity-25 border text-secondary fst-italic border-light p-0 px-2 rounded">{{sense.7.0|safe}}{% if sense.7.1 %}, {{sense.7.1|safe}}{% endif %}</span>{% endif %}
-                            </div>
-                            <div>
-                                {% if sense.1 %}
-                                <span class="d-inline-block bg-primary text-light text-uppercase fs-8 bg-opacity-100 p-0 px-2 rounded mb-1">
+                    <div id="def-container" class="bg-light rounded p-1 mb-1 shadow-sm">
+                        <div id="def" class="position-relative bg-primary-subtle fs-4 p-3 rounded">
+                            {% if sense.1 %}
+                                <span class="d-inline-block bg-primary text-light text-uppercase fs-8 bg-opacity-75 p-1 mb-1">
                                     {{sense.1}}
                                 </span>
-                                {% endif %}
-                            </div>
+                            {% endif %}
                             {% if sense.5 %}<span class="text-primary fs-5">{{sense.5}}</span>{% endif %}
+                            {% if sense.4 %}<span class="text-primary fs-5">{{sense.4}}</span>{% endif %}
 
-                            <div id="defEnCarousel{{sense.0}}" class="carousel slide">
-                                <div class="carousel-inner definition" data-bs-target="#defEnCarousel{{sense.0}}" data-bs-slide="next">
-                                    {% for x in sense.9.en.0 %}
-                                        <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
-                                            {{x}}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div id="defHiCarousel{{sense.0}}" class="d-none carousel slide animate__animated animate__fadeIn">
+                            <ol class="circle_filled">
+                            {% for x in sense.9.en.0 %}
+                                <li class="lsp-sm wsp-sm ln-sm">
+                                    {{x}}
+                                </li>
+                                {% if not forloop.last %}<hr>{% endif %}
+                            {% endfor %}
+                            </ol>
+
+                            <div id="defHiCarousel{{sense.0}}" class="d-none carousel animate__animated animate__fadeIn">
                                 <div class="carousel-inner definition" data-bs-target="#defHiCarousel{{sense.0}}" data-bs-slide="next">
                                     {% for x in sense.9.hi.0 %}
                                         <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
@@ -253,8 +246,8 @@
                     </div>
 
                     {% if sense.10 %}
-                        <div class="bg-white rounded p-1 shadow-sm">
-                            <div id="example" class="example fs-5 fst-italic bg-gray bg-opacity-10 rounded pt-1 overflow-auto">
+                        <div class="bg-light rounded p-1 shadow-sm">
+                            <div id="example" class="example fs-5 fst-italic bg-gray-100 bg-opacity-10 rounded pt-1 overflow-x-hidden">
                                 <ul>
                                     <hr class="my-1">
                                     {% for example in sense.10 %}

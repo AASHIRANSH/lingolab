@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+          --d: 6.5em;
+          /* image size */
+          --rel: 1;
+          /* how much extra space we want between images, 1 = one image size */
+          --r: calc(.5*(1 + var(--rel))*var(--d)/var(--tan));
+          /* circle radius */
+          --s: calc(2*var(--r) + var(--d));
+          /* container size */
+          position: relative;
+          width: var(--s);
+          height: var(--s);
+          background: silver;
+        }
+        
+        .container a {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          margin: calc(-.5*var(--d));
+          width: var(--d);
+          height: var(--d);
+          --az: calc(var(--i)*1turn/var(--m));
+          transform: rotate(var(--az)) translate(var(--r)) rotate(calc(-1*var(--az)));
+        }
+        
+        img {
+          max-width: 100%;
+          border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="--m: 8; --tan: 0.41">
+    <a><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_14.jpg" alt="fluffy, alert Amur leopard" /></a>
+    <a style="--i: 1"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_25.jpg"
+            alt="fluffy Amur leopard looking up" /></a>
+    <a style="--i: 2"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_16.jpg"
+            alt="fluffy Amur leopard on a tree branch" /></a>
+    <a style="--i: 3"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_18.jpg"
+            alt="Amur leopard romance" /></a>
+    <a style="--i: 4"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_24.jpg"
+            alt="Amur leopard cub with very blue eyes" /></a>
+    <a style="--i: 5"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_30.jpg"
+            alt="fluffy, alert Amur leopard" /></a>
+    <a style="--i: 6"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_34.jpg"
+            alt="fluffy Amur leopard looking back" /></a>
+    <a style="--i: 7"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_21.jpg"
+            alt="fluffy Amur leopard rolling on its back" /></a>
+    <a style="--i: 8"><img src="https://assets.codepen.io/2017/17_05_a_amur_leopard_2.jpg"
+            alt="fluffy, pensive Amur leopard" /></a>
+</div>
+
+<script>
+    //- start with an array of images, described by url and alt text
+    let imgs = [
+        {
+            src: 'image_url.jpg', 
+            alt: 'image alt text'
+        } /* and so on, add more images here */
+    ];
+
+    let n_imgs = imgs.length;
+    let has_mid = 1; /* 0 if there's no item in the middle, 1 otherwise */
+    let m = n_imgs - has_mid; /* how many are ON the circle */
+    let tan = Math.tan(Math.PI/m); /* tangent of half the base angle */
+
+    doc.innerHTML = `
+        .container(style=--m: ${m}; --tan: ${+tan.toFixed(2)})
+            - for(let i = 0; i < n_imgs; i++)
+                a(href='#' style=i - has_mid >= 0 ? --i: ${i} : null)
+                img(src=imgs[i].src alt=imgs[i].alt)
+    `;
+</script>
+
+</body>
+</html>
