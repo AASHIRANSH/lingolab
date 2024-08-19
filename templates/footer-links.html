@@ -1,0 +1,41 @@
+<div class="container-fluid px-md-5 py-5 border-top border-3 mt-5">
+    <div class="d-flex flex-wrap gap-3 font-public">
+        <div class="col-12 col-lg-5 mb-5 mb-lg-1">
+            <div class="mb-3">Subscribe to our newsletter</div>
+            <div class="d-flex gap-2 col-12 col-md-7 col-lg-11">
+                <input type="email" class="form-control" placeholder="Email address"/>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between col-12 col-lg">
+            <div class="col-12 col-md mb-3">
+                <h6 class="fs-6">Learn</h6>
+                <div class="link-group link-gray fs-7">
+                    <li><a href="{% url "dictionary" %}">Dictionary</a></li>
+                    <li><a href="{% url "posts" %}">Posts</a></li>
+                </div>
+            </div>
+
+            <div class="col-12 col-md mb-3">
+                <h6 class="fs-6">Accounts</h6>
+                <div class="link-group link-gray fs-7">
+                    <li><a href="{% url "sign_up" %}">Register</a></li>
+                    <li><a href="{% url "sign_in" %}">Login</a></li>
+                    <li><a href="{% url "password_reset" %}">Forgot Password</a></li>
+                    <li><a href="{% url "profile" %}">Profile</a></li>
+                </div>
+            </div>
+
+            <div class="col-12 col-md mb-3">
+                <h6 class="fs-6">Contact</h6>
+                <div class="link-group link-gray fs-7">
+                    <li><a href="{% url "contact_us" %}">Send us a message</a></li>
+                    <li>mail.lingolab@gmail.com</li>
+                    <li>learnersacademy@asia.com</li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="my-4"></div>

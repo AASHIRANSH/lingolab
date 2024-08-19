@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+{% include "header.html" %}
+
+<div class="col-10 col-md-6 mx-auto my-5">
+{% for quote in quotes %}
+<div class="card card-body bg-gray-200 mb-3">
+    <figure class="m-0">
+        <blockquote class="blockquote">
+          <p>❝ {{quote.quote}}❞</p>
+        </blockquote>
+        <figcaption class="blockquote-footer m-0">
+          {{quote.author}} {% if quote.source %}<cite title="Source Title">Source Title</cite>{% endif %}
+        </figcaption>
+    </figure>
+</div>
+{% endfor %}
+</div>
+
+{% include "footer.html" %}
+{% endblock body %}

@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
 {% block og %}
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://www.lingolab.in{{request.path}}"/>
-    <meta property="og:title" content="{{word.word}} | Definition | LingoLab"/>
-    <meta property="og:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve..." />
+    <meta property="og:url" content="https://www.lingolab.in/"/>
+    <meta property="og:title" content="{{word|capfirst}} | Definition | LingoLab"/>
+    <meta property="og:description" content=": {{word.senses.0.9.en.0.0}}" />
     <meta property="og:site_name" content="LingoLab"/>
-    <meta name="twitter:site" content="@thepracticaldev">
-    <meta name="twitter:creator" content="@earthcomfy">
-    <meta name="twitter:title" content="Custom User Model in Django">
-    <meta name="twitter:description" content="Hello everyone. Follow this article to understand about custom user model in Django.     I&#39;ve...">
+    <meta name="twitter:site" content="@lingolab">
+    <meta name="twitter:creator" content="@lingolab">
+    <meta name="twitter:title" content="{{word|capfirst}} | Definition | LingoLab"/>
+    <meta name="twitter:description" content=": {{word.senses.0.9.en.0.0}}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
     <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta property="og:image" content="https://dev.to/social_previews/article/1024949.png"/>
-    <meta name="twitter:image:src" content="https://dev.to/social_previews/article/1024949.png">
+    <meta property="og:image" content="https://www.lingolab.in/static/img/lingo_dict.png"/>
+    <meta name="twitter:image:src" content="https://www.lingolab.in/static/img/lingo_dict.png"/>
 {% endblock og %}
+{% block title %}{{word}} Definition | Dictionary | {% endblock title %}
 {% block body %}
 {% include 'english/flashcards/styles/flashcards.html' %}
 {% include "header.html" %}
@@ -40,12 +41,15 @@
                 </div>
             </div>
 
+            {% if request.user.is_superuser %}<a href="{% url "data_main" %}?data=set&word={{word.pk}}&sense=0" role="button" class="btn btn-secondary">SET AS WOD</a>
+            <hr>
+            {% endif %}
             <div class="bg-light p-3 py-4 mb-3 rounded shadow overflow-hidden">
                 <div class="d-flex justify-content-between rounded">
                     <div class="row col-11">
                         <!-- Word Pos-->
                         <div class="col-12 mb-1">
-                            <div id="word" class="col-auto {% if word.is_complete %} text-success {% else %} text-primary {% endif %}d-inline-block me-2" {% if request.user.is_superuser %}onclick="window.location.assign('/admin/languages/dictionary/{{word.pk}}/change/')"{% endif %}>
+                            <div id="word" class="col-auto text-primary d-inline-block me-2" {% if request.user.is_superuser %}onclick="window.location.assign('/admin/languages/dictionary/{{word.pk}}/change/')"{% endif %}>
                                 {{word.word}}
                             </div>
                             <div id="pos" class="col-auto fs-5 d-inline-block text-secondary me-2">

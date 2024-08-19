@@ -405,7 +405,7 @@ def post_list(request):
     if datag.get("action") == "myposts":
         posts = Post.objects.filter(author=request.user)
     else:
-        posts = Post.objects.filter(published=True)
+        posts = Post.objects.filter(published=True).order_by("-updated_at")
         
     paginator = Paginator(posts, 5)  # Show 6 contacts per page.
     page_number = datag.get("page")
@@ -1447,6 +1447,14 @@ def data_main(request):
             rvdata["pr"][seni] = 6
             fav_obj.save()
             return HttpResponse("Done")
+    elif data.get('data') == "set":
+        wod = Dictionary.objects.get(is_complete=True)
+        wod.is_complete = False
+        wod.save()
+        word_obj.is_complete = True
+        word_obj.save()
+        messages.success(request,"The word was set as WOD!!!")
+        return HttpResponseRedirect(f"/english/word/{word_obj.pk}")
 
 ''' Zero to Hero '''
 def zero_to_hero_home(request):
@@ -1616,16 +1624,10 @@ def game_wordscapes(request):
         game_db = json.load(fp=f)
     vars = {
         "game_db":json.dumps(game_db),
-        "level":int(get.get("level","0"))
+        "level":int(get.get("level","0")),
+        "points": request.user.profile.learnings["games"]["wordscapes"][1]
     }
     return render(request,"english/games/wordscapes.html",vars)
 
 def game_wordsearch(request):
-    get = request.GET
-    with open("database/games/levels.json") as f:
-        game_db = json.load(fp=f)
-    vars = {
-        "game_db":json.dumps(game_db),
-        "level":int(get.get("level"))
-    }
-    return render(request,"english/games/wordsearch.html",vars)
+    return render(request,"WordSearchGame.htm")

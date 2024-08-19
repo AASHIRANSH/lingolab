@@ -1,7 +1,7 @@
 <div class="px-3 my-5">
   <div class="d-flex flex-wrap justify-content-center gap-2 gap-md-3">
     {% if request.path != "/english/dictionary/" %}
-    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('{% url "dictionary" %}')">
+    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "dictionary" %}')">
       <span class="fst-italic">I wanna look up a word...</span>
       <div class="fw-bold fs-5 text-center">Lingo's Dictionary</div>
       <div class="ts-b bg-primary"></div>
@@ -9,33 +9,33 @@
     {% endif %}
 
     {% if request.path == "/english/dictionary/" %}
-    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('{% url "dictionary_topic" %}')">
+    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "dictionary_topic" %}')">
       <span class="fst-italic">I wanna look up...</span>
       <div class="fw-bold fs-5 text-center">Words by Topics</div>
       <div class="ts-b bg-primary"></div>
     </div>
     {% endif %}
 
-    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('{% url "revisemain" %}?back={{request.path}}')">
+    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "revisemain" %}?back={{request.path}}')">
       <span class="fst-italic">I am here to...</span>
       <div class="fw-bold fs-5 text-center">Improve Vocabulary</div>
       <div class="ts-b bg-primary"></div>
     </div>
 
-    <div class="d-none position-relative col-10 col-md-auto bg-success bg-opacity-10 text-success px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('')">
+    <div class="d-none position-relative col-10 col-md-auto bg-success bg-opacity-10 text-success px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('')">
       <span class="fst-italic">I wanna...</span>
       <div class="fw-bold fs-5 text-center">Learn from Scratch</div>
       <div class="ts-b bg-success"></div>
     </div>
 
-    <div class="d-none position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('{% url "revisemain" %}?back=/english/dictionary')">
+    <div class="d-none position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "revisemain" %}?back=/english/dictionary')">
       <span class="fst-italic">I am here for...</span>
       <div class="fw-bold fs-5 text-center">Common Idioms</div>
       <div class="ts-b bg-primary"></div>
     </div>
 
     {% if request.path != "/english/entries/" %}
-    <div class="position-relative col-10 col-md-auto bg-success bg-opacity-10 text-success px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm" data-cl="lk" onclick="window.location.assign('{% url "dict_filt" %}?data=common_phrasal_verbs')">
+    <div class="position-relative col-10 col-md-auto bg-success bg-opacity-10 text-success px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "dict_filt" %}?data=common_phrasal_verbs')">
       <span class="fst-italic">I am here for...</span>
       <div class="fw-bold fs-5 text-center">Common Phrasal Verbs</div>
       <div class="ts-b bg-success"></div>

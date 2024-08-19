@@ -21,13 +21,13 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('db/', include("dashboard.urls")),
-    path('', views.index),
+    path('', views.index, name="home"),
     path('users/', include("users.urls")),
     path('accounts/', include("users.urls")),
     path('arabic/', include("languages.arabic.urls")),
     path('english/', include("languages.urls")),
     path('coding/', include("coding.urls")),
-    path('game/', views.word_game),
+    path('quotes/', views.quotes, name="quotes"),
     path('vaccum/', views.vacuum_db),
     path('test/', views.test)
 ]

@@ -1,5 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}{{word}} | Dictionary | {% endblock title %}
+{% block og %}
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://www.lingolab.in/"/>
+    <meta property="og:title" content="{{word|capfirst}} | Definition | LingoLab"/>
+    <meta property="og:description" content=": {{word.senses.0.9.en.0.0}}" />
+    <meta property="og:site_name" content="LingoLab"/>
+    <meta name="twitter:site" content="@lingolab">
+    <meta name="twitter:creator" content="@lingolab">
+    <meta name="twitter:title" content="{{word|capfirst}} | Definition | LingoLab"/>
+    <meta name="twitter:description" content=": {{word.senses.0.9.en.0.0}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta property="og:image" content="https://www.lingolab.in/static/img/lingo_dict.png"/>
+    <meta name="twitter:image:src" content="https://www.lingolab.in/static/img/lingo_dict.png"/>
+{% endblock og %}
+{% block title %}{{word}} Definition | Dictionary | {% endblock title %}
 {% block body %}
 {% include 'english/flashcards/styles/flashcards.html' %}
 {% include "header.html" %}

@@ -165,7 +165,7 @@
     left: 0;
     width: 1rem;
     height: 1rem;
-    border-radius: 0 0 100% 0;
+    border-radius: 0 0 50% 0;
     box-shadow: 0px 0px 1px 1px #0000001a;
 }
 .te-b {
@@ -255,6 +255,41 @@
     padding: 1.5rem 1.5rem 2.5rem 2.5rem;
 }
 
+
+@keyframes learner{
+    0%{
+        background-color: var(--bs-blue);
+    }
+    15%{
+        background-color: var(--bs-indigo);
+    }
+    30%{
+        background-color: var(--bs-purple);
+    }
+    45%{
+        background-color: var(--bs-pink);
+    }
+    60%{
+        background-color: var(--bs-red);
+    }
+    75%{
+        background-color: var(--bs-orange);
+    }
+    90%{
+        background-color: var(--bs-yellow);
+    }
+    100%{
+        background-color: var(--bs-yellow);
+    }
+}
+.learner-notif{
+    animation: learner 5s infinite alternate;
+}
+.learner-notif:hover{
+    animation-play-state: paused;
+}
+
+/* ------------- Table -------------*/
 .table-hover>tbody>tr:hover{
     border-left: 0.2rem solid var(--bs-primary);
 }

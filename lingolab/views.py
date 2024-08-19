@@ -11,7 +11,7 @@ def index(request):
     gks = GK.objects.filter(published=True).order_by("-created_at")[0:4]
 
     now = time.strftime("%a, %d %b %Y %H:%M")
-    word = Dictionary.objects.get(pk=41053) #WordOfTheDay.objects.all().order_by("-created_at")[0]
+    word = Dictionary.objects.get(is_complete=True) #WordOfTheDay.objects.all().order_by("-created_at")[0]
 
     vars = {
         "quotes":quotes,
@@ -22,8 +22,12 @@ def index(request):
     }
     return render(request,"index.html", vars)
 
-def word_game(request):
-    return render(request,"WordSearchGame.htm")
+def quotes(request):
+    quotes = Quote.objects.all()
+    vars = {
+        "quotes":quotes
+    }
+    return render(request,"quotes.html",vars)
 
 def test(request):
     get = request.GET
@@ -34,6 +38,7 @@ def test(request):
         "level":int(get.get("level"))
     }
     return render(request,"_test.html",vars)
+
 # from django.conf import settings
 def vacuum_db(request):
     # print("Vacuuming database...")

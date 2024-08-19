@@ -167,9 +167,10 @@ class Comment(models.Model):
 ''' End Posts... '''
     
 class Quote(models.Model):
+    # qod = models.BooleanField(default=False)
     quote = models.TextField()
     author = models.CharField(max_length=100)
     pic = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.quote}"
+        return f"{self.quote[0:10]}"

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
-
-<div class="w-100 position-fixed top-0 start-0 bg-primary-subtle text-center text-secondary fs-1 p-3 fw-bold lsp">
+{% include "header.html" %}
+<div class="bg-primary-subtle text-center text-secondary display-4 p-3 fw-bold lsp">
     <!--div><span class="d-inline-block bg-primary text-light fs-6 rounded">LingoLab's</span></div-->
-    <div>LEADERBOARD</div>
+    <div>LEADER BOARD</div>
 </div>
 
-<div class="container py-5 my-5">
+<div class="container my-3">
     {% for user in users %}
         <div class="row align-items-center my-1">
             <div class="col-1 fs-4 fw-bold">{{forloop.counter}}</div>
@@ -19,4 +19,5 @@
     {% endfor %}
 </div>
 
+{% include "footer.html" %}
 {% endblock body %}

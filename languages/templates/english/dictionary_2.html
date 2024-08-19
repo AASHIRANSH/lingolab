@@ -285,7 +285,7 @@
                 });
 
                 emptyArray2 = suggsh.filter((data)=>{
-                    return data[1].toLocaleLowerCase() != userData && data[1].replace(/[^a-zA-Z0-9 ]/g,'').includes(userData.toLocaleLowerCase());
+                    return data[1].toLocaleLowerCase() != userData.toLocaleLowerCase() && data[1].replace(/[^a-zA-Z0-9 ]/g,'').includes(userData.toLocaleLowerCase());
                 });
 
                 emptyArray = emptyArray.concat(emptyArray2);

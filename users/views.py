@@ -350,7 +350,7 @@ def plan(request):
     user = LearnerProfile.objects.get(user_id=request.user.pk)
     key = get.get("key")
     val = int(get.get("val"))
-    sen = int(get.get("sense"))
+    sen = int(get.get("sense","0"))
 
     if key == "lt":
         if [val,sen] in user.plan[2]:
@@ -390,6 +390,13 @@ def plan(request):
         user.plan[1][1] = val
         user.save()
         return HttpResponse("true")
+    
+    elif key == "games":
+        game = get.get("game")
+        profile = Profile.objects.get(user=request.user)
+        profile.learnings["games"][game][1] += val
+        profile.save()
+        return HttpResponse(profile.learnings["games"][game][1])
 
 def leaderboard(request):
     users = LearnerProfile.objects.order_by("-plan__0__2")

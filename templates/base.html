@@ -5,12 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
-    <meta property="og:title" content="LingoLab"/>
+    {% block og %}
+    <meta property="og:type" content="article" />
     <meta property="og:url" content="https://www.lingolab.in/"/>
-    <meta property="og:description" content="learnersacademy@asia.com"/>
-    <meta property="og:image" content="/static/img/lingolab.png"/>
-    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="LingoLab"/>
+    <meta property="og:description" content="Learn and Grow!"/>
     <meta property="og:site_name" content="LingoLab"/>
+    <meta name="twitter:site" content="@lingolab">
+    <meta name="twitter:creator" content="@lingolab">
+    <meta name="twitter:title" content="LingoLab"/>
+    <meta name="twitter:description" content="Learn and Grow!">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta property="og:image" content="https://www.lingolab.in/static/img/lingo.png"/>
+    <meta name="twitter:image:src" content="https://www.lingolab.in/static/img/lingo.png"/>
+    {% endblock og %}
     <meta name="mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
 
@@ -33,7 +43,6 @@
     
     <!-- Scripts -->
     <script src="/static/js/web/jquery-3.6.3.min.js"></script>
-    <script src="/static/js/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         (() => {
             'use strict'

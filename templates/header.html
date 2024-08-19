@@ -140,6 +140,7 @@
         <li class="authenticated"><a onclick="notifications()"><i class="ti ti-notification fs-4"></i> Notifications <span class="badge {% if request.notifications %}learner-notif{% else %}bg-secondary{% endif %} text-white">{{request.notifications|length}}</span></a></li>
         <li><a href="{% url "dictionary" %}"><i class="fa-solid fa-book"></i> Dictionary</a></li>
         <li><a href="{% url "posts" %}"><i class="fa-regular fa-newspaper"></i> Posts</a></li>
+        <li><a href="{% url "quotes" %}"><i class="fa-solid fa-pen"></i> Quotes</a></li>
         <li><a href="{% url "games" %}"><i class="fa-solid fa-gamepad"></i> Games</a></li>
     </div>
 
