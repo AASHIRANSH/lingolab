@@ -46,7 +46,7 @@ class Collocation(models.Model):
 
 
 class Dictionary(models.Model):
-    is_complete = models.BooleanField(default=False)
+    is_complete = models.BooleanField(default=False, editable=False)
     listing = models.IntegerField(default=0)
     word = models.CharField(max_length=100)
     plural = models.CharField(("Plural Form"), max_length=50, blank=True, null=True)
@@ -167,7 +167,7 @@ class Comment(models.Model):
 ''' End Posts... '''
     
 class Quote(models.Model):
-    # qod = models.BooleanField(default=False)
+    qod = models.BooleanField(default=False)
     quote = models.TextField()
     author = models.CharField(max_length=100)
     pic = models.CharField(max_length=500, blank=True, null=True)

@@ -41,10 +41,9 @@
                 </div>
             </div>
 
-            {% if request.user.is_superuser %}<a href="{% url "data_main" %}?data=set&word={{word.pk}}&sense=0" role="button" class="btn btn-secondary">SET AS WOD</a>
-            <hr>
-            {% endif %}
-            <div class="bg-light p-3 py-4 mb-3 rounded shadow overflow-hidden">
+            {% if request.user.is_superuser %}<a href="{% url "data_main" %}?data=set&word={{word.pk}}&sense=0" role="button" class="btn btn-outline-secondary">SET AS WOD</a><hr>{% endif %}
+            
+            <div class="bg-light p-3 py-4 rounded shadow overflow-hidden">
                 <div class="d-flex justify-content-between rounded">
                     <div class="row col-11">
                         <!-- Word Pos-->
@@ -170,7 +169,7 @@
             {% endif %}
             
             {% for sense in word.senses %}
-                <div class="p-2 {% if not forloop.last %}mb-3{% endif %} rounded shadow">
+                <div class="p-2 {% if not forloop.last %}my-3{% endif %} rounded shadow">
                     <div class="d-flex justify-content-between mb-1">
                         <div>
                             <span class="badge text-uppercase text-bg-primary bg-opacity-100" {% if request.user.is_superuser %}onclick="window.location.assign(`{% url 'word_entry' %}?edit=true&word={{word.pk}}&sense={{sense.0|add:-1}}`)"{% endif %}>sense {{sense.0}}</span>
@@ -323,8 +322,8 @@
                             <div class="col-sm-12 col-lg-6 accordion my-1" id="accordionExample{{forloop.counter}}">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapseOne">
-                                            <span class="d-inline-block bg-secondary text-white fw-bold wsp-sm lsp-sm fs-7 p-2 rounded">{{box.0|safe}}</span>
+                                        <button class="accordion-button bg-gray-200 collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapseOne">
+                                            <span class="d-inline-block fw-bold wsp-sm lsp-sm fs-7 p-2 rounded">{{box.0|safe}}</span>
                                         </button>
                                     </h2>
                                     <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -346,7 +345,7 @@
                             <div class="ps-3">
                                 {% for x in sense.11 %}
                                     <div class="mb-3">
-                                        <div class="mb-1"><span class="bg-gray-200 text-primary fw-bold px-2 py-1 rounded">{{x.0}}</span></div> 
+                                        <div class="mb-1"><span class="btn-gray-200">{{x.0}}</span></div> 
                                         <div class="px-3">&#x2022; {{x.1}}</div>
                                     </div>
                                 {% endfor %}

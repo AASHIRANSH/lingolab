@@ -1,0 +1,484 @@
+{% extends "base.html" %}
+{% block og %}
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://www.lingolab.in/"/>
+    <meta property="og:title" content="Play Wordscapes | Game | LingoLab"/>
+    <meta property="og:description" content="Play Wordscapes | Game | LingoLab"/>
+    <meta property="og:site_name" content="LingoLab"/>
+    <meta name="twitter:site" content="@lingolab">
+    <meta name="twitter:creator" content="@lingolab">
+    <meta name="twitter:title" content="Play Wordscapes | Game | LingoLab"/>
+    <meta name="twitter:description" content="Play Wordscapes | Game | LingoLab">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta property="og:image" content="https://www.lingolab.in/static/img/lingo.png"/>
+    <meta name="twitter:image:src" content="https://www.lingolab.in/static/img/lingo.png"/>
+{% endblock og %}
+{% block css %}
+<style>
+    #wordc{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: background 0.5s;
+        overflow: hidden;
+    }
+    #wordsc{
+        transition: scale 0.5s;
+    }
+    #wordsc .letterc{
+        width: 4rem;
+        height: 4rem;
+        padding: 0.3rem;
+    }
+    .letter{
+        width: 100%;
+        max-width: 3.5rem;
+        height: 100%;
+        background-color: rgba(255,255,255,0.5);
+        font-size: 3rem;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-transform: uppercase;
+        border-radius: 0.3rem;
+    }
+    #ltr {
+        --d: 3.5rem;
+        /* image size */
+        --rel: 1;
+        /* how much extra space we want between images, 1 = one image size */
+        --r: calc(.5*(0.5 + var(--rel))*var(--d)/var(--tan));
+        /* circle radius */
+        --s: calc(2*var(--r) + var(--d));
+        /* container size */
+        position: relative;
+        width: var(--s);
+        height: var(--s);
+    }
+    #ltr div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: calc(-.5*var(--d));
+        width: var(--d);
+        height: var(--d);
+        --az: calc(var(--i)*1turn/var(--m));
+        transform: rotate(var(--az)) translate(var(--r)) rotate(calc(-1*var(--az)));
+    }
+    .ltr{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.3);
+        color: #353535;
+        font-size: 3rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0.3rem;
+        cursor: pointer;
+    }
+    #xmodal{
+        position: fixed;
+        top:0;
+        right:0;
+        bottom:0;
+        left:0;
+        background: rgba(0,0,0,0.5);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 3;
+        transition: opacity 0.3s;
+    }
+    #xmodal.active {
+        opacity: 1;
+        pointer-events: initial;
+        transition: opacity 0.3s;
+    }
+    #xmodal > #modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 60%;
+        min-height: 55%;
+        background: var(--bs-light);
+        border-radius: 0.3rem;
+        transform: translate(-50%, -50%);
+    }
+    .scene{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+    }
+    .scroll-none::-webkit-scrollbar{
+        display: none;
+        width: 0;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+
+<div class="position-absolute h-100 d-flex flex-column justify-content-between text-center bg-dark bg-opacity-50 text-light p-2 shadow" style="z-index: 3;">
+    <div>
+        <button id="back" class="btn text-light"><i class="fa-solid fa-arrow-left"></i></button>
+        <hr>
+    </div>
+    <div>
+        <div id="points" class="bg-dark bg-opacity-75 font-poppins p-1 rounded animate__animated">{{points}}</div>
+        <hr>
+        <button onclick="openFoundWords()" class="btn btn-light"><i class="fa-solid fa-font"></i></button>
+    </div>
+</div>
+
+<div id="wordc" class="d-flex flex-column flex-md-row bg-primary">
+</div>
+
+<div id="xmodal">
+    <div id="modal-content" class="shadow">
+    </div>
+</div>
+
+<script>
+    var wordc = document.getElementById("wordc");
+    var popup = document.querySelector("#popup");
+    var points = document.querySelector("#points");
+    var back = document.querySelector("#back");
+
+    var success = new Audio("/static/music/success.mp3");
+    
+    const levels = JSON.parse("{{game_db|escapejs}}");
+    const level = {{level}};
+    var len = [[],[]];
+    var colors = ["#313131","#000080"];
+    var bgs = ["hills.jpg","grass.jpg","chick.jpg","bird.jpg"];
+    var ltrs_arr = [];
+
+    function home(){
+        back.setAttribute("onclick","window.location.assign('/english/games/')");
+        ltrs_arr = [];
+        len = [[],[]];
+        wordc.innerHTML=`
+        <div id="play" class="position-absolute top-50 start-50 translate-middle d-flex flex-column justify-content-center align-items-center gap-3 font-poppins bg-dark bg-opacity-25 w-100 h-100 text-light">
+            <div class="display-2">WORDSCAPES</div>
+            <div onclick="master(${level})" class="fs-1 bg-dark bg-opacity-75 px-5 border border-3 cursor-pointer" style="border-radius:20px/50px">Play <i class="fa-solid fa-arrow-right fs-2"></i></div>
+            <div onclick="levelSelect()" class="fs-3 bg-dark bg-opacity-75 px-5 border border-2 cursor-pointer" style="border-radius:20px/50px">Level Select</div>
+        </div>`;
+    }
+
+    function levelSelect(){
+        wordc.innerHTML = `
+        <div class="scene">
+        <div class="h-100 col-10 col-md-6 mx-auto overflow-scroll scroll-none py-5">
+            {% for group in level_map %}
+                <div class="card card-body bg-gray-200 mb-3">
+                    <div class="text-center fs-2">{{group.a}}</div>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        {% for set in group.sets.values %}
+                        <div class="col-3 text-center"><img src="/static/img/bgs/wordscapes/bg/{{set.d}}" style="width:100%;height:auto"/></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        </div>
+        `;
+        back.setAttribute("onclick","home()");
+    }
+    //function success(){}
+
+    function master(){
+        back.setAttribute("onclick","home()");
+        wordc.style.background = "url(/static/img/bgs/wordscapes/"+bgs.sort(function () { return 0.5 - Math.random() })[0];
+        wordc.style.backgroundPosition = "center";
+        wordc.style.backgroundSize = "cover";
+
+        let counter = 0;
+
+        wordc.innerHTML = `
+            <div id="words" class="col-12 col-md-8 d-flex justify-content-center align-items-center animate__animated animate__fadeInLeft">
+                <div id="wordsc" class="bg-dark bg-opacity-50 rounded shadow">
+                </div>
+            </div>
+            <div id="worde" class="col-12 col-md-4 d-flex flex-md-column justify-content-center align-items-center gap-2 animate__animated animate__fadeInRight">
+                <div class="bg-white bg-opacity-50 d-flex justify-content-center align-items-center rounded-circle mb-3 shadow" style="width:19rem;height:19rem;">
+                    <div id="ltr"></div>
+                </div>
+        
+                <div class="text-center">
+                    <button id="check" class="btn btn-lg fw-bold btn-primary fs-4 lsp shadow">CHECK</button>
+                    <!--input id="input" class="form-control" type="text" autofocus></input-->
+                </div>
+            </div>
+        `;
+        var wordsc = document.getElementById("wordsc");
+        var check = document.getElementById("check");
+        //var input = document.getElementById("input");
+
+        resize();
+
+        // generating cells
+        let letters = ``;
+        for (let x = 0; x < levels[level][2][1]; x++){
+            letters += `<div class="d-flex">`;
+            for (let y = 0; y < levels[level][2][0]; y++){
+                letters += `<div class="letterc"><div id="cell-${counter}"></div></div>`;
+                counter ++;
+            }
+            letters += `</div>`;
+        }
+        wordsc.innerHTML = letters;
+
+        // generating visible cells
+        for (let x of levels[level][3]){
+            //let start_cell = x[0]+(x[1]*lvs[2][0]);
+            if (x[2] == "v"){
+                let col = 0;
+                for (let i in x[0]){
+                    let cell = document.querySelector("#cell-"+(x[1]+col-1));
+                    cell.classList.add("letter","animate__animated","animate__faster");
+                    col += levels[level][2][0];
+                }
+            } else {
+                for (let i = 0; i<x[0].length; i++){
+                    let cell = document.querySelector("#cell-"+(x[1]+i-1));
+                    cell.classList.add("letter","animate__animated","animate__faster");
+                }
+            }
+        }
+
+        // selection
+        {
+            var ltr = document.querySelector("#ltr");
+            
+            let n_imgs = levels[level][1].length;
+            let has_mid = 0; /* 0 if there's no item in the middle, 1 otherwise */
+            let m = n_imgs - has_mid; /* how many are ON the circle */
+            let tan = Math.tan(Math.PI/m); /* tangent of half the base angle */
+
+            ltr.setAttribute("style",`--m:${m};--tan: 0.41`);
+
+            let ltrhtm = ``;
+            for(let i = 0; i < n_imgs; i++)
+                ltrhtm += `<div style=${i - has_mid >= 0 ?"--i:"+i:""}
+                <div class="ltr" id="${levels[level][1][i]}">${levels[level][1][i]}</div></div>
+            `;
+            ltr.innerHTML = ltrhtm;
+        }
+
+        // word text-input
+        {
+            // input.addEventListener("change",function(){
+            //     let value = this.value.toLowerCase();
+            //     for (let x of levels[level][3]){
+            //         if (len.includes(value)){
+            //             alert("already found!!!");
+            //             this.value = "";
+            //             break;
+            //         }
+            //         let color = colors.sort(function () { return 0.5 - Math.random() })[0];
+            //         if (x[0] == value){
+            //             if (x[2] == "v"){
+            //                 let col = 0;
+            //                 for (let index in x[0]){
+            //                     let cell = document.querySelector("#cell-"+(x[1]+col-1));
+            //                     cell.classList.remove("animate__fadeIn");
+            //                     cell.classList.add("animate__fadeIn");
+            //                     cell.style.cssText = `animation-delay: 0.${index+3}s`;
+            //                     cell.style.color = color;
+            //                     cell.innerText = x[0][index];
+            //                     col += levels[level][2][0];
+            //                 }
+            //             } else {
+            //                 for (let i = 0; i<x[0].length; i++){
+            //                     let cell = document.querySelector("#cell-"+(x[1]+i-1));
+            //                     cell.classList.remove("animate__fadeIn");
+            //                     cell.classList.add("animate__fadeIn");
+            //                     cell.style.cssText = `animation-delay: 0.${i+3}s`;
+            //                     cell.style.color = color;
+            //                     cell.innerText = x[0][i];
+            //                 }
+            //             }
+            //             len.push(value);
+            //             if (len.length == levels[level][3].length) window.location.assign("?level="+(level+1));
+            //             this.value = "";
+            //             break;
+            //         }
+            //     }
+            // });
+        }
+
+        // button event
+        document.querySelectorAll(".ltr").forEach(ele => {
+            ele.addEventListener("click", function(){
+                let letter = this.innerText;
+                ltrs_arr.push(letter);
+                this.style.backgroundColor = "rgba(0,0,0,0.4)";
+
+                if (ltrs_arr.length == levels[level][1].length){
+                    findWord();
+                    ltrs_arr = [];
+                    resColor();
+                }
+            });
+        });
+
+        
+        // check button
+        check.addEventListener("click", function(){
+            findWord();
+        });
+
+        window.addEventListener("resize",resize);
+    }
+
+    // keyboard keyDown
+    document.body.addEventListener("keydown", (e) => {
+        let key = e.key.toLowerCase();
+        if (key == "enter") check.click();
+        //if (key == "backspace") check.click();
+        if (key == "a") document.querySelector("#a").click();
+        if (key == "b") document.querySelector("#b").click();
+        if (key == "c") document.querySelector("#c").click();
+        if (key == "d") document.querySelector("#d").click();
+        if (key == "e") document.querySelector("#e").click();
+        if (key == "f") document.querySelector("#f").click();
+        if (key == "g") document.querySelector("#g").click();
+        if (key == "h") document.querySelector("#h").click();
+        if (key == "i") document.querySelector("#i").click();
+        if (key == "j") document.querySelector("#j").click();
+        if (key == "k") document.querySelector("#k").click();
+        if (key == "l") document.querySelector("#l").click();
+        if (key == "m") document.querySelector("#m").click();
+        if (key == "n") document.querySelector("#n").click();
+        if (key == "o") document.querySelector("#o").click();
+        if (key == "p") document.querySelector("#p").click();
+        if (key == "q") document.querySelector("#q").click();
+        if (key == "r") document.querySelector("#r").click();
+        if (key == "s") document.querySelector("#s").click();
+        if (key == "t") document.querySelector("#t").click();
+        if (key == "u") document.querySelector("#u").click();
+        if (key == "v") document.querySelector("#v").click();
+        if (key == "w") document.querySelector("#w").click();
+        if (key == "x") document.querySelector("#x").click();
+        if (key == "y") document.querySelector("#y").click();
+        if (key == "z") document.querySelector("#z").click();
+    });
+
+    //window.onload = master(level);
+    window.onload = home();
+
+    function findWord(){
+        let word = ltrs_arr.join("").toLocaleLowerCase();
+        let lin = [];
+        for (let x of levels[level][3]){
+            if (len[0].includes(word)){
+                //alert("The word \""+word.toUpperCase()+"\" was already found!!!");
+                for (let x of len[1][len[0].indexOf(word)]){
+                    let alf = document.querySelector("#cell-"+x);
+                    alf.classList.add("animate__jello");
+                    alf.addEventListener("animationend",()=>{
+                        alf.classList.remove("animate__jello");
+                    });
+                }
+                ltrs_arr = [];
+                resColor();
+                break;
+            }
+            let color = colors.sort(function () { return 0.5 - Math.random() })[0];
+            if (x[0] == word){
+                success.load();
+                success.play();
+                if (x[2] == "v"){
+                    let col = 0;
+                    for (let index in x[0]){
+                        let cell = document.querySelector("#cell-"+(x[1]+col-1));
+                        cell.style.animationDelay = `0.${index+1}s`;
+                        cell.classList.add("animate__fadeInUp");
+                        cell.style.backgroundColor = "rgba(0,0,0,0.5)";
+                        cell.style.color = "#f1f1f1";
+                        //index == "0" ? cell.style.fontWeight = "bold":"";
+                        cell.innerText = x[0][index];
+                        cell.addEventListener("animationend",()=>{
+                            cell.classList.remove("animate__fadeInUp");
+                        });
+                        lin.push(x[1]+col-1);
+                        col += levels[level][2][0];
+                    }
+                } else {
+                    for (let i = 0; i<x[0].length; i++){
+                        let cell = document.querySelector("#cell-"+(x[1]+i-1));
+                        cell.style.animationDelay = `0.${i+1}s`;
+                        cell.classList.add("animate__fadeInRight");
+                        cell.style.backgroundColor = "rgba(0,0,0,0.5)";
+                        cell.style.color = "#f1f1f1";
+                        //i == 0 ? cell.style.fontWeight = "bold":"";
+                        cell.innerText = x[0][i];
+                        cell.addEventListener("animationend",()=>{
+                            cell.classList.remove("animate__fadeInRight");
+                        });
+                        lin.push(x[1]+i-1);
+                    }
+                }
+                len[0].push(word);
+                len[1].push(lin);
+                if (len[0].length == levels[level][3].length){
+                    // success screen
+                    document.querySelector("#cell-"+lin[0]).addEventListener("animationend",()=>{
+                        window.location.assign("?level="+(level+1));
+                    });
+                }
+                ltrs_arr = [];
+                resColor();
+                setPoints(word.length);
+                break;
+            }
+        }
+        ltrs_arr = [];
+        resColor();
+    };
+    function openFoundWords(){
+        let words = len[0];
+        let modal = document.querySelector("#xmodal");
+        modal.classList.add("active");
+
+        modal.addEventListener("click",(e)=>{
+            if (e.target == modal) modal.classList.remove("active");
+        });
+    }
+    function resColor(){
+        document.querySelectorAll(".ltr").forEach(ele => { ele.style.backgroundColor = "rgba(255,255,255,0.3)"});
+    };
+    function resize(){
+        // resize container according to the columns and rows number
+        if ((levels[level][2][1] < 5 || levels[level][2][0]) < 5){
+            wordsc.style.scale = "1.4";
+        } else if ((levels[level][2][1] < 11 || levels[level][2][0]) < 11){
+            wordsc.style.scale = "0.9";
+        } else if ((levels[level][2][1] > 10 || levels[level][2][0]) > 10){
+            if (window.innerWidth < 700){
+                wordsc.style.scale = "0.5";
+            } else {
+                wordsc.style.scale = "0.7";
+            }
+        }
+    }
+    function setPoints(val){
+        let xhttp = new XMLHttpRequest();
+        xhttp.onload = ()=>{
+            points.classList.remove("animate__jello");
+            points.classList.add("animate__jello");
+            points.innerText = xhttp.responseText;
+        }
+        xhttp.open("GET","{% url 'set_plan' %}?key=games&game=wordscapes&val="+val, true);
+        //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // required with POST request
+        xhttp.send(); //xhttp.send(`csrfmiddlewaretoken={{csrf_token}}&data=${JSON.stringify(entry).replaceAll("&","ampp")}`);
+    }
+</script>
+{% endblock body %}

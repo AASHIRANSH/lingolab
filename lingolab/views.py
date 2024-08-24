@@ -1,24 +1,25 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import messages
 from languages.models import Dictionary, Post, Quote, GK
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 import time, json
 
 def index(request):
-    user = request.user
-    quotes = Quote.objects.all()[0]
+    quote = Quote.objects.get(qod=True)
     posts = Post.objects.filter(published=True).order_by("-created_at")[0:4]
     gks = GK.objects.filter(published=True).order_by("-created_at")[0:4]
+    sl_bgs = ["libr-digital.jpg","libr-digital.webp"]
 
     now = time.strftime("%a, %d %b %Y %H:%M")
     word = Dictionary.objects.get(is_complete=True) #WordOfTheDay.objects.all().order_by("-created_at")[0]
 
     vars = {
-        "quotes":quotes,
+        "quote":quote,
         "posts":posts,
         "gks":gks,
         "word":word,
         "now":now,
+        "bg":sl_bgs
     }
     return render(request,"index.html", vars)
 

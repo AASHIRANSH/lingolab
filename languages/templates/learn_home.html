@@ -23,8 +23,8 @@
                     {% if un <= ul.1 and forloop.counter <= ul.2 %}
                         <div class="dropdown-center">
                             <div class="bg-success p-2 rounded-circle cursor-pointer shadow" data-bs-toggle="dropdown"><i class="fa-solid fa-star text-white"></i></div>
-                            <ul class="dropdown-menu p-3" style="width:300px">
-                                <li>Lesson 1 of {{unit.lessons|length}}</li>
+                            <ul class="dropdown-menu text-center p-3" style="width:300px">
+                                <li class="mb-1">Lesson 1 of {{unit.lessons|length}}</li>
                                 <li><button class="col-12 btn btn-primary" onclick="window.location.assign('{% url 'learn' course.pk un forloop.counter %}')">START +10 XPs</button></li>
                             </ul>
                         </div>

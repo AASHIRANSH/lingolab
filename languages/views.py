@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect, get_object_or_404
 from django.contrib.auth.models import User
+from users.models import Profile
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
@@ -433,10 +434,12 @@ def gkpost_list(request):
     return render(request, 'gkposts.html', vars)
 
 def post_detail(request, pk):
-    # user_obj = User.objects.get(username=request.user.username)
     post = get_object_or_404(Post, pk=pk)
     post.views += 1
     post.save()
+
+    posts = Post.objects.filter(topic=post.topic)
+
     comments = post.comments.all()
     user_in_like_set = post.like_set.filter(user__username=request.user.username).exists()
     
@@ -450,10 +453,9 @@ def post_detail(request, pk):
             return redirect('post_detail', pk=pk)
     else:
         form = CommentForm()
-
     vars = {
-        # 'user_obj':user_obj,
         'post': post,
+        'posts': posts,
         'comments': comments,
         'form': form,
         'user_in_like_set': user_in_like_set,
@@ -1447,7 +1449,9 @@ def data_main(request):
             rvdata["pr"][seni] = 6
             fav_obj.save()
             return HttpResponse("Done")
+    
     elif data.get('data') == "set":
+        if not username == "muhammadsog" : return HttpResponseRedirect("/")
         wod = Dictionary.objects.get(is_complete=True)
         wod.is_complete = False
         wod.save()
@@ -1619,12 +1623,25 @@ def games(request):
     return render(request,"english/games/index.html",vars)
 
 def game_wordscapes(request):
+    profile = Profile.objects.get(user=request.user)
+    prog = profile.learnings["games"]["wordscapes"]
     get = request.GET
-    with open("database/games/levels.json") as f:
-        game_db = json.load(fp=f)
+
+    with open("database/games/lvs.json") as f:
+        ws_lvs = json.load(fp=f)
+    lv = ws_lvs[prog[0]]
+    level_map = [x[1] for x in ws_lvs]
+
+    if get.get("key") == "level":
+        prog[0] = int(get.get("val"))
+        profile.save()
+        lv = ws_lvs[int(get.get("val"))]
+        return JsonResponse(lv, safe=False)
+
     vars = {
-        "game_db":json.dumps(game_db),
-        "level":int(get.get("level","0")),
+        "level_map":level_map,
+        "game_db":json.dumps(lv),
+        "level":prog[0],
         "points": request.user.profile.learnings["games"]["wordscapes"][1]
     }
     return render(request,"english/games/wordscapes.html",vars)

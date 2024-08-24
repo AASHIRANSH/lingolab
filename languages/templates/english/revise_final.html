@@ -63,6 +63,23 @@
         }
         choices_arr.sort(function () { return 0.5 - Math.random() }); // Orders randomly an array
         
+        var pronunciation = ``;
+        if (Object.keys(r_obj.pronunciation)){
+            pronunciation += '<div class="col-12 ff-arial">';
+
+            pronunciation += `<div><span class="text-primary fs-5 speak" data-src-mp3="${r_obj.pronunciation.uk.audios.mp3[0]}">UK <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.uk.texts[0]}</span></span>`;
+            if (r_obj.pronunciation.uk.texts[1]) pronunciation += `<span class="text-primary fs-5 speak" data-src-mp3="${r_obj.pronunciation.uk.audios.mp3[1]}">, <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.uk.texts[1]}</span></span>`;
+            pronunciation += '</div>';
+            
+            if (r_obj.pronunciation.us.texts){
+                pronunciation += `<div><span class="text-danger fs-5 speak" data-src-mp3="${r_obj.pronunciation.us.audios.mp3[0]}">US <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.us.texts[0]}</span></span>`;
+                if (r_obj.pronunciation.us.texts[1]) pronunciation += `<span id="" class="text-danger fs-5 speak" data-src-mp3="${r_obj.pronunciation.us.audios.mp3[1]}">, <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronounciation.us.texts[1]}</span></span>`;
+                pronunciation += '</div>'
+            }
+
+            pronunciation += '</div>'
+        }
+
         var examples = [];
         for (let x of r_obj.senses[10]){
             examples.push(`<li class="example p-0"><!--&#x2022; bullet -->${x} <i class="fa-solid fa-volume-high cursor-pointer fs-6 text-primary" onclick="textToSpeech(this.parentNode.textContent, 'UK')"></i></li><hr class="my-2">`);
@@ -153,6 +170,7 @@
                         <span class="col-auto text-primary fw-bold fs-2 text-wrap" onclick="window.open('/english/word/${r_obj.pk}/${r_obj.rvsense}/','_blank')">${r_obj.word}</span> 
                         <span class="col-auto fs-6 text-secondary">${r_obj.pos}</span> 
                         ${r_obj.cefr?'<span id="grade" class="col-auto">'+r_obj.cefr+'</span>':''}
+                        ${pronunciation?pronunciation:''}
                         <div class="fs-6">${r_obj.word_details[5]}</div>
                     </div>
 

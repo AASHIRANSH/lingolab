@@ -112,7 +112,14 @@ class Notes(models.Model):
 
     def __str__(self):
         return f"{self.note_title} ({self.user.username})"
+
+# class Stat(models.Model):
+#     user = models.ForeignKey(User)
+#     site = models.CharField(max_length=150)
     
+#     def __str__(self):
+#         return self.user
+
 # class Chat(models.Model):
 #     first_user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     second_user = models.ForeignKey(User, related_name="%(class)s_chat", on_delete=models.CASCADE)

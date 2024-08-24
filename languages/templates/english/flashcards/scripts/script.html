@@ -81,8 +81,7 @@
         d.innerHTML = d.innerHTML.replace(/[;]/g, "<span class='fw-bold text-primary'>; </span>");
     };
 
-    var example = document.getElementsByClassName("example");
-
+    let example = document.getElementsByClassName("example");
     for (let x of example){
         // Bolding
         let examples = x.getElementsByTagName("li");
@@ -90,7 +89,7 @@
             let tag_start = false;
     
             if (tag_start == false){
-                y.innerHTML = y.innerHTML.replace("*", "<span class='fw-600'>");
+                y.innerHTML = y.innerHTML.replace("*", "<span class='fw-semibold'>");
                 tag_start = true;
             }
     
@@ -101,25 +100,25 @@
         }
 
         // Example Shadows
-        let exampleHeight = x.scrollHeight;//example.getBoundingClientRect().height;
-        if ( exampleHeight > 300 ){
-            x.classList.add("shadow-b");
-        }
-        x.addEventListener("scroll", function(){
-            if (x.scrollTop > 40){
-                x.classList.remove("shadow-b");
-                x.classList.add("shadow-y");
-            }
-            if (x.scrollTop > (exampleHeight-x.offsetHeight-2)){
-                x.classList.remove("shadow-y");
-                x.classList.add("shadow-t");
-            }
-            if (x.scrollTop < 10){
-                x.classList.remove("shadow-y");
-                x.classList.add("shadow-b");
-            }
+        //let exampleHeight = x.scrollHeight;//example.getBoundingClientRect().height;
+        //if ( exampleHeight > 300 ){
+        //    x.classList.add("shadow-b");
+        //}
+        //x.addEventListener("scroll", function(){
+        //    if (x.scrollTop > 40){
+        //        x.classList.remove("shadow-b");
+        //        x.classList.add("shadow-y");
+        //    }
+        //    if (x.scrollTop > (exampleHeight-x.offsetHeight-2)){
+        //        x.classList.remove("shadow-y");
+        //        x.classList.add("shadow-t");
+        //    }
+        //    if (x.scrollTop < 10){
+        //        x.classList.remove("shadow-y");
+        //        x.classList.add("shadow-b");
+        //    }
             //console.log(example.classList);
-        });
+        //});
     }
 </script>
 
