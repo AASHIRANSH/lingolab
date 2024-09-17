@@ -1,5 +1,5 @@
 // HTML SECTIONS
-
+const main = document.getElementById("main");
 // NAVIGATION
 var nav = 0;
 

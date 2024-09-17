@@ -48,7 +48,7 @@
     <div class="row">
         <div class="col-12 col-sm-12 col-lg-9 px-4 pe-lg-0 mb-5">
             {% include 'messages.html' %}
-            <div class="" style="z-index:10">
+            <div>
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
                     <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="bg-light px-3 py-4 mb-3 shadow rounded">
+            <div class="bg-light px-3 py-4 shadow-sm rounded">
                 <div class="d-flex justify-content-between align-items-center rounded">
                     <div class="row col-11">
                         <!-- Word Pos-->
@@ -188,7 +188,7 @@
             </div>
 
             {% if sense %}
-                <div class="p-2 rounded shadow">
+                <div class="p-2 rounded my-3 shadow-sm">
                     <div class="d-flex justify-content-between mb-1">
                         <div>
                             {% if word.senses|length > 1 %}<div><a href="{% url "word" word.pk %}" class="btn btn-outline-primary fs-9 px-1 py-0">show all senses</a></div>{% endif %}
@@ -433,9 +433,9 @@
                 </div>
                 {% for w in nw %}
                     {% if word.pk == w.pk %}
-                        <a class="d-block fw-bold bg-secondary bg-opacity-25 text-secondary px-2 py-1 my-1 rounded">{{w.word}}</a>
+                        <a class="d-block fw-bold bg-primary-subtle text-primary px-2 py-1 my-1 rounded">{{w.word}} <span class="text-secondary fs-8">{{w.pos}}</a>
                     {% else %}
-                        <a href="{% url 'word' w.pk %}" class="d-block text-secondary hover-gray px-1 my-1 rounded">{{w.word}}</a>
+                        <a href="{% url 'word' w.pk %}" class="d-block text-secondary hover-gray px-1 my-1 rounded">{{w.word}} <span class="text-gray-600 fs-8">{{w.pos}}</a>
                     {% endif %}
                 {% endfor %}
                 <div class="my-2">

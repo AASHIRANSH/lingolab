@@ -3,7 +3,7 @@
 {% block title %}Login |{% endblock title %}
 
 {% block body %}
-{% include 'header.html' %}
+<div class="position-absolute top-0 start-0 m-3"><button onclick="window.history.back()" class="btn text-secondary"><i class="fa-solid fs-3 fa-arrow-left"></i></button></div>
 
 <div class="bg-check">
     <div class="bg-grd-gray font-public text-center text-primary pt-5 pb-3">
@@ -15,7 +15,7 @@
 {% include 'messages.html' %}
 
 <div class="container my-5">
-    <div class="card card-body col-10 col-md-6 mx-auto shadow">
+    <div class="card card-body col-10 col-md-9 col-lg-6 mx-auto shadow">
         <form id="login_form" action="" method="post" novalidate>
             {% csrf_token %}
             {% if form.non_field_errors %}

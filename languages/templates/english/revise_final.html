@@ -64,7 +64,7 @@
         choices_arr.sort(function () { return 0.5 - Math.random() }); // Orders randomly an array
         
         var pronunciation = ``;
-        if (Object.keys(r_obj.pronunciation)){
+        if (r_obj.pronunciation.length){
             pronunciation += '<div class="col-12 ff-arial">';
 
             pronunciation += `<div><span class="text-primary fs-5 speak" data-src-mp3="${r_obj.pronunciation.uk.audios.mp3[0]}">UK <i class="fa-solid fa-volume-high cursor-pointer"></i> <span>${r_obj.pronunciation.uk.texts[0]}</span></span>`;

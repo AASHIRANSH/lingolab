@@ -566,9 +566,10 @@ def dictionary_json(request):
         words = Dictionary.objects.all().order_by('word')
         headwords = []
         for x in words:
-            headwords.append([x.pk,x.word,x.pos])
+            if not " " in x.word and not "-" in x.word and not x.pos == "abbreviation":
+                headwords.append([x.pk,x.word,x.pos])
         
-        with open("database/models/suggs_trm.json", mode="w") as jsondict:
+        with open("database/models/singles.json", mode="w") as jsondict:
             json.dump(headwords, fp=jsondict)
 
         # with open("database/models/pos.json", mode="w") as jsondict:
@@ -1022,8 +1023,11 @@ def my_word(request,word):
 
 ''' Dictionary '''
 def dictionary(request):
-    from django.db.models import Q
     get = request.GET
+
+    with open("database/stats.json") as db:
+        db = json.load(db)
+        searches = db["dictionary"]["recent_searches"]
 
     url = "https://microsoft-translator-text.p.rapidapi.com/translate"
     querystring = {"to":"ur","api-version":"3.0","profanityAction":"NoAction","textType":"plain"}
@@ -1046,6 +1050,7 @@ def dictionary(request):
                 print(x)
                 word.save()
     
+    from django.db.models import Q
     search_query = get.get("q","").strip()
     filt = get.get("filter","")
 
@@ -1073,7 +1078,7 @@ def dictionary(request):
         }
         return render(request, "english/dictionary_2.html", vars)
     else:
-        return render(request, "english/dictionary_2.html")
+        return render(request, "english/dictionary_2.html", searches if searches else {})
 
 def dictionaryTopic(request):
     topics = TopicDictionary.objects.all()
@@ -1425,7 +1430,13 @@ def data_main(request):
     elif data.get('data') == "mastered":
         rvi = rvdata["senses"].index(sense)
         rvs = rvdata["mastered"][rvi]
-        rvdata["mastered"][rvi] = True if rvs == False else True
+        if rvs == False:
+            rvdata["mastered"][rvi] = True
+            rvdata["rvcounts"][rvi] = 20
+        else:
+            rvdata["mastered"][rvi] = False
+            rvdata["rvcounts"][rvi] = 3
+
         fav_obj.save()
         return HttpResponse("Done")
 
@@ -1457,10 +1468,17 @@ def data_main(request):
         wod.save()
         word_obj.is_complete = True
         word_obj.save()
+
+        with open("database/stats.json","r+") as f:
+            db = json.load(f)
+            db["dictionary"]["wod"].append([word_obj.pk,todaystr])
+            f.write(db)
+
         messages.success(request,"The word was set as WOD!!!")
         return HttpResponseRedirect(f"/english/word/{word_obj.pk}")
 
 ''' Zero to Hero '''
+@login_required
 def zero_to_hero_home(request):
     current_course = request.user.profile.learnings["courses"]["current"]
     is_current = True if current_course[0] else False
@@ -1493,51 +1511,57 @@ def zero_to_hero_start(request,course):
     }
     return render(request,"learn_start.html",vars)
 
+@login_required
 def zero_to_hero(request,lang,unit,lesson):
     obj = ZeroToHero.objects.get(pk=lang)
     code = obj.origin
  
-    with open("languages/data/"+obj.course+"_db.json","rt",encoding='UTF-8') as tp:
-        tp = json.load(fp=tp)
+    with open("languages/data/"+obj.course+"_db.json","rt",encoding='UTF-8') as db:
+        tp = json.load(db)
 
     lesson_db = []
 
-    # for x in obj.units[unit-1]["lessons"][lesson-1]: #endb["unit_"+unit]:
-    #     etype = x[0]   
-        # if etype=="word":
-            # it = Dictionary.objects.get(pk=x[3])
-            # topic = it.senses[x[4]][16][0][0] if it.senses[x[4]][16][0] else None
-            # x[2] = [[it.word,it.senses[x[4]][9][code][1]],tp[topic] if topic else ""]
-            # lesson_db.append(x)
-        
-            # elif etype=="translate":
-            # lesson_db.append(x)
+    # for x in obj.units[unit-1]["lessons"][lesson-1]:
+    #     if x[0] == "word":
+    #         w_obj = Dictionary.objects.get(pk=x[3])
+    #         sense = x[4]
+    #         topic = w_obj.senses[sense][16][0][0] if w_obj.senses[sense][16][0] else None
+    #         confs = [x for x in tp["topics"][topic]]
+    #         inst = [[w_obj.word,w_obj.senses[sense][9]["hi"][1]],[]]
+    #         for x in confs:
+    #             w_con = Dictionary.objects.get(pk=x[0])
+    #             inst[1].append([w_con.word,w_con.senses[x[1]][9]["hi"][1]])
+    #         x[2] = inst
+    #     lesson_db.append(x)
     
     for x in obj.units[unit-1]["lessons"][lesson-1]:
         etype = x[0]
         if etype == "word":
             word = tp["words"][int(x[3])]
-            inst = [[word[0],word[1]],[]]
+            inst = [[word[1],word[2]],[]]
 
-            for y in tp["words"]:
-                if word[2] in y:
-                    inst[1].append(y)
-        x[2] = inst
-    
-    # for x in tp["units"][unit-1]["lessons"][lesson-1]:
-    #     etype = x[0]
-    #     if etype == "word":
-    #         for y in tp[x[2][2]]:
-    #             x[2][1].append(y)
-        
+            ''' word confs from same topic '''
+            # for y in tp["words"]:
+            #     if word[2] in y:
+            ''' word confs from lessons '''
+            for y in sorted(obj.units[unit-1]["lessons"], key=lambda x: random.random()):
+                for card in sorted(y, key=lambda x: random.random()):
+                    if card[0] == "word":
+                        inst[1].append(tp["words"][int(card[3])])
+            x[2] = inst
+
+        elif etype == "match":
+            inst = []
+            for card in obj.units[unit-1]["lessons"][lesson-1]:
+                if card[0] == "word":
+                    inst.append([tp["words"][int(card[3])][1],tp["words"][int(card[3])][2]])
+            x[2] = inst
         lesson_db.append(x)
-    
-    print(lesson_db)
-        
     vars = {
         "unit":unit,
         "lesson":lesson,
-        "db":json.dumps(lesson_db)
+        "ldb":json.dumps(lesson_db),
+        "db":json.dumps(tp["words"])
     }
     return render(request, "english/learn_main.html", vars)
 
@@ -1551,6 +1575,9 @@ def zth_entry(request):
         lsn = int(get.get("lesson"))
         unit = int(get.get("unit"))-1
         lesson = word_obj.units[unit]["lessons"][lsn]
+
+        with open("languages/data/"+word_obj.course+"_db.json",encoding="UTF-8") as db:
+            db = json.load(db)
 
     if request.method == "POST":
         post = request.POST
@@ -1592,7 +1619,8 @@ def zth_entry(request):
         "title":word_obj.units[unit]["title"],
         "word":word_obj if edit else None,
         "wsense":lesson if edit else None,
-        "edit":edit
+        "edit":edit,
+        "db":json.dumps(db["words"])
     }
     return render(request, "english/zth_add.html", vars)
 
@@ -1623,6 +1651,7 @@ def games(request):
     return render(request,"english/games/index.html",vars)
 
 def game_wordscapes(request):
+    users = User.objects.all()
     profile = Profile.objects.get(user=request.user)
     prog = profile.learnings["games"]["wordscapes"]
     get = request.GET
@@ -1642,9 +1671,13 @@ def game_wordscapes(request):
         "level_map":level_map,
         "game_db":json.dumps(lv),
         "level":prog[0],
-        "points": request.user.profile.learnings["games"]["wordscapes"][1]
+        "points": request.user.profile.learnings["games"]["wordscapes"][1],
+        "users":users
     }
     return render(request,"english/games/wordscapes.html",vars)
 
 def game_wordsearch(request):
     return render(request,"WordSearchGame.htm")
+
+def groups(request):
+    return render(request,"groups.html")

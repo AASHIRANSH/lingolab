@@ -1,0 +1,39 @@
+{
+    "words":[
+        [0,["house"],["घर"],"buildings"],
+        [1,["car"],["गाड़ी"],"vehicles"],
+        [2,["your"],["तुम्हारा","तुम्हारी","तुम्हारे"],"pronouns"],
+        [3,["big"],["बड़ा"],"sizes"],
+        [4,["small"],["छोटा","छोटी","छोटे"],"sizes"],
+        [5,["is"],["है"],"hv"],
+        [6,["tea"],["चाय"],"drinks"],
+        [7,["water"],["पानी"],"drinks"],
+        [8,["cold"],["ठंडा"],"weather"],
+        [9,["hot"],["गरम"],"weather"],
+        [10,["and"],["और"],"conjunctions"],
+        [11,["my"],["मेरा","मेरी"],"pronouns"],
+        [11,["big"],["बड़ा","बड़ी","बड़े"],"pronouns"]
+    ],
+    "topics":{
+        "greetings":[],
+        "buildings":[0],
+        "question_words":[78486,0],
+        "sizes":[3,4]
+    },
+    "sentences":[
+        ["Welcome, Nina!","Добро пожаловать, Нина!"],
+        ["This is Mark.","Зто Марк."],
+        ["This is Victor.","Зто Виктор."],
+        ["This is Boris.","Зто Борис."],
+        ["I am Boris.","Я Борис."],
+        ["I am Maria.","Я Мария."],
+        ["Hi, I am Victor.","Привет, Я Виктор!"],
+        ["This is Maria.","Зто Мария."],
+        ["Hi, I am Nina.","Привет, Я Нина."],
+        ["Welcome, Mark!","Добро пожаловать, Марк!"],
+        ["Hi, Nina.","Привет, Нина."],
+        ["Welcome, Boris!","Добро пожаловать, Борис!"],
+        ["Welcome, Maria!","Добро пожаловать, Мария!"]
+    ],
+    "units":[{"title": "greetings", "lessons": [[["word", "wcard", [["Hi", "Привет"], [], "greetings"], "6", "0", "1"], ["sen", "tr", [[["Hi Mark"], ["Привет, Марк."]], ["Maria", "Welcome"], ""], "33260", "0", "1"], ["word", "wcard", [["Welcome", "Добро пожаловать"], [], "greetings"], "7", "0", "1"], ["sen", "tr", [[["Welcome Nina"], ["Добро пожаловать, Нина!"]], [], ""], "33260", "0", "1"], ["sen", "tr", [[["This is Mark"], ["Зто Марк."]], [], ""], "33260", "0", "1"], ["sen", "tr", [[["This is Nina"], ["Зто Нина."]], [], ""], "33260", "0", "1"], ["sen", "tr", [[["This is Maria"], ["Зто Мария."]], [], ""], "33260", "0", "1"], ["sen", "tr", [[["This is Victor"], ["Зто Виктор."]], [], ""], "33260", "0", "1"], ["sen", "tr", [[["Hi I am Nina"], ["Привет, я Нина."]], ["Maria", "Welcome"], ""], "33260", "0", "1"], ["sen", "tr", [[["I am Maria"], ["Я Мария."]], ["Maria", "Welcome"], ""], "33260", "0", "1"], ["sen", "tr", [[["Hi I am Victor"], ["Привет, я Виктор."]], ["Maria", "Welcome"], ""], "33260", "0", "1"], ["sen", "tr", [[["I am Boris"], ["Я Борис."]], ["Maria", "Welcome"], ""], "33260", "0", "1"], ["sen", "tr", [[["Welcome Mark"], ["Добро пожаловать, Марк!"]], [], ""], "33260", "0", "1"], ["sen", "tr", [[["Welcome"], ["Добро пожаловать!"]], [], "greetings"], "33260", "0", "1"]], [["word", "wcard", [["she", "она"], [], "pronouns"], "33260", "0", "1"], ["word", "wcard", [["thanks", "спосибо!"], [], "greetings"], "33260", "0", "1"], ["sen", "tr", [[["Maria she is here"], ["Мария, она здесь."]], ["Mark", "and", "thanks"], ""], "33260", "0", "1"], ["word", "wcard", [["thank you", "спосибо!"], [], "greetings"], "33260", "0", "1"], ["sen", "tr", [[["I am here"], ["Я здесь."]], ["she", "Maria", "Mark"], ""], "33260", "0", "1"], ["sen", "tr", [[["Thank you she is here"], ["Cпосибо, она здесь."]], ["he", "hi", "doctor"], ""], "33260", "0", "1"], ["sen", "tr", [[["She is here"], ["Она здесь."]], ["he", "you", "this"], ""], "33260", "0", "1"], ["sen", "tr", [[["This is Victor"], ["Зто Виктор."]], ["Maria", "and", "That"], ""], "33260", "0", "1"], ["word", "wcard", [["mom", "мама"], [], "family"], "33260", "0", "1"], ["sen", "tr", [[["Thank you Mom"], ["Спасибо, мама!"]], ["here", "she", "you"], ""], "33260", "0", "1"], ["sen", "tr", [[["Hi Dima"], ["Привет, Дима."]], ["Maria", "Welcome", "and"], ""], "33260", "0", "1"], ["sen", "tr", [[["This is Dima"], ["Это Дима."]], ["Thanks", "That", "mom"], ""], "33260", "0", "1"], ["sen", "tr", [[["Hi Katya"], ["Привет, Катя!"]], ["Hi", "and", "welcome"], ""], "33260", "0", "1"], ["sen", "tr", [[["Thank you Tanya"], ["Спасибо, Таня!"]], ["you", "she", "here"], ""], "33260", "0", "1"]], [["word", "wcard", [[["actor", "an actor"], ["актёр"]], [], "professions"], "33260", "0", "1"], ["word", "wcard", [[["and"], ["и"]], [], "conjunctions"], "", "", "1"], ["sen", "tr", [[["I am an actor"], ["Я актёр."]], ["doctor", "he", "here"], ""], "", "", "1"], ["word", null, [[["doctor", "a doctor"], ["доктор"]], [], "professions"], "", "", "1"], ["sen", "tr", [[["I am an engineer"], ["Я инженер."]], ["mom", "actor", "welcome"], ""], "", "", "1"], ["word", null, [[["an engineer", "engineer", "the engineer"], ["инженер."]], [], "professions"], "", "", "1"], ["sen", "tr", [[["She is an engineer"], ["Она инженер."]], ["doctor", "a", "He"], ""], "", "", "1"], ["word", "tr", [[["I am a teacher"], ["Я учитель."]], ["doctor", "a", "you"], ""], "", "", "1"], ["word", null, [[["teacher", "a teacher", "the teacher"], ["учитель."]], [], "professions"], "0", "", "1"], ["sen", "tr", [[["Anton and Maria"], ["Антон и Мария."]], ["am", "thank you", "hi"], ""], "", "", "1"], ["sen", "tr", [[["he and she"], ["он и она"]], ["am", "for", "actor", "is"], ""], "", "", "1"], ["sen", "tr", [[["He is an actor"], ["Он актёр."]], ["doctor", "for", "I", "She"], ""], "", "", "1"], ["word", "match", [[["and", "teacher", "hi", "mom", "actor"], ["Он актёр."]], [], ""], "", "", "1"]]]}]
+}

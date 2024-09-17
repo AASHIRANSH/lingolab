@@ -9,12 +9,12 @@
 </div>
 <div class="rule pt-1 rounded-bottom"></div>
 
-<div class="container">
+<div class="col-10 col-md-8 mx-auto my-5">
     {% for game in games %}
-    <div class="mb-3">
+    <div class="card card-body bg-gray-200 mb-3">
         <a href="{% url game %}" class="fs-1">{{game|upper}}</a>
     </div>
     {% endfor %}
 </div>
-{% include "static/components/particles.html" %}
+
 {% endblock body %}

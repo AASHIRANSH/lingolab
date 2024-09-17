@@ -145,8 +145,10 @@
         $(window).on("load", function() {
             $(".loader-wrapper").fadeOut();
         });
-        window.addEventListener("visibilitychange", function(event){
-            $(".loader-wrapper").fadeOut();
+        window.addEventListener("visibilitychange", function(){
+            //$(".loader-wrapper").fadeOut();
+            document.querySelector(".loader-wrapper").style.display = "none";
+            document.querySelector("[data-bs-dismiss='offcanvas']").click();
         });
 
         $('a[href]').on('click',function(){
@@ -240,17 +242,25 @@
 
     {% if request.user.is_authenticated %}
     <script>
-        setInterval(updls, 60000);
-        function updls() {
-            let hours = today.getHours();
-            let minutes = today.getMinutes();
-            //let seconds = today.getSeconds();
+        window.onload = function(){
+            updls();
+            setInterval(updls, 60000);
+            function updls() {
+                let hours = today.getHours();
+                let minutes = today.getMinutes();
+                //let seconds = today.getSeconds();
 
-            let userlog = new XMLHttpRequest();
-            userlog.open("GET",`{% url 'userlog' %}?user={{request.user.pk}}&t=${hours}:${minutes}`, true);
-            userlog.send();
-        };
+                let userlog = new XMLHttpRequest();
+                userlog.open("GET",`{% url 'userlog' %}?user={{request.user.pk}}&t=${hours}:${minutes}`, true);
+                userlog.send();
+
+                //localStorage.setItem("lastSeen",hours+","+minutes);
+                localStorage.removeItem("lastSeen");
+            }
+        }
     </script>
     {% endif %}
+
+    <script src="/static/js/sw.js"></script>
 </body>
 </html>

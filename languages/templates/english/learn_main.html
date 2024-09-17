@@ -2,7 +2,18 @@
 {% block body %}
 {% include 'english/static/learn.html' %}
 {% include 'english/sidebar.html' %}
-<div id="body"></div>
+<div class="h-100 w-100 position-absolute top-0 start-0 bg-dark bg-opacity-10" style="background-color: #eaeaea;">
+    <div class="inf">
+        <div class="col-2 fs-4"><i class="fa-solid fa-arrow-left"></i></div>
+        <div class="col-8">
+            <div class="box_shadow progress">
+                <div id="progress" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100" style="transition:all 0.5s ease;height:100%;"></div>
+            </div>
+        </div>
+        <div class="col-2 text-end fs-4"><svg onclick="toggleModal(${vars[2]})" style="filter:drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.3));fill:#f1f1f1;color:green;float:right;" xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 96 960 960" width="34"><path d="M160 856v-60h386v60H160Zm0-166v-60h640v60H160Zm0-167v-60h640v60H160Zm0-167v-60h640v60H160Z"/></svg></div>
+    </div>
+    <div id="main"></div>
+</div>
 
 <div id="navigation_b"></div>
 
@@ -22,17 +33,15 @@
 {% include 'tts_2.html' %}
 
 <script>
+    var words = JSON.parse("{{db|escapejs}}");
+    var objs = JSON.parse("{{ldb|escapejs}}");
+    var maxNum = objs.length - 1;
     unit = {{unit}};
     lesson = {{lesson}};
 </script>
 <script src="/static/js/courses/hi_en/globall.js"></script>
 <script src="/static/js/courses/hi_en/prompt_main.js"></script>
-<script>
-    var objs = JSON.parse("{{db|escapejs}}");
-    var maxNum = objs.length - 1;
-    //var unit = {{unit}};
-    //var lesson = {{lesson}};
-    
+<script>    
     function masters() {
         var vars = arguments;
         let obj = objs[vars[0]];
@@ -41,32 +50,21 @@
         let fn = vars[0] == maxNum ? 1 : 0;
 
         if (oi == "wcard"){
-            let x = obj[2][0];
-            let y = [0,0];
-            let z = obj[2][1]
-            wcard_prompt_beg(x, y, z, 1, fn);
+            wcard_prompt_beg(obj[2], vars[0], fn);
         } else if (oi == "wbutton"){
-            let x = obj[2][0];
-            let y = [0,0];
-            let z = obj[2][1]
-            wbutton_prompt_reverse(x, y, z, 1, fn);
+            wbutton_prompt_reverse(obj[2], vars[0], fn);
         } else if (oi == "wbutton_r"){
-            let x = obj[2][0];
-            let y = [0,0];
-            let z = obj[2][1]
-            wbutton_prompt_reverse(x, y, z, 1, fn);
+            wbutton_prompt_reverse(obj[2], vars[0], fn);
         } else if (oi == "tr"){
-            let x = obj[2][0];
-            let y = [0,0];
-            let z = obj[2][1]
-
             if (ol==1){
-                translate_beg(x, y, z, 1, fn);
+                translate_beg(obj[2], vars[0], fn);
             } else if (ol==2){
-                translate_beg_conf(x, y, z, 1, fn);
+                translate_beg_conf(obj[2], vars[0], fn);
             } else if (ol==3){
-                translate_beg_wh(x, y, z, 1, fn);
+                translate_beg_wh(obj[2], vars[0], fn);
             }
+        } else if (oi == "match"){
+            match(obj[2], vars[0], fn);
         }
     }
 </script>

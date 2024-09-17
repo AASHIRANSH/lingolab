@@ -4,6 +4,7 @@ function navigate(pn){
     if (pn=='next'){
         len = [];
         num = num==maxNum?maxNum:num += 1;
+        progressUpdate();
         window["masters"](num);
     }
 

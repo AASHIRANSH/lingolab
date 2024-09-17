@@ -20,11 +20,11 @@
 {% include 'english/flashcards/styles/flashcards.html' %}
 {% include "header.html" %}
 
-<div class="position-relative container-fluid bg-light py-4">
+<div class="position-relative container-fluid my-3">
     <div class="row">
         <div class="col-12 col-lg-9 px-4 pe-lg-0 mb-5">
             {% include 'messages.html' %}
-            <div class="" style="z-index:10">
+            <div>
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
                     <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -43,7 +43,7 @@
 
             {% if request.user.is_superuser %}<a href="{% url "data_main" %}?data=set&word={{word.pk}}&sense=0" role="button" class="btn btn-outline-secondary">SET AS WOD</a><hr>{% endif %}
             
-            <div class="bg-light p-3 py-4 rounded shadow overflow-hidden">
+            <div class="bg-light px-3 py-4 rounded shadow-sm overflow-hidden">
                 <div class="d-flex justify-content-between rounded">
                     <div class="row col-11">
                         <!-- Word Pos-->
@@ -165,11 +165,11 @@
             </div>
 
             {% if not word.senses %}
-                <div class="text-center bg-light p-3 my-3 fs-5 shadow">there are no main entries of this word, check next entries.</div>
+                <div class="text-center text-secondary bg-light p-3 my-3 fs-5 shadow-sm">there are no main entries of this word, check next entries.</div>
             {% endif %}
             
             {% for sense in word.senses %}
-                <div class="p-2 {% if not forloop.last %}my-3{% endif %} rounded shadow">
+                <div class="p-2 my-3 rounded shadow-sm">
                     <div class="d-flex justify-content-between mb-1">
                         <div>
                             <span class="badge text-uppercase text-bg-primary bg-opacity-100" {% if request.user.is_superuser %}onclick="window.location.assign(`{% url 'word_entry' %}?edit=true&word={{word.pk}}&sense={{sense.0|add:-1}}`)"{% endif %}>sense {{sense.0}}</span>
@@ -193,7 +193,6 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div>
                             {% if fav %}
                                 {% if sense.0 in fav %}
                                     <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i id="ft" class="fa-solid fa-trash"></i><i id="fp" class="d-none fa-solid fa-plus"></i></button>
@@ -201,9 +200,8 @@
                                     <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i id="fp" class="fa-regular fa-plus"></i><i id="ft" class="d-none fa-solid fa-trash"></i> <i class="fa-solid fa-list-ul"></i></button>
                                 {% endif %}
                             {% else %}
-                            <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i> <i class="fa-solid fa-list-ul"></i></button>
+                                <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="{% if request.user.is_authenticated %}favSet('fav',{{word.id}},{{sense.0}}){% else %}window.location.assign('{% url "sign_in" %}?next=/english/datamain%3Fdata%3Dfav%26word%3D{{word.pk}}%26sense%3D{{sense.0}}'){% endif %}"><i class="fa-regular fa-plus"></i> <i class="fa-solid fa-list-ul"></i></button>
                             {% endif %}
-                        </div>
                     </div>
 
                     <div class="fs-6">
@@ -228,7 +226,7 @@
                         </div>
                     {% endfor %}
                     {% endif %}
-                    <div id="def-container" class="bg-light rounded p-1 mb-1 shadow-sm">
+                    <div id="def-container" class="bg-light p-1 rounded mb-1 shadow-sm">
                         <div id="def" class="position-relative bg-primary-subtle fs-4 p-3 rounded">
                             {% if sense.1 %}
                                 <span class="d-inline-block bg-primary text-light text-uppercase fs-8 bg-opacity-75 p-1 mb-1">
@@ -445,18 +443,19 @@
 
         <div class="col-12 col-lg-3 px-4 px-lg-2">
             <div class="position-sticky sticky bg-light p-2 rounded shadow-sm tr-05">
-                <div class="d-flex justify-content-between align-items-center border-bottom border-grey mb-2">
-                    <h5 class="text-secondary">Nearby words</h5>
-                    <div class="">
-                        <a href="{% url "word" word.pk|add:-1 %}" class="btn btn-grey" role="button" title="short-key alt+z" accesskey="z">&lt;</a>
-                        <a href="{% url "word" word.pk|add:1 %}" class="btn btn-grey" role="button" title="short-key alt+x" accesskey="x">&gt;</a>
+                <div class="d-flex justify-content-between align-items-center text-secondary">
+                    <h5 class="fw-bold fs-7 m-0">NEARBY WORDS</h5>
+                    <div>
+                        <a href="{% url "word" word.pk|add:-1 %}" class="btn btn-sm btn-light" role="button" title="short-key alt+z" accesskey="z"><i class="fa-solid fa-chevron-left"></i></a>
+                        <a href="{% url "word" word.pk|add:1 %}" class="btn btn-sm btn-light" role="button" title="short-key alt+x" accesskey="x"><i class="fa-solid fa-chevron-right"></i></a>
                     </div>
                 </div>
+                <hr>
                 {% for w in nw %}
                     {% if word.pk == w.pk %}
-                        <a class="d-block bg-primary bg-opacity-25 fw-bold text-primary px-2 py-1 my-1 rounded">{{w.word}}</a>
+                        <a class="d-block bg-primary-subtle fw-bold text-primary px-2 py-1 my-1 rounded">{{w.word}} <span class="text-secondary fs-8">{{w.pos}}</span></a>
                     {% else %}
-                        <a href="{% url 'word' w.pk %}" class="d-block text-secondary hover-gray px-1 my-1 rounded">{{w.word}}</a>
+                        <a href="{% url 'word' w.pk %}" class="d-block text-secondary hover-gray px-1 my-1 rounded">{{w.word}} <span class="text-gray-600 fs-8">{{w.pos}}</span></a>
                     {% endif %}
                 {% endfor %}
                 <div class="my-2">
@@ -468,14 +467,6 @@
         </div>
     </div>
 </div>
-
-{% if perms.languages.add_word %}
-    <div class="position-fixed bottom-0 right-0 m-3" style="z-index:1;">
-        <a href="{% url 'word_entry' %}?add=true&word={{word.pk}}&sense=0" class="btn btn-secondary text-white">
-            <i class="fa-solid fa-plus"></i>
-        </a>
-    </div>
-{% endif %}
 
 {% include 'tts_2.html' %}
 {% include 'english/flashcards/scripts/script.html' %}

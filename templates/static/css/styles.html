@@ -1,4 +1,10 @@
 <style>
+    .card-lingo{
+        padding: 1rem;
+        border: 0.1rem solid var(--bs-light-rgb);
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+    }
     .pnav{
         display: flex;
         flex-wrap: wrap;
@@ -130,7 +136,7 @@
         background-size: 50px 50px, 50px 50px;
     }
     .bg-grd-gray{
-        background: linear-gradient(rgb(255,255,255,0.5) 50%, #fff);
+        background: linear-gradient(rgb(var(--bs-light-rgb),0.5) 10%, var(--bs-body-bg));
     }
     .header-menu a{
         display: block;
@@ -260,9 +266,10 @@
     .post-examples ul{
         list-style-type: none;
         background-color: var(--bs-gray-100);
-        color: var(--bs-body-color);
+        color: var(--bs-gray-700);
         padding: 1.5rem;
         border-radius: 1rem;
+        box-shadow: var(--bs-box-shadow-sm);
     }
 
     .post-examples li:not(:last-child) {
@@ -277,13 +284,17 @@
     }
     .post .exampless{
         background-color: var(--bs-gray-200);
-        padding: 1rem;
-        border-left: 0.5rem solid var(--bs-primary);
+        padding: 0.5rem 1rem;
+        border-left: 0.3rem solid var(--bs-primary);
+        border-radius: 0.3rem;
     }
     .post .tip {
+        width: 90%;
+        max-width: 650px;
         background-color: rgb(13,110,253,0.15);
         padding: 1rem;
         border-radius: 1rem;
+        margin: 0 auto;
     }
     #post-title {
         background-color: var(--bs-gray-200);

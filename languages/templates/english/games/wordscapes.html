@@ -17,12 +17,14 @@
 {% endblock og %}
 {% block css %}
 <style>
-    #wordc{
+    #main{
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        transition: background 0.5s;
         overflow: hidden;
+        z-index: 1;
     }
     #wordsc{
         transition: scale 0.5s;
@@ -34,10 +36,10 @@
     }
     .letter{
         width: 100%;
-        max-width: 3.5rem;
         height: 100%;
         background-color: rgba(255,255,255,0.5);
-        font-size: 3rem;
+        font-family: Segoe;
+        font-size: 2.5em;
         font-weight: bold;
         display: flex;
         justify-content: center;
@@ -68,6 +70,16 @@
         --az: calc(var(--i)*1turn/var(--m));
         transform: rotate(var(--az)) translate(var(--r)) rotate(calc(-1*var(--az)));
     }
+    #ltrc{
+        font-size: 2rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+    #ltrc.active{
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
     #ltr {
         --d: 3.5rem;
         /* image size */
@@ -80,6 +92,7 @@
         position: relative;
         width: var(--s);
         height: var(--s);
+        z-index: 2;
     }
     #ltr div {
         position: absolute;
@@ -96,13 +109,13 @@
         height: 100%;
         background-color: rgba(255,255,255,0.3);
         color: #353535;
-        font-size: 3rem;
+        font-size: 2.5em;
         font-weight: bold;
         text-transform: uppercase;
         display: flex;
         justify-content: center;
         align-items: center;
-        border-radius: 0.3rem;
+        border-radius: 50%;
         cursor: pointer;
     }
     #xmodal{
@@ -126,11 +139,19 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        min-width: 60%;
+        width: 95%;
+        max-width: 550px;
         min-height: 55%;
         background: var(--bs-light);
         border-radius: 0.3rem;
         transform: translate(-50%, -50%);
+        transition: all 0.3s;
+    }
+    #xmodal.active > #modal-content {
+        width: 90%;
+        max-width: 750px;
+        min-height: 60%;
+        transition: all 0.3s;
     }
     .scene{
         position: absolute;
@@ -138,23 +159,30 @@
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 2;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
-    .scroll-none::-webkit-scrollbar{
+    .scene::-webkit-scrollbar{
         display: none;
         width: 0;
+    }
+    .scene-over{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
     }
 </style>
 {% endblock css %}
 {% block body %}
+<div id="bg" class="scene-over" style="transition: background 0.5s;z-index: -1;"></div>
 
-<div id="mbar" class="position-absolute d-flex flex-row flex-md-column justify-content-between text-center bg-dark bg-opacity-50 text-light p-2 shadow" style="z-index: 3;">
-    <button id="back" class="btn text-light"><i class="fa-solid fa-arrow-left"></i></button>
-    <div id="points" class="d-flex justify-content-center align-items-center bg-dark bg-opacity-75 font-poppins px-2 py-1 rounded animate__animated">{{points}}</div>
-    <button onclick="openFoundWords()" class="btn btn-light"><i class="fa-solid fa-font"></i></button>
-</div>
+<div id="mbar" class="w-100 position-absolute d-flex justify-content-between text-center text-light font-poppins p-2" style="z-index: 3;"></div>
 
-<div id="wordc" class="d-flex flex-column flex-md-row bg-primary">
+<div id="main" class="">
 </div>
 
 <div id="xmodal">
@@ -162,54 +190,99 @@
     </div>
 </div>
 
-<script>
-    var wordc = document.getElementById("wordc");
-    var popup = document.querySelector("#popup");
-    var points = document.querySelector("#points");
-    var back = document.querySelector("#back");
+<!--div class="position-relative h-100 w-100" style="pointer-events:none;z-index:2;">
+    <div id="canvas" class="position-absolute top-0 start-0"></div>
+</div-->
+<canvas id="myCanvas" class="scene-over" style="z-index: 0;"></canvas>
+<div class="scene-over">{% include "static/components/rain_effect2.html" %}</div>
 
-    var mbd = new Audio("/static/music/music_birthday.ogg");
-    var mbdm = new Audio("/static/music/music_birthday_menu.ogg");
-    var success = new Audio("/static/music/success.mp3");
-    var bonus = new Audio("/static/music/word_extra.ogg");
-    var already = new Audio("/static/music/word_already.ogg");
+<script src="/static/js/singles.js"></script>
+<script>
+    const bg = document.getElementById("bg");
+    const main = document.getElementById("main");
+    const mbar = document.getElementById("mbar");
+    var width;
+    var popup = document.querySelector("#popup");
+    var level = {{level}};
+
+    var cells = {
+        vCells: [],
+        fCells:[],
+        uWCells: function(){return [...new Set(this.vCells)]}
+    };
+    
+    var sounds = {
+        gamePlay:[
+            "/static/music/music_gameplay.ogg",
+            "/static/music/music_gameplay_02.ogg",
+            "/static/music/music_gameplay_03.ogg",
+            "/static/music/music_gameplay_festive.ogg",
+            "/static/music/music_halloween.ogg",
+            "/static/music/music_birthday.ogg",
+        ],
+        mbdm: new Audio("/static/music/music_birthday_menu.ogg"),
+        success: new Audio("/static/music/success.mp3"),
+        bonus: new Audio("/static/music/word_extra.ogg"),
+        already: new Audio("/static/music/word_already.ogg")
+    }
     
     var lvs = JSON.parse("{{game_db|escapejs}}");
-    var level = {{level}};
     var len = [[],[]];
+    var hid_len = [];
     var colors = ["#313131","#000080"];
-    var bgs = ["hills.jpg","grass.jpg","chick.jpg","bird.jpg"];
+    var bgs = ["hills","grass","chick","bird","leaves","nature","sunbeam"];
     var ltrs_arr = [];
     var ids_arr = [];
+    
+    var lines = [];
+    var canvas = document.getElementById("myCanvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 10;
 
     function home(){
-        back.setAttribute("onclick","window.location.assign('/english/games/')");
-        wordc.style.background = "url(/static/img/bgs/wordscapes/hills.jpg";
-        wordc.style.backgroundPosition = "center";
-        wordc.style.backgroundSize = "cover";
+        resColor();
+        mbar.innerHTML = `<button id="back" class="btn text-light"><i class="fa-solid fa-arrow-left"></i></button>`;
+        var back = document.querySelector("#back");
+        back.setAttribute("onclick","window.history.back()");
+        bg.style.background = "url(/static/img/bgs/wordscapes/hills.jpg";
+        bg.style.backgroundPosition = "center";
+        bg.style.backgroundSize = "cover";
         ltrs_arr = [];
         len = [[],[]];
-        wordc.innerHTML=`
-        <div id="play" class="position-absolute top-50 start-50 translate-middle d-flex flex-column justify-content-center align-items-center gap-3 font-poppins bg-dark bg-opacity-25 w-100 h-100 text-light">
-            <div class="display-2">WORDSCAPES</div>
-            <div onclick="master(${level})" class="fs-1 bg-dark bg-opacity-75 px-5 border border-3 cursor-pointer" style="border-radius:20px/50px">Play <i class="fa-solid fa-arrow-right fs-2"></i> <span class="btn btn-light">Level ${level}</span></div>
-            <div onclick="levelSelect()" class="fs-3 bg-dark bg-opacity-75 px-5 border border-2 cursor-pointer" style="border-radius:20px/50px">Level Select</div>
+
+        main.innerHTML=`
+        <div class="position-absolute top-50 start-50 translate-middle d-flex flex-column justify-content-between align-items-center font-poppins bg-dark bg-opacity-25 w-100 h-100 text-light">
+            <div></div>
+            <div class="d-flex flex-column align-items-center gap-3">
+                <div class="display-2">WORDSCAPES</div>
+                <div onclick="master(${level})" class="fs-1 bg-dark bg-opacity-75 px-5 border border-3 cursor-pointer" style="border-radius:20px/50px">Play <span class="btn btn-light">LEVEL ${level}</span> <i class="fa-solid fa-arrow-right fs-2"></i></div>
+                <div onclick="levelSelect()" class="fs-3 bg-dark bg-opacity-75 px-5 border border-2 cursor-pointer" style="border-radius:20px/50px">Level Select</div>
+            </div>
+
+            <div id="nbar" class="w-100 d-flex justify-content-between align-items-center bg-dark bg-opacity-50 px-3 py-1">
+                <button onclick="leaderboard()" class="btn btn-dark fs-4"><i class="fa-solid fa-shield"></i></button>
+                <button onclick="settings()" class="btn btn-dark fs-4"><i class="ti ti-settings"></i></button>
+            </div>
         </div>`;
-        mbd.load();
-        mbdm.load();
-        mbdm.play();
+        sounds.mbdm.load();
+        sounds.mbdm.play();
+        gameplay.load();
     }
 
+    var gameplay;
+
     function levelSelect(){
-        wordc.innerHTML = `
+        main.innerHTML = `
         <div class="scene">
-        <div class="h-100 col-10 col-md-6 mx-auto overflow-scroll scroll-none py-5">
+        <div class="h-100 col-10 col-md-6 mx-auto py-5 my-5">
             <div class="card card-body bg-gray-200">
             <div class="d-flex flex-wrap justify-content-center gap-2 my-3">
                 {% for level in level_map %}
-                    <div onclick="window.location.assign('?level={{forloop.counter}}')" class="card card-body d-flex flex-column align-items-center col-3 text-bg-primary cursor-pointer">
+                    <div onclick="setLevel({{forloop.counter}})" class="card card-body d-flex flex-column align-items-center col-3 text-bg-primary cursor-pointer">
                         <div class="fs-4">Level {{forloop.counter}}</div>
-                        <div id="ctr" style="--m:{{level|length}};--tan: 0.41">{% for l in level %}<div style="--i:{{forloop.counter0}}">{{l}}</div>{% endfor %}</div>
+                        {% comment %} <div id="ctr" style="--m:{{level|length}};--tan: 0.41">{% for l in level %}<div style="--i:{{forloop.counter0}}">{{l}}</div>{% endfor %}</div> {% endcomment %}
                     </div>
                 {% endfor %}
             </div>
@@ -224,19 +297,31 @@
     function master(){
         openFullscreen();
         back.setAttribute("onclick","home()");
-        wordc.style.background = "url(/static/img/bgs/wordscapes/"+bgs.sort(function () { return 0.5 - Math.random() })[0];
-        wordc.style.backgroundPosition = "center";
-        wordc.style.backgroundSize = "cover";
+        bg.style.background = "url(/static/img/bgs/wordscapes/"+bgs.sort(function () { return 0.5 - Math.random() })[0]+".jpg";
+        bg.style.backgroundPosition = "center";
+        bg.style.backgroundSize = "cover";
+
+        {//mbar
+            mbar.innerHTML+= `
+            <div id="level" class="bg-dark bg-opacity-75 px-2 pt-2 rounded-5"></div>
+            <div id="points" class="bg-dark bg-opacity-75 px-2 pt-2 rounded-5 animate__animated"><i class="fa-solid fa-coin"></i>{{points}}</div>
+            <button onclick="openFoundWords()" class="btn btn-light"><i class="fa-solid fa-font"></i></button>`;
+            var points = document.querySelector("#points");
+            var lv = document.querySelector("#level");
+            lv.innerText = "LEVEL "+level;
+        }
 
         let counter = 0;
 
-        wordc.innerHTML = `
+        main.innerHTML = `<div class="w-100 h-100   d-flex flex-column flex-md-row">
             <div id="words" class="col-12 col-md-8 d-flex justify-content-center align-items-center animate__animated animate__fadeInLeft">
                 <div id="wordsc" class="bg-dark bg-opacity-50 rounded shadow">
                 </div>
             </div>
-            <div id="worde" class="col-12 col-md-4 d-flex flex-md-column justify-content-center align-items-center animate__animated animate__fadeInRight">
-                <div class="bg-white bg-opacity-50 d-flex justify-content-center align-items-center rounded-circle mb-3 shadow" style="width:19rem;height:19rem;">
+            <div id="worde" class="col-12 col-md-4 position-relative d-flex flex-column justify-content-center align-items-center gap-2 animate__animated animate__fadeInRight">
+                <div id="ltrc" class="position-absolute top-0 btn-gray-200 animate__animated">M</div>
+                
+                <div class="bg-white bg-opacity-25 d-flex justify-content-center align-items-center rounded-circle shadow" style="width:19rem;height:19rem;">
                     <div id="ltr"></div>
                 </div>
         
@@ -245,9 +330,11 @@
                     <!--input id="input" class="form-control" type="text" autofocus></input-->
                 </div>
             </div>
+            </div>
             {% include "static/components/particles.html" %}
         `;
         var wordsc = document.getElementById("wordsc");
+        var ltrc = document.querySelector("#ltrc");
         var check = document.getElementById("check");
         //var input = document.getElementById("input");
 
@@ -274,12 +361,14 @@
                 for (let i in x[3]){
                     let cell = document.querySelector("#cell-"+(start_cell+col));
                     cell.classList.add("letter","animate__animated","animate__faster");
+                    cells.vCells.push(start_cell+col);
                     col += lvs[2][0];
                 }
             } else {
                 for (let i = 0; i<x[3].length; i++){
                     let cell = document.querySelector("#cell-"+(start_cell+i));
                     cell.classList.add("letter","animate__animated","animate__faster");
+                    cells.vCells.push(start_cell+i);
                 }
             }
         }
@@ -357,17 +446,32 @@
                 let letter = this.innerText;
                 ltrs_arr.push(letter);
                 ids_arr.push(this.id);
-                this.style.backgroundColor = "rgba(0,0,0,0.4)";
+                this.style.backgroundColor = "rgb(0,0,0)";
+                this.style.color = "rgb(255,255,255)";
+                
+                let oofs;
+                if (width < 577)oofs=25;else if(width < 993)oofs=32;else if(width < 1201)oofs=34;else if(width > 1399)oofs=36;
+
+                lines.push([this.getClientRects()[0].x+oofs,this.getClientRects()[0].y+oofs]);
+                if (lines.length > 1){
+                        //linedraw(lines[lines.length-2][0],lines[lines.length-2][1],lines[lines.length-1][0],lines[lines.length-1][1]);
+                    ctx.beginPath();
+                    ctx.moveTo(lines[0][0], lines[0][1]);    
+                    for (let x = 1; x < lines.length; x++){
+                    ctx.lineTo(lines[x][0], lines[x][1]);
+                }
+                   ctx.stroke();
+                }
+                
+                ltrc.innerText = ltrs_arr.join("");
+                ltrc.classList.add("active");
 
                 if (ltrs_arr.length == lvs[1].length){
                     findWord();
-                    ltrs_arr = [];
-                    resColor();
                 }
             });
         });
 
-        
         // check button
         check.addEventListener("click", function(){
             findWord();
@@ -375,9 +479,16 @@
 
         window.addEventListener("resize",resize);
 
-        mbdm.load();
-        mbd.load();
-        mbd.play();
+        gameplay = new Audio(sounds.gamePlay.sort(function () { return 0.5 - Math.random() })[0]);
+        sounds.mbdm.load();
+        gameplay.load();
+        gameplay.play();
+        gameplay.addEventListener("ended",function(){
+            this.load();
+            gameplay = new Audio(sounds.gamePlay.sort(function () { return 0.5 - Math.random() })[0]);
+            gameplay.load();
+            gameplay.play();
+        });
     }
 
     // keyboard keyDown
@@ -463,27 +574,27 @@
     function findWord(){
         let word = ltrs_arr.join("").toLocaleLowerCase();
         let lin = [];
-        for (let x of lvs[3]){
-            if (len[0].includes(word)){
-                already.load();
-                already.play();
-                for (let x of len[1][len[0].indexOf(word)]){
-                    let alf = document.querySelector("#cell-"+x);
-                    alf.classList.add("animate__shakeX");
-                    alf.addEventListener("animationend",()=>{
-                        alf.classList.remove("animate__shakeX");
-                    });
-                }
-                ltrs_arr = [];
-                ids_arr = [];
-                resColor();
-                break;
+        let found = false;
+
+        if (len[0].includes(word)){
+            sounds.already.load();
+            sounds.already.play();
+            for (let x of len[1][len[0].indexOf(word)]){
+                let alf = document.querySelector("#cell-"+x);
+                alf.style.animationDelay = "0s";
+                alf.classList.add("animate__shakeX");
+                alf.addEventListener("animationend",()=>{
+                    alf.classList.remove("animate__shakeX");
+                });
             }
+            resColor();
+            return;
+        }
+        for (let x of lvs[3]){
             let color = colors.sort(function () { return 0.5 - Math.random() })[0];
             x = x.split(",");
             if (x[3].toLocaleLowerCase() == word){
-                success.load();
-                success.play();
+                sounds.success.load();sounds.success.play();
                 let start_cell = parseInt(x[0])+(parseInt(x[1])*lvs[2][0]);
                 if (x[2][0] == "V"){
                     let col = 0;
@@ -499,6 +610,7 @@
                             cell.classList.remove("animate__fadeInUp");
                         });
                         lin.push(start_cell+col);
+                        cells.fCells.push(start_cell+col);
                         col += lvs[2][0];
                     }
                 } else {
@@ -514,6 +626,7 @@
                             cell.classList.remove("animate__fadeInRight");
                         });
                         lin.push(start_cell+i);
+                        cells.fCells.push(start_cell+i)
                     }
                 }
                 len[0].push(word);
@@ -525,16 +638,17 @@
                         setLevel(level+1);
                     });
                 }
-                ltrs_arr = [];
-                ids_arr = [];
-                resColor();
                 setPoints(word.length);
+                found = true;
                 break;
+                //ltrc.classList.remove("active");
             }
         }
-        ltrs_arr = [];
-        ids_arr = [];
-        resColor();
+
+        if (!found){let emptyArray = singles.filter((data)=>{return data[1] == word});if(emptyArray.length){if (!hid_len.includes(word)){alert("hidden word found!!!");setPoints(word.length*2);hid_len.push(word)}else{alert("hidden word already found!!!")}}};
+
+        resColor();        
+        //ltrc.classList.add("animate__shakeX");
     };
     function openFoundWords(){
         let words = len[0];
@@ -546,30 +660,87 @@
         });
     }
     function resColor(){
-        document.querySelectorAll(".ltr").forEach(ele => { ele.style.backgroundColor = "rgba(255,255,255,0.3)"});
+        setTimeout(function(){
+            document.querySelectorAll(".ltr").forEach(ele => {ele.style.cssText = "background-color:#ffffff60;color:#00000090;"});
+            ltrc.classList.remove("active");
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            lines = [];
+            ltrs_arr = [];
+            ids_arr = [];
+        },300);
     };
     function resize(){
         // resize container according to the columns and rows number
-        if (lvs[2][1] < 5 || lvs[2][0] < 5){
+        width = window.innerWidth;
+        canvas.width = width;
+        canvas.height = window.innerHeight;
+        ctx = canvas.getContext("2d");
+        ctx.lineWidth = 5;
+        let col = lvs[2][0];
+
+        if (col < 5){
             wordsc.style.scale = "1.4";
-        } else if (lvs[2][1] < 9 || lvs[2][0] < 9){
-            wordsc.style.scale = "0.8";
-        } else if (lvs[2][1] > 8 || lvs[2][0] > 8){
-            if (lvs[2][1] > 13 || lvs[2][0] > 13){
-                if (window.innerWidth < 700){
+        } else if (col < 7){
+            if (width < 700){
+                wordsc.style.scale = "1.0";
+            } else {
+                wordsc.style.scale = "1.2";
+            }
+        } else if (col < 8){
+            if (width < 700){
+                wordsc.style.scale = "0.9";
+            } else {
+                wordsc.style.scale = "1.1";
+            }
+        } else if (col < 9){
+            if (width < 700){
+                wordsc.style.scale = "0.8";
+            } else {
+                wordsc.style.scale = "1.0";
+            }
+        } else if (col < 10){
+            if (width < 700){
+                wordsc.style.scale = "0.7";
+            } else {
+                wordsc.style.scale = "0.9";
+            }
+        } else if (col > 9){
+            if (col > 13){
+                if (width < 700){
                     wordsc.style.scale = "0.4";
                 } else {
-                    wordsc.style.scale = "0.7";
+                    wordsc.style.scale = "0.6";
                 }
             } else {
-                if (window.innerWidth < 700){
-                    wordsc.style.scale = "0.5";
+                if (width < 700){
+                    wordsc.style.scale = "0.55";
                 } else {
-                    wordsc.style.scale = "0.7";
+                    wordsc.style.scale = "0.8";
                 }
             }
         }
     };
+    function leaderboard(){
+        back.setAttribute("onclick","home()");
+        bg.style.background = "url(/static/img/bgs/wordscapes/hills.jpg";
+        bg.style.backgroundPosition = "center";
+        bg.style.backgroundSize = "cover";
+        
+        main.innerHTML = `
+        <div class="h-100 col-10 col-md-6 mx-auto overflow-scroll scroll-none">
+            <div class="card card-body my-5">
+            {% for user in users %}
+                <div class="d-flex align-items-center my-1">
+                    <div class="col-1 fs-4 fw-bold">{{forloop.counter}}</div>
+                    <div class="col-2"><img class="rounded-circle" src="{{user.profile.image.url}}" style="width:3rem;height:3rem;"/></div>
+                    <div class="col-7 fs-3 fw-semibold">{% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}}{% endif %}</div>
+                    <div class="col-2 fs-4">{{user.profile.learnings.games.wordscapes.1}}</div>
+                </div>
+                <hr>
+            {% endfor %}
+            </div>
+        </div>`;
+    }
     function setLevel(lv){
         let xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
@@ -593,6 +764,10 @@
         xhttp.send(); //xhttp.send(`csrfmiddlewaretoken={{csrf_token}}&data=${JSON.stringify(entry).replaceAll("&","ampp")}`);
     };
     function linedraw(ax, ay, bx, by) {
+        ax = ax+27;
+        ay = ay+27;
+        bx = bx+27;
+        by = by+27;
         if (ay > by) {
             bx = ax + bx;
             ax = bx - ax;
@@ -604,7 +779,7 @@
         var calc = Math.atan((ay - by) / (bx - ax));
         calc = calc * 180 / Math.PI;
         var length = Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
-        document.body.innerHTML += "<div id='line' style='height:" + length + "px;width:1px;background-color:black;position:absolute;top:" + (ay) + "px;left:" + (ax) + "px;transform:rotate(" + calc + "deg);-ms-transform:rotate(" + calc + "deg);transform-origin:0% 0%;-moz-transform:rotate(" + calc + "deg);-moz-transform-origin:0% 0%;-webkit-transform:rotate(" + calc + "deg);-webkit-transform-origin:0% 0%;-o-transform:rotate(" + calc + "deg);-o-transform-origin:0% 0%;'></div>";
+        document.querySelector("#canvas").innerHTML += "<div id='line' style='height:" + length + "px;width:5px;background-color:black;position:absolute;top:" + (ay) + "px;left:" + (ax) + "px;transform:rotate(" + calc + "deg);-ms-transform:rotate(" + calc + "deg);transform-origin:0% 0%;-moz-transform:rotate(" + calc + "deg);-moz-transform-origin:0% 0%;-webkit-transform:rotate(" + calc + "deg);-webkit-transform-origin:0% 0%;-o-transform:rotate(" + calc + "deg);-o-transform-origin:0% 0%;'></div>";
     }
     function openFullscreen(){
         let elem = document.documentElement;

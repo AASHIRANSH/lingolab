@@ -255,7 +255,7 @@ transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 .tooltip_c {
 position: relative;
 display: inline-block;
-border-bottom: 0.06em dashed #333333;
+border-bottom: 0.06em dashed #aaa;
 /* If you want dots under the hoverable text */
 /* padding: 10px 0; */
 /* margin: 0 15px 0 0; */
@@ -298,7 +298,7 @@ display: inline-block;
 .tooltip_container {
 position: relative;
 display: inline-block;
-border-bottom: 0.15em dashed #333333;
+border-bottom: 0.15em dashed #aaa;
 /* If you want dots under the hoverable text */
 padding: 10px 0;
 margin: 0 15px 0 0;
@@ -309,7 +309,7 @@ width: 200%;
 display: none;
 background-color: #ddd;
 text-align: center;
-font-size: 2rem;
+font-size: 1.5rem;
 color: #444444;
 position: absolute;
 top: 100%;
@@ -528,33 +528,22 @@ flex-flow: row nowrap;
 }
 
 .content {
-    width: 100vw;
-    min-height: 98vh;
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
-    background-color: #eaeaea;
-    padding: 3rem;
-    overflow: hidden;
+    padding: 1.5rem 0;
     animation: fadeIn 0.5s;
 }
 
 .inf {
-    position: fixed;
-    top: 0;
-    left: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-transform: uppercase;
     width: 100%;
-    background-color: #359d64;
-    color: white;
-    opacity: 0.9;
+    background-color: #00000010;
     /* background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #3cb371 10px ), repeating-linear-gradient( #3cb37155, #3cb371 ); */
-    padding: 5px 40px;
-    box-shadow: 0px 5px 8px #999, 0px 2px 8px #cccccc;
-    z-index: 1;
+    padding: 1rem 40px;
 }
 
 .inff {
@@ -624,8 +613,8 @@ height: 20rem;
 .word {
 position: relative;
 display: inline-block;
-border-bottom: 0.3rem dashed #333333;
-/* If you want dots under the hoverable text */
+border-bottom: 0.3rem dashed #aaa;
+color: #333;
 font-size: 4rem;
 font-weight: bold;
 margin: 0 20px 0 40px;
@@ -675,11 +664,13 @@ align-items: center;
 position: relative;
 cursor: pointer;
 background-color: #f3f3f3;
+color: #333;
 min-width: 150px;
 min-height: 150px;
 width: 13rem;
 height: 13rem;
 font-size: 1.8rem;
+font-weight: bold;
 text-align: center;
 text-transform: capitalize;
 border-radius: 1rem;
@@ -783,16 +774,13 @@ width: 90%;
 min-height: 550px;
 font-size: 1.5rem;
 border-radius: 1rem;
-margin: auto;
+padding: 1rem 0;
+margin: 0 auto;
 box-shadow: 6px 6px 10px 10px #c1c1c1, -6px -6px 10px 10px #ccc;
 }
 
 .cardm_learn>* {
 margin: 20px 0;
-}
-
-.cardm_learn>*:last-child {
-margin-bottom: 0;
 }
 
 .sq-1 ul.square {
@@ -851,11 +839,13 @@ margin: 10px 0;
 .cardm_learn .ebutton {
 background-color: #ccc;
 text-align: center;
+color: #333;
+font-weight: bold;
 font-size: 1.5rem;
 letter-spacing: 0.1rem;
 border: 0;
 padding: 5px 25px;
-border-bottom: 3px solid #777;
+border-bottom: 5px solid #777;
 border-radius: 10px;
 box-shadow: 3px 3px 3px #999;
 transition: all .05s linear;
@@ -863,9 +853,9 @@ user-select: none;
 }
 
 .cardm_learn .ebutton:active {
-box-shadow: 2px 2px 2px #999;
+box-shadow: 1px 1px 1px #999;
 border-bottom: 1px solid #777;
-transform: translateY(3px);
+transform: translateY(5px);
 }
 
 .cardm {

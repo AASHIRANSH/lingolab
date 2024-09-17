@@ -24,7 +24,10 @@ def index(request):
     return render(request,"index.html", vars)
 
 def quotes(request):
-    quotes = Quote.objects.all()
+    if request.GET.get("author"):
+        quotes = Quote.objects.filter(author=request.GET.get("author"))
+    else:
+        quotes = Quote.objects.all()
     vars = {
         "quotes":quotes
     }

@@ -57,6 +57,7 @@
     $(".speak").on("click",function(){
         let data = $(this).attr("data-src-mp3");
         let audio = new Audio('/media/dictionary/audio/'+letter+'/'+data);
+        audio.load();
         audio.play();
     });
 
@@ -67,12 +68,12 @@
         }
     });
 
-    document.addEventListener("dblclick",()=>{
-        if (window.getSelection){
-            let selection = window.getSelection().toString();
-            if (selection) window.location.assign('{% url "dictionary" %}?q='+selection);
-        };
-    });
+    //document.addEventListener("dblclick",()=>{
+    //    if (window.getSelection){
+    //        let selection = window.getSelection().toString();
+    //        if (selection) window.location.assign('{% url "dictionary" %}?q='+selection);
+    //    };
+    //});
 </script>
 
 <script>
@@ -119,6 +120,25 @@
         //    }
             //console.log(example.classList);
         //});
+    }
+
+    // copy for whatsapp
+    function cpw(){
+        let text = `*{{word.word}}*
+        ({{word.pos}})\n
+        Definition`
+    }
+    // recent searches
+    let items = JSON.parse(window.localStorage.getItem("search"));
+    let item = [{{word.pk}},"{{word.word}}","{{word.pos}}"];
+    if (items){
+        if (items.map((i)=>{return i[0]}).includes(item[0]) == false){
+            if (items.length >= 30) items.pop();
+            items.unshift(item);
+            window.localStorage.setItem("search",JSON.stringify(items));
+        }
+    } else {
+        window.localStorage.setItem("search",JSON.stringify([item]));
     }
 </script>
 

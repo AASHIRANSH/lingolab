@@ -21,47 +21,59 @@
 {% block body %}
 {% include 'static/css/styles.html' %}
 {% include "header.html" %}
+<div class="bg-primary-nightly text-center p-5">
+    <div class="py-5">
+        <div class="fw-bold fs-1 lsp-sm"> {{ post.title }}</div>
+    </div>
 
+    <div class="d-flex justify-content-between align-items-center gap-3 px-5">
+        <div class="d-flex align-items-center font-poppins"><i class="ti ti-eye fs-4 me-1"></i> {{post.views}} VIEWS</div>
+
+        <div>
+            {% if request.user.is_authenticated %}
+                <button class="btn btn-sm btn-outline-light fs-5" onclick="window.location.assign('{% url 'like' post.pk %}')"><i class="fa fa-thumbs-up fs-5"></i> <span class="badge">{{post.like_set.count}}</span></button>
+            {% else %}
+                <button class="btn btn-sm btn-outline-secondary fs-5" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-thumbs-up fs-5"></i> <span class="badge bg-secondary">{{post.like_set.count}}</span>
+                    <ul class="dropdown-menu" style="padding:1rem;margin:2rem">
+                        You can like or dislike after you have logged in
+                    </ul>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% include 'messages.html' %}
 
 <div class="container post py-5">
     {% if perms.languages.change_post %}
-        <div class="row">
+        <div class="card card-body">
+            <div class="fs-2 mb-2">Admin Features</div>
             <div class="col-auto">
                 <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_entry' %}?action=editpost&pk={{post.pk}}`)">Edit Post</button>
                 <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'exercise_entry' %}`)">Add Exercise</button>
             </div>
         </div>
-        <hr>
     {% endif %}
     
-    <div id="post-title">
+    <!--div id="post-title">
         <div class="p-4">
             <div>
-                <h1 class="fw-bold fs-1 text-primary"><!--i class="fa-solid fa-pen-nib"></i--> {{ post.title }}</h1>
+                <h1 class="fw-bold fs-1 text-primary"> {{ post.title }}</h1>
                 <div class="mt-1" id="post-stamp">Posted on {{post.created_at|date:"j-m-y"}} by {{post.author}}</div>
             </div>
         </div>
         <div class="rule pt-1 rounded-bottom"></div>
-    </div>
-    <div class="d-flex justify-content-between align-items-center gap-3 px-3 my-3">
-        <div class="d-flex align-item-center text-secondary"><i class="ti ti-eye fs-3 me-1"></i> {{post.views}} views</div>
-        <div>{% include 'static/components/like.html' %}</div>
-    </div>
+    </div-->
 
     {% if post.image %}<div class="post-img"><img src="{{post.image.url}}"/></div>{% endif %}
     
-    <div id="post-content" class="px-3 c mb-5">
+    <div id="post-content" class="c my-5">
         {{ post.content|safe }}
     </div>
     
     <hr>
-    
-    <div class="text-center">
-    {% include 'static/components/like.html' %} {% include 'static/components/copy_to_clipboard.html' %}
-    </div>
-
     <hr>
+    
     <div class="fs-4">Exercise <i class="fa-solid fa-dumbbell"></i></div>
     
     {% if post.exercise_set.count > 0 %}

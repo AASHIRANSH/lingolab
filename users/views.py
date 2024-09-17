@@ -163,6 +163,8 @@ def sign_up(request):
 
 '''Sign In / Login'''
 def sign_in(request):
+    next = request.GET.get("next")
+    next = next if next else "/"
     if not request.user.is_authenticated:
         if request.method == "POST":
             # fm = AuthenticationForm(request=request, data=request.POST)
@@ -174,16 +176,13 @@ def sign_in(request):
                 if user is not None:
                     login(request, user)
                     messages.success(request,'Loggen In Successfully!')
-                    return HttpResponseRedirect('/users/profile/')
-                # messages.add_message(request, messages.SUCCESS, 'Your Account Has Been Created!')
+                    return HttpResponseRedirect(next)
             else:
                 messages.error(request,'Please check for any errors below!')
         else:
             fm = SignInForm() # fm = AuthenticationForm()
         return render(request, "sign_in.html", {'form':fm})
     else:
-        next = request.GET.get("next")
-        next = next if next else "/"
         messages.success(request,"You are logged in.")
         return HttpResponseRedirect(next)
         

@@ -5,6 +5,8 @@ urlpatterns = [
     #______________MUSLIM PRO_________________
     path("prayers", views.prayerTimes, name="prayers"),
     
+
+    path('', views.index, name="enind"),
     path('oxtems/', views.oxtems, name="oxtems"),
     # path('urltofile/', views.urlToFile, name="url_to_file"),
     path('camtems/', views.camtems, name="cams"),
@@ -69,6 +71,7 @@ urlpatterns = [
 
     # Games
     path('games/', views.games, name='games'),
-    path('game/wordscapes/', views.game_wordscapes, name='wordscapes'),
-    path('game/wordsearch/', views.game_wordsearch, name='wordsearch'),
+    path('games/wordscapes/', views.game_wordscapes, name='wordscapes'),
+    path('games/wordsearch/', views.game_wordsearch, name='wordsearch'),
+    path('groups/', views.groups, name='groups'),
 ]

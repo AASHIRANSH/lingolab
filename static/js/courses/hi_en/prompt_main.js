@@ -65,7 +65,7 @@ len = [];//used for current page if there are more than one card
             }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div class="col-3 fs-4">lesson - ${unit}</div>
                 <div class="col-6 text-center fs-3">${card_title}</div>
@@ -133,8 +133,8 @@ len = [];//used for current page if there are more than one card
                 prm.innerHTML = prompt_msg;
                 textToSpeech(word);
             } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+                if (error_array.includes(vars[1])==false) {
+                    error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
                 }
                 prompt.style.display = "block";
                 $('#prm').css({
@@ -146,13 +146,13 @@ len = [];//used for current page if there are more than one card
             }
             if (len.length == card_count) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         });
     }//shows a question with four cards to given answer from
@@ -201,7 +201,7 @@ len = [];//used for current page if there are more than one card
             }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -246,8 +246,8 @@ len = [];//used for current page if there are more than one card
                 var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
                 prm.innerHTML = prompt_msg;
             } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+                if (error_array.includes(vars[1])==false) {
+                    error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
                 }
                 prompt.style.display = "block";
                 $('#prm').css({
@@ -259,13 +259,13 @@ len = [];//used for current page if there are more than one card
             }
             if (len.length == card_count) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         });
     }//shows a question with four cards to given answer from
@@ -313,7 +313,7 @@ len = [];//used for current page if there are more than one card
             }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -356,8 +356,8 @@ len = [];//used for current page if there are more than one card
                 var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
                 prm.innerHTML = prompt_msg;
             } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+                if (error_array.includes(vars[1])==false) {
+                    error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
                 }
                 prompt.style.display = "block";
                 $('#prm').css({
@@ -370,13 +370,13 @@ len = [];//used for current page if there are more than one card
 
             if (len.length == card_count) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         });
     }//reverse "card_prompt" : show the learning language as questions
@@ -426,7 +426,7 @@ len = [];//used for current page if there are more than one card
             }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -471,8 +471,8 @@ len = [];//used for current page if there are more than one card
                 var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
                 prm.innerHTML = prompt_msg;
             } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+                if (error_array.includes(vars[1])==false) {
+                    error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
                 }
                 prompt.style.display = "block";
                 $('#prm').css({
@@ -484,147 +484,14 @@ len = [];//used for current page if there are more than one card
             }
             if (len.length == card_count) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
-        });
-    }//shows a question with four cards to give answer from
-    function wcard_prompt_begi() {
-        {//variables
-            var vars = arguments;
-            card_title = "nouns";
-            var card_count = 1;
-            var card = vars[0];
-            var card_listed = card;
-            var word = card[0];
-            var meaning = card[1];
-            var word_conf = vars[2];
-        }
-
-        textToSpeech(meaning);
-
-        {//generating 4 cards
-            var cards_arr = [word];
-            var suggest_cards = word_conf.sort(function () { return 0.5 - Math.random() });
-            for (x of suggest_cards) {
-                if (x[0]==card[0]){
-                    continue
-                }
-                cards_arr.push(x[0]);
-                
-                if (cards_arr.length == 4) {
-                    break;
-                }
-            }
-            cards_arr.sort(function () { return 0.5 - Math.random() }); // Orders randomly an array
-        }
-
-        var criteria = [];
-        for (x in cards_arr) {
-            if (card_listed.includes(cards_arr[x])) {
-                criteria.push(1);
-            } else {
-                criteria.push(0);
-            }
-        }
-
-        body.innerHTML = `
-            <div class="inf">
-                <div class="col-3 fs-4">lesson - ${unit}</div>
-                <div class="col-6 text-center fs-3">${card_title}</div>
-                <div class="col-3 text-end fs-4">page - ${num + 1}</div>
-            </div>
-            <div class="mb-5"></div>
-
-            <div class="m-3">
-                <div id="cardm" class="row col-12">
-                    <div class="col-sm-12 col-md-6 my-4">
-                        <div class="d-flex align-items-center">
-                            <div style="cursor:pointer;"><img class="duo-speaker" src="/static/img/svg/loudspeaker_duo.svg"/></div>
-                            <div>
-                                <div class="word">${meaning}
-                                    <div class="tooltiptext" onclick="textToSpeech(this.innerText)">${word}</div>
-                                </div>
-                            </div>
-                            <span class="caption">${headings[0]}</span>
-                        </div>
-                        <img src="/static/img/svg/man_norm_eyes_up.svg" class="emot_img"/>
-                    </div>
-
-                    <div class="d-block d-md-none mb-5"></div>
-
-                    <div class="col-12 col-md-6 d-flex justify-content-center flex-wrap">
-                        <div class="col-12 d-flex justify-content-center">
-                            <div onmousedown="clkk()" class="card" accesskey="1" value="${cards_arr[0]}">
-                                <div class="short">1</div>
-                                <img src="/static/img/svg/${cards_arr[0]}.svg" alt="..."/>${cards_arr[0]}
-                            </div>
-                            <div onmousedown="clkk()" class="card" accesskey="2" value="${cards_arr[1]}">
-                                <div class="short">2</div>
-                                <img src="/static/img/svg/${cards_arr[1]}.svg" alt="..."/>${cards_arr[1]}
-                            </div>
-                        </div>
-                        <div class="col-12 d-flex justify-content-center">
-                            <div onmousedown="clkk()" class="card" accesskey="3" value="${cards_arr[2]}">
-                                <div class="short">3</div>
-                                <img src="/static/img/svg/${cards_arr[2]}.svg" alt="..."/>${cards_arr[2]}
-                            </div>
-                            <div onmousedown="clkk()" class="card" accesskey="4" value="${cards_arr[3]}">
-                                <div class="short">4</div>
-                                <img src="/static/img/svg/${cards_arr[3]}.svg" alt="..."/>${cards_arr[3]}
-                            </div>
-                        </div>
-                        <div class="col-12 text-center"><button class="col-10 btn btn-primary fw-bold wsp-sm" disabled>Check</button></div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-
-        $('.card').on('click', function () {
-            var thiss = $(this);
-            var thiss_text = this.getAttribute('value');
-
-            if (thiss_text == word) {//{(card_listed.includes(thiss.text().slice(2, 20))) {
-                textToSpeech(word);
-                //len.push(1);
-                update_array.push(card);
-                prompt.style.display = "block";
-                $('#prm').css({
-                    "background-color": "rgb(60, 179, 114, 0.95)",
-                    "animation": "prm 1.5s ease 0ms 1 normal forwards"
-                });
-                var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
-                prm.innerHTML = prompt_msg;
-
-                if (vars[4] == 1) {
-                    location.assign(`/learn/${lesson + 1}`);
-                } else {
-                    navigate('next');
-                }
-            } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
-                }
-                prompt.style.display = "block";
-                $('#prm').css({
-                    "background-color": "rgb(85, 85, 85, 0.95)",
-                    "animation": "prm 1s ease 0ms 1 normal forwards"
-                });
-                var prompt_msg = sorry[Math.floor(Math.random() * (sorry.length - 0)) + 0];
-                prm.innerHTML = prompt_msg;
-            }
-            //if (len.length == card_count) {
-                //len = [];
-                
-            //} else {
-            //    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
-            //}
         });
     }//shows a question with four cards to give answer from
     function wcard_prompt_beg() {
@@ -632,11 +499,11 @@ len = [];//used for current page if there are more than one card
             var vars = arguments;
             card_title = "nouns";
             var card_count = 1;
-            var card = vars[0];
+            var card = vars[0][0];
             var card_listed = card;
-            var word = card[0];
-            var meaning = card[1];
-            var word_conf = vars[2];
+            var word = card[0][0];
+            var meaning = card[1][0];
+            var word_conf = vars[0][1];
         }
 
         textToSpeech(meaning);
@@ -645,10 +512,10 @@ len = [];//used for current page if there are more than one card
             var cards_arr = [word];
             var suggest_cards = word_conf.sort(function () { return 0.5 - Math.random() });
             for (x of suggest_cards) {
-                if (x[0].toLowerCase()==card[0].toLowerCase()){
+                if (x[1][0].toLowerCase()==card[0][0].toLowerCase()){
                     continue
                 }
-                cards_arr.push(x[0]);
+                cards_arr.push(x[1]);
                 
                 if (cards_arr.length == 4) {
                     break;
@@ -666,54 +533,45 @@ len = [];//used for current page if there are more than one card
             }
         }
 
-        body.innerHTML = `
-            <div class="inf">
-                <div class="col-3 fs-4">lesson - ${lesson}</div>
-                <div class="col-6 text-center fs-3">${card_title}</div>
-                <div class="col-3 text-end fs-4">page - ${num + 1}</div>
-            </div>
-            <div class="mb-5"></div>
-
-            <div class="m-3">
-                <div id="cardm" class="row col-12">
-                    <div class="col-sm-12 col-md-6 my-4">
-                        <div class="d-flex align-items-center">
-                            <div style="cursor:pointer;"><img class="duo-speaker" src="/static/img/svg/loudspeaker_duo.svg"/></div>
-                            <div>
-                                <div class="word">${meaning}
-                                    <div class="tooltiptext" onclick="textToSpeech(this.innerText)">${word}</div>
-                                </div>
+        main.innerHTML = `
+            <div id="cardm" class="row col-12">
+                <div class="col-sm-12 col-md-6 my-4 ps-5">
+                    <div class="d-flex align-items-center">
+                        <div style="cursor:pointer;"><img class="duo-speaker" src="/static/img/svg/loudspeaker_duo.svg"/></div>
+                        <div>
+                            <div class="word">${meaning}
+                                <div class="tooltiptext" onclick="textToSpeech(this.innerText)">${word}</div>
                             </div>
-                            <span class="caption">${headings[0]}</span>
                         </div>
-                        <img src="/static/img/svg/man_norm_eyes_up.svg" class="emot_img"/>
+                        <span class="caption">${headings[0]}</span>
                     </div>
+                    <img src="/static/img/svg/man_norm_eyes_up.svg" class="emot_img"/>
+                </div>
 
-                    <div class="d-block d-md-none mb-5"></div>
+                <div class="d-block d-md-none mb-5"></div>
 
-                    <div class="col-12 col-md-6 d-flex justify-content-center flex-wrap">
-                        <div class="col-12 d-flex justify-content-center">
-                            <div onmousedown="clkk()" class="card" accesskey="1" value="${cards_arr[0]}">
-                                <div class="short">1</div>
-                                ${cards_arr[0]}
-                            </div>
-                            <div onmousedown="clkk()" class="card" accesskey="2" value="${cards_arr[1]}">
-                                <div class="short">2</div>
-                                ${cards_arr[1]}
-                            </div>
+                <div class="col-12 col-md-6 d-flex justify-content-center flex-wrap">
+                    <div class="col-12 d-flex justify-content-center">
+                        <div onmousedown="clkk()" class="card" accesskey="1" value="${cards_arr[0]}">
+                            <div class="short">1</div>
+                            ${cards_arr[0]}
                         </div>
-                        <div class="col-12 d-flex justify-content-center">
-                            <div onmousedown="clkk()" class="card" accesskey="3" value="${cards_arr[2]}">
-                                <div class="short">3</div>
-                                ${cards_arr[2]}
-                            </div>
-                            <div onmousedown="clkk()" class="card" accesskey="4" value="${cards_arr[3]}">
-                                <div class="short">4</div>
-                                ${cards_arr[3]}
-                            </div>
+                        <div onmousedown="clkk()" class="card" accesskey="2" value="${cards_arr[1]}">
+                            <div class="short">2</div>
+                            ${cards_arr[1]}
                         </div>
-                        <div class="col-12 text-center"><button class="col-10 btn btn-primary fw-bold wsp-sm" disabled>Check</button></div>
                     </div>
+                    <div class="col-12 d-flex justify-content-center">
+                        <div onmousedown="clkk()" class="card" accesskey="3" value="${cards_arr[2]}">
+                            <div class="short">3</div>
+                            ${cards_arr[2]}
+                        </div>
+                        <div onmousedown="clkk()" class="card" accesskey="4" value="${cards_arr[3]}">
+                            <div class="short">4</div>
+                            ${cards_arr[3]}
+                        </div>
+                    </div>
+                    <div class="col-12 text-center"><button class="col-10 btn btn-primary fw-bold wsp-sm" disabled>Check</button></div>
                 </div>
             </div>
         `;
@@ -735,14 +593,14 @@ len = [];//used for current page if there are more than one card
                 var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
                 prm.innerHTML = prompt_msg;
 
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/english/learnz/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+                if (error_array.includes(vars[1])==false) {
+                    error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
                 }
                 prompt.style.display = "block";
                 $('#prm').css({
@@ -756,7 +614,7 @@ len = [];//used for current page if there are more than one card
                 //len = [];
                 
             //} else {
-            //    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+            //    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             //}
         });
     }
@@ -814,7 +672,7 @@ len = [];//used for current page if there are more than one card
             }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -860,8 +718,8 @@ len = [];//used for current page if there are more than one card
                 var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
                 prm.innerHTML = prompt_msg;
             } else {
-                if (error_array.includes(vars[3])==false) {
-                    error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+                if (error_array.includes(vars[1])==false) {
+                    error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
                 }
                 prompt.style.display = "block";
                 $('#prm').css({
@@ -873,13 +731,13 @@ len = [];//used for current page if there are more than one card
             }
             if (len.length == card_count) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         });
     }//shows a question for plural with four cards to given answer from
@@ -925,7 +783,7 @@ len = [];//used for current page if there are more than one card
             }
         }
     
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div class="col-3 fs-4">lesson - ${unit}</div>
                 <div class="col-6 text-center fs-3">${card_title}</div>
@@ -1032,13 +890,13 @@ len = [];//used for current page if there are more than one card
     
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -1088,7 +946,7 @@ len = [];//used for current page if there are more than one card
             }
         }
     
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -1199,13 +1057,13 @@ len = [];//used for current page if there are more than one card
     
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -1252,7 +1110,7 @@ len = [];//used for current page if there are more than one card
             `;
         }
         }
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -1348,13 +1206,13 @@ len = [];//used for current page if there are more than one card
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -1403,7 +1261,7 @@ len = [];//used for current page if there are more than one card
         }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -1498,13 +1356,13 @@ len = [];//used for current page if there are more than one card
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -1554,7 +1412,7 @@ len = [];//used for current page if there are more than one card
         }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -1649,13 +1507,13 @@ len = [];//used for current page if there are more than one card
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -1704,7 +1562,7 @@ len = [];//used for current page if there are more than one card
         }
         }
 
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -1799,13 +1657,13 @@ len = [];//used for current page if there are more than one card
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -1858,7 +1716,7 @@ len = [];//used for current page if there are more than one card
             }
         }
         
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div>lesson - ${unit}</div>
                 <div class="main">${card_title}</div>
@@ -1969,13 +1827,13 @@ len = [];//used for current page if there are more than one card
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -2018,7 +1876,7 @@ len = [];//used for current page if there are more than one card
             buttons = buttons.join("")
         }
         
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div class="col-3 fs-5">lesson - ${unit}</div>
                 <div class="col-6 text-center fs-4">${card_title}</div>
@@ -2127,13 +1985,13 @@ len = [];//used for current page if there are more than one card
 
                 //if (len.length == card_count) {
                 //    len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     };
                 //} else {
-                //    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                //    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 //}
             } else {
                 prompt.style.display = "block";
@@ -2176,7 +2034,7 @@ len = [];//used for current page if there are more than one card
             buttons = buttons.join("")
         }
         
-        body.innerHTML = `
+        main.innerHTML = `
             <div class="inf">
                 <div class="col-3 fs-5">lesson - ${unit}</div>
                 <div class="col-6 text-center fs-4">${card_title}</div>
@@ -2280,13 +2138,13 @@ len = [];//used for current page if there are more than one card
 
                 //if (len.length == card_count) {
                 //    len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     };
                 //} else {
-                //    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                //    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 //}
             } else {
                 prompt.style.display = "block";
@@ -2345,7 +2203,7 @@ function listen_prompt() {//listen and choose answer
         }
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -2387,8 +2245,8 @@ function listen_prompt() {//listen and choose answer
             var prompt_msg = wish[Math.floor(Math.random() * (wish.length - 0)) + 0];
             prm.innerHTML = prompt_msg;
         } else {
-            if (error_array.includes(vars[3])==false) {
-                error_array.push(vars[3]);//adding the function/lesson into the error array so as to revise it later
+            if (error_array.includes(vars[1])==false) {
+                error_array.push(vars[1]);//adding the function/lesson into the error array so as to revise it later
             }
             prompt.style.display = "block";
             $('#prm').css({
@@ -2402,7 +2260,7 @@ function listen_prompt() {//listen and choose answer
             len = [];
             navigate('next');
         } else {
-            window[`master_${vars[3]}`]();
+            window[`master_${vars[1]}`]();
         }
     });
 }
@@ -2446,7 +2304,7 @@ function hv_prompt() {
             criteria.push(0);
         }
     }
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div class="col-3 fs-4">lesson - ${unit}</div>
             <div class="col-6 text-center fs-3">${card_title}</div>
@@ -2515,13 +2373,13 @@ function hv_prompt() {
 
             if (len.length == card_count) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         } else {
             prompt.style.display = "block";
@@ -2535,26 +2393,20 @@ function hv_prompt() {
 }
 
 
-function match_prompt() {//matching cards
+function match() {//matching cards
     {//variables
         var vars = arguments;
-        var cardm = vars[0];
-        card_title = `match`;
-        var card_content = cards_db;
-        if (vars[1][1]==0) {
-            var card_content_les = card_content.slice(vars[1][0],card_content.length);
-        } else {
-            var card_content_les = card_content.slice(vars[1][0], vars[1][1]);
-        }
-        var len_card_content = card_content_les.length;
+        card_title = "nouns";
+        var card_count = 1;
+        var card = vars[0];
+        var word_conf = vars[0][1];
     }
 
     var word = [];
     var meaning = [];
-    for (x in card_content_les) {
-        var mean = card_content_les[x].split(":");
-        word.push(`<button onmousedown="clkk()" id="btnw_${x}" value="${mean[0]}" class="match_btn">${mean[0]}</button>`);
-        meaning.push(`<button onmousedown="clkk()" id="btnm_${x}" value="${mean[1]}" class="match_btn">${mean[1]}</button>`);
+    for (x = 0; x < card.length; x++){
+        word.push(`<button class="col-2 ebutton" onmousedown="clkk()" id="btnw_${x}" value="${card[x][0][0]}" class="match_btn">${card[x][0][0]}</button>`);
+        meaning.push(`<button class="col-2 ebutton" onmousedown="clkk()" id="btnm_${x}" value="${card[x][1][0]}" class="match_btn">${card[x][1][0]}</button>`);
     }
     word.sort(function () { return 0.5 - Math.random() })
     meaning.sort(function () { return 0.5 - Math.random() })
@@ -2562,19 +2414,13 @@ function match_prompt() {//matching cards
     var word = word.join("");
     var meaning = meaning.join("");
     
-    body.innerHTML = `
-        <div class="inf">
-            <div class="col-3 fs-4">lesson - ${unit}</div>
-            <div class="col-6 text-center fs-3">${card_title}</div>
-            <div class="col-3 text-end fs-4">page - ${num + 1}</div>
-        </div>
+    main.innerHTML = `
         <div class="content">
-            <div class="flex_center">${len.length}/${len_card_content}</div>
             <div id="cardm" class="cardm_learn">
             <div class="trans">
                 <div>
-                    <div class="flex_spar mtb_20">${word}</div>
-                    <div class="flex_spar mtb_20">${meaning}</div>
+                    <div class="d-flex justify-content-center gap-3 mb-3">${word}</div>
+                    <div class="d-flex justify-content-center gap-3">${meaning}</div>
                 </div>
             </div>
         </div>
@@ -2584,7 +2430,7 @@ function match_prompt() {//matching cards
     var buttons_array = [];
     var id_array = [];
 
-    $('button').on('click', function () {
+    $('.ebutton').on('click', function () {
         //var buttons = ``;
         var thiss = $(this);
         var thiss_text = thiss.text();
@@ -2609,13 +2455,19 @@ function match_prompt() {//matching cards
         }
 
         if (buttons_array.length==2) {
-            var xx = card_content_les.includes(buttons_array[0]+':'+buttons_array[1]);
-            var yy = card_content_les.includes(buttons_array[1]+':'+buttons_array[0]);
+            var xx = false;
+            var yy = false;
+            card.forEach(ele => {
+                if (ele[0][0] == buttons_array[0] && ele[1][0] == buttons_array[1]) xx = true;
+                if (ele[0][0] == buttons_array[1] && ele[1][0] == buttons_array[0]) yy = true;
+            });
             if (xx || yy) {
                 for (x of id_array) {
                     document.querySelector('#'+x).classList.remove("nfocus_warn");
-                    document.querySelector('#'+x).style.backgroundColor = "#999";
-                    document.querySelector('#'+x).style.color = "#ccc";
+                    document.querySelector('#'+x).style.backgroundColor = "transparent";
+                    document.querySelector('#'+x).style.color = "#999";
+                    document.querySelector('#'+x).style.border = "1px solid #999";
+                    document.querySelector('#'+x).style.boxShadow = "none";
                     document.querySelector('#'+x).disabled = true;
                 }
                 len.push("a");
@@ -2640,7 +2492,7 @@ function match_prompt() {//matching cards
             //     'color': '#222222'
             // })
         }
-        if (len.length == len_card_content) {
+        if (len.length == card.length){
             prompt.style.display = "block";
             $('#prm').css({
                 "background-color": "rgb(60, 179, 114, 0.95)",
@@ -2649,8 +2501,8 @@ function match_prompt() {//matching cards
             prm.innerHTML = wish[Math.floor(Math.random() * (wishh.length - 0)) + 0];
         }
         //NAVIGATES TO ANOTHER PAGE OR UNIT
-        if (len.length == len_card_content) {
-            if (vars[4] == 1) {
+        if (len.length == card.length) {
+            if (vars[2] == 1) {
                 location.assign(`/english/learn/${lesson + 1}`);
             } else {
                 navigate('next');
@@ -2686,7 +2538,7 @@ function write_beg() {
     var meaning = card.slice(card.indexOf(':') + 1, card.length)
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -2755,13 +2607,13 @@ function write_beg() {
             }
             if (len.length == len_card_content) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         } else {
             wrong += 1;
@@ -2802,7 +2654,7 @@ function write_med() {
     var word = card.slice(0, card.indexOf(':'));
     var meaning = card.slice(card.indexOf(':') + 1, card.length)
     }
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -2868,13 +2720,13 @@ function write_med() {
             }
             if (len.length == len_card_content) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                window[`master_${vars[3]}`]();
+                window[`master_${vars[1]}`]();
             }
         } else {
             wrong += 1;
@@ -2914,7 +2766,7 @@ function write_int() {
     var word = card.slice(0, card.indexOf(':'));
     var meaning = card.slice(card.indexOf(':') + 1, card.length)
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -2994,13 +2846,13 @@ function write_int() {
             }
             if (len.length == len_card_content) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                window[`master_${vars[3]}`]();
+                window[`master_${vars[1]}`]();
             }
         } else {
             wrong += 1;
@@ -3034,25 +2886,24 @@ function translate_beg() {
         // }
         // var len_card_content = card_content_les.length;
         // var randline = Math.floor(Math.random() * (len_card_content));
-        // var progress = Math.round((100 / len_card_content) * len.length);
         // while (len.includes(randline)) {
         //     var randline = Math.floor(Math.random() * (len_card_content - 0)) + 0;
         // }
         // var card = card_content_les[randline][0];
 
-        var card = vars[0];
-        var english_array = card[0];
-        var hindi_array = card[1];
+        card = vars[0][0];
+        english_array = card[0];
+        hindi_array = card[1];
         //--------------------------------------------
         var card_h = card[1][0];
         var card_h_spl = card_h.split(' ');
         textToSpeech(card_h);
         //var card_order = card[0][0].split(' ');//used initially for checking criteria
-        var card_s = card[0][0].split(' ');
+        card_s = card[0][0].split(' ');
     }
 
     {//generating confusing words DISABLED FOR THIS
-        var crdlw = vars[2];
+        var crdlw = vars[0][1];
         for (x of crdlw) {
             card_s.push(x);
         }
@@ -3071,31 +2922,28 @@ function translate_beg() {
     }
     
     {//getting words meaning from db
-        // var dbwordsObj = english.db.words;//object to iterate in
-        // var dbwords_dump = [];//all lists from above Object
-        // for (x in dbwordsObj) {
-        //     var y = dbwordsObj[x];
-        //     dbwords_dump.push(y);
-        // };
-        // var dbwords = dbwords_dump.reduce((r, e) => (r.push(...e), r), [])//while 'list' has multiple lists, this code converting them into single item by joining them
-        // var card_heads_mean = [];
-        // for (x in card_h_spl) {
-        //     for (y in dbwords) {
-        //         var dbx = dbwords[y].split(':');
-        //         if (dbx.includes(card_h_spl[x])) {
-        //             card_heads_mean.push(dbx[0]);
-        //         }
-        //     }
-        //     if (card_heads_mean.length==x) {
-        //         card_heads_mean.push(card_h_spl[x]);
-        //     }
-        // }
+        var dbwords_dump = words;
+        //var dbwords = dbwords_dump.reduce((r, e) => (r.push(...e), r), [])//while 'list' has multiple lists, this code converting them into single item by joining them
+        //console.log(dbwords);
+        var means = []
+        var card_heads_mean = [];
+        for (x of dbwords_dump){
+            for (let y of card_h_spl){
+                if (x[2].includes(y)) means.push(x);
+            }
+        }
+        for (let x of card_h_spl){
+            for (let y of means){
+                if (y[2].includes(x)) card_heads_mean.push(y[1][0]);
+            }
+        }
+        console.log(means, card_heads_mean);
     }
     {//generating hi-meaning heads
         var card_h_array = ``;
         for (x in card_h_spl) {
-            var mean = card_h_spl[x];
-            card_h_array += `<div class="tooltip_container"><h1>${mean}</h1><div class="tooltip_text">card_heads_mean[x]</div></div>`;
+            let mean = card_h_spl[x];
+            card_h_array += `<div class="tooltip_container"><h1>${mean}</h1><div class="tooltip_text">${card_heads_mean[x]}</div></div>`;
         }
     }
 
@@ -3113,26 +2961,22 @@ function translate_beg() {
         }
     }
 
-    body.innerHTML = `
-        <div class="inf">
-            <div class="col-3 fs-4">lesson - ${lesson}</div>
-            <div class="col-6 text-center fs-3">${card_title} <svg onclick="toggleModal(${vars[2]})" style="filter:drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.3));fill:#f1f1f1;color:green;float:right;" xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 96 960 960" width="34"><path d="M160 856v-60h386v60H160Zm0-166v-60h640v60H160Zm0-167v-60h640v60H160Zm0-167v-60h640v60H160Z"/></svg></div>
-            <div class="col-3 text-end fs-4">page - ${num + 1}</div>
-        </div>
+    main.innerHTML = `
         <div class="content">
-            <div class="box_shadow progress" id="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{progress}" aria-valuemin="0" aria-valuemax="100" style="transition:all 0.5s ease;width:{progress}%;">{progress}% Complete</div>
-            </div>
             <div id="cardm" class="cardm_learn">
                 <div class="trans">
-                    <div class="flex_center"><div id="speaker" style="scale:0.6;cursor:pointer;"><img src="/static/img/svg/loudspeaker_duo.svg"/></div>${card_h_array}</div>
+                    <div class="flex_center">
+                        <div id="speaker" style="scale:0.6;cursor:pointer;">
+                        <img src="/static/img/svg/loudspeaker_duo.svg"/></div>
+                        ${card_h_array}
+                    </div>
                     <div class="tr_content">
                         <div class="line flex gap-2"></div>
                     </div>
                     <div class="px-3 text-end">
                     <button id="check" class="btn btn-primary" onmousedown="clkk()">OK</button>
                     </div>
-                    <div class="flex_center">${meaning}</div>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">${meaning}</div>
                 </div>
             </div>
         </div>
@@ -3162,7 +3006,7 @@ function translate_beg() {
                 thiss.css({
                     'visibility':'visible',
                     'background-color': '#cccccc',
-                    'color': '#222222'
+                    'color': '#333'
                 })
                 $('.line').html(buttons); //=document.querySelector('.line').innerHTML = buttons;
             } else {
@@ -3178,7 +3022,7 @@ function translate_beg() {
                 thiss.css({
                     //'background-color': 'rgb(60, 179, 114, 0.95)',
                     'background-color': 'rgb(60, 179, 114, 0.95)',
-                    'color': '#f1f1f1'
+                    'color': '#e5e5e5'
                 });
                 $('.line').html(buttons); //=document.querySelector('.line').innerHTML = buttons;
                 textToSpeech(thiss_text);
@@ -3221,13 +3065,13 @@ function translate_beg() {
 
                     if (len.length == len_card_content) {
                         len = [];
-                        if (vars[4] == 1) {
+                        if (vars[2] == 1) {
                             window.location.assign("/english/learnz/2/1/"+(lesson+1));
                         } else {
                             navigate('next');
                         }
                     } else {
-                        navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                        navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                     }
                     break;
                 } else {
@@ -3333,7 +3177,7 @@ function translate_beg_conf() {
         }
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -3434,13 +3278,13 @@ function translate_beg_conf() {
 
                     if (len.length == len_card_content) {
                         len = [];
-                        if (vars[4] == 1) {
+                        if (vars[2] == 1) {
                             location.assign(`/learn/${lesson + 1}`);
                         } else {
                             navigate('next');
                         }
                     } else {
-                        navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                        navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                     }
                     break;
                 } else {
@@ -3543,7 +3387,7 @@ function translate_beg_wh() {
         }
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -3641,13 +3485,13 @@ function translate_beg_wh() {
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -3705,7 +3549,7 @@ function translate_beg_reverse() {
             `;
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -3799,13 +3643,13 @@ function translate_beg_reverse() {
 
             if (len.length == len_card_content) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                window[`master_${vars[3]}`]();
+                window[`master_${vars[1]}`]();
             }
         } else {
             prompt.style.display = "block";
@@ -3865,7 +3709,7 @@ function translate_med() {
         }
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -3959,13 +3803,13 @@ function translate_med() {
 
                 if (len.length == len_card_content) {
                     len = [];
-                    if (vars[4] == 1) {
+                    if (vars[2] == 1) {
                         location.assign(`/learn/${lesson + 1}`);
                     } else {
                         navigate('next');
                     }
                 } else {
-                    navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                    navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
                 }
             } else {
                 prompt.style.display = "block";
@@ -4048,7 +3892,7 @@ function translate_int() {
             `;
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -4140,13 +3984,13 @@ function translate_int() {
 
             if (len.length == len_card_content) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                navigate('reload');//window["masters"](num);//window[`master_${vars[3]}`]();
+                navigate('reload');//window["masters"](num);//window[`master_${vars[1]}`]();
             }
         } else {
             prompt.style.display = "block";
@@ -4227,7 +4071,7 @@ function translate_int_reverse() {
             `;
     }
 
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - ${unit}</div>
             <div class="main">${card_title}</div>
@@ -4319,13 +4163,13 @@ function translate_int_reverse() {
 
             if (len.length == len_card_content) {
                 len = [];
-                if (vars[4] == 1) {
+                if (vars[2] == 1) {
                     location.assign(`/learn/${lesson + 1}`);
                 } else {
                     navigate('next');
                 }
             } else {
-                window[`master_${vars[3]}`]();
+                window[`master_${vars[1]}`]();
             }
         } else {
             prompt.style.display = "block";
@@ -4364,7 +4208,7 @@ function btn_remove(id){
 
 function test(url) {
     var x = imageExists(url);
-    body.innerHTML = `
+    main.innerHTML = `
         <div class="inf">
             <div>lesson - </div>
             <div class="main"></div>
@@ -4450,3 +4294,8 @@ function warn() {
     prm.style.backgroundColor = "#555";
     prm.innerHTML = "Please complete the lesson first!";
 } // stops user from navigating to next page
+
+function progressUpdate(){
+    let ele = document.querySelector("#progress");
+    ele.style.width = Math.round((100 / maxNum) * (num))+"%";
+}

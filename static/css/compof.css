@@ -1,4 +1,8 @@
 /* BACKGROUNDS */
+.bg-primary-nightly{
+    background-color: var(--bs-primary-nightly);
+    color: var(--bs-light);
+}
 .bg-gray {
     background-color: var(--bs-gray);
 }
@@ -25,7 +29,7 @@
 }
 .bg-gray-200 {
     background-color: var(--bs-gray-200);
-    color: var(--bs-gray-600);
+    color: var(--bs-gray-700);
 }
 .btn-gray-200 {
     background-color: var(--bs-gray-200);
@@ -36,6 +40,7 @@
 }
 .bg-gray-100 {
     background-color: var(--bs-gray-100);
+    color: var(--bs-gray-700);
 }
 .bg-navy {
     background-color: var(--bg-navy);
@@ -162,7 +167,7 @@
     left: 0;
     width: 1rem;
     height: 1rem;
-    border-radius: 0 0 50% 0;
+    border-radius: 0 0 100% 0;
     box-shadow: 0px 0px 1px 1px #0000001a;
 }
 .te-b {
@@ -171,7 +176,7 @@
     right: 0.5rem;
     width: 1rem;
     height: 1rem;
-    border-radius: 50%;
+    border-radius: 0 0 0 100%;
     box-shadow: 0px 0px 1px 1px #0000001a;
 }
 .pulse {
@@ -331,13 +336,10 @@
         height: 30%;
     }
     #words{
-        height: 65%;
+        height: 60%;
     }
     #worde{
-        height: 35%;
-    }
-    #mbar{
-        width: 100%;
+        height: 40%;
     }
 }
 @media screen and (min-width: 768px) {
@@ -346,8 +348,5 @@
     }
     #score{
         height: 50%;
-    }
-    #mbar{
-        height: 100%;
     }
 }

@@ -50,11 +50,14 @@
         </div>
 
         {% if request.GET.q or request.GET.filter %}
-        <div class="card card-body bg-primary-subtle my-3">
+        <div class="card card-body bg-primary-subtle my-4">
             <div class="text-center">
-                <div class="mb-1">Showing results for &quot;<span class="text-primary fw-bold">{{request.GET.q}}{{request.GET.filter|upper}}</span>&quot; ({{wordscount}} entries found)</div>
+                <div class="mb-1">
+                    <div>Showing results for &quot;<span class="text-primary fw-bold">{{request.GET.q}}{{request.GET.filter|upper}}</span>&quot;</div>
+                    <div>({{wordscount}} entries found)</div>
+                </div>
                 {% if request.GET.filter %}<div class="text-primary my-1">try removing filters for more results.</div>{% endif %}
-                <a href="{{request.path}}" role="btn" class="btn btn-sm btn-primary">Clear Search</a>
+                <a href="{{request.path}}" role="btn" class="btn btn-sm btn-primary"> <span>Clear Search</span> <span class="fs-5">&times;</span> </a>
             </div>
         </div>
         {% endif %}
@@ -78,12 +81,14 @@
                             {% if word.pos %}<span class="text-secondary fst-italic">({{word.pos}})</span>{% endif %} 
                             {% if word.cefr %}<span class="badge text-uppercase text-bg-primary bg-opacity-100 ms-2">{{word.cefr}}</span>{% endif %}
                         </td>
-                        <td class="">
-                            {% if usr in word.rvdata.keys %}
-                            <button title="Already added" class="fav btn btn-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense=0')"><i class="fa-solid fa-heart"></i></button>
-                            {% else %}
-                            <button title="Add to word list" class="fav btn btn-outline-primary fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-plus"></i> <i class="fa-solid fa-list"></i></button>
-                            {% endif %}
+                        <td>
+                            {% comment %}
+                                {% if usr in word.rvdata.keys %}
+                                    <button title="Already added" class="fav btn btn-danger fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=remove&word={{word.id}}&sense=0')"><i class="fa-solid fa-heart"></i></button>
+                                    {% else %}
+                                    <button title="Add to word list" class="fav btn btn-outline-primary fs-6 px-2 py-1" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-plus"></i> <i class="fa-solid fa-list"></i></button>
+                                {% endif %}
+                            {% endcomment %}
                         </td>
                     </tr>
 
@@ -142,6 +147,12 @@
     </div>
     </div>
     {% endif %}
+
+    <div class="card card-body bg-primary-subtle col-10 col-md-6 mx-auto my-5">
+        <div class="text-center text-secondary">Recent Searches/LookUps</div>
+        <hr>
+        <div id="lasts"></div>
+    </div>
 </div>
 
 <div class="mb-5"></div>
@@ -207,10 +218,8 @@
 {% endif %}
 
 <script src="/static/js/suggsh.js"></script>
+<script src="/static/js/searchIndex.js"></script>
 <script>
-    //let suggsh = {% include "english/dictionary/suggsh.json" %};
-
-    // getting all required elements
     const searchWrapper = document.querySelector(".search-input");
     const inputBox = searchWrapper.querySelector("input");
     const suggBox = searchWrapper.querySelector(".autocom-box");
@@ -288,11 +297,23 @@
                     return data[1].toLocaleLowerCase() != userData.toLocaleLowerCase() && data[1].replace(/[^a-zA-Z0-9 ]/g,'').includes(userData.toLocaleLowerCase());
                 });
 
+                emptyArray3 = sInd.filter((data)=>{
+                    return data[1].includes(userData.toLocaleLowerCase());
+                });
+
+                for (let x of emptyArray2){
+                  for (let y of sInd){
+                    if (x[0] == y[0]){
+                      emptyArray.push(y);
+                    }
+                  }
+                }
+
                 emptyArray = emptyArray.concat(emptyArray2);
-                emptyArray = emptyArray.slice(0,51).map((data)=>{ //remove slice method to return all matches
+                emptyArray = emptyArray.slice(0,20).map((data)=>{//remove slice method to return all matches
                     // passing return data inside li tag
                     //return data = `<li onclick="window.location.assign('?q=${suggestions_comma[suggestions.indexOf(data)]}')">${suggestions_comma[suggestions.indexOf(data)]} <span class="fst-italic" style="font-size:0.8rem">(${pos[suggestions.indexOf(data)]})</span></li>`;
-                    return data = `<li onclick="window.location.assign('/english/word/${data[0]}')">${data[1]} ${data[2]?'<span class="text-secondary fst-italic fs-8">('+data[2]+')</span></li>':''}`;
+                    return data = `<li onclick="window.location.assign('/english/word/${data[0]}${data.length==4?'/'+data[3]:'/'}');">${data[1]} ${data[2]?'<span class="text-secondary fst-italic fs-8">('+data[2]+')</span></li>':''}`;
                 });
 
                 searchWrapper.classList.add("active"); //show autocomplete box
@@ -315,15 +336,17 @@
         searchWrapper.classList.remove("active");
     }
     
-    function select(element){
-        let selectData = element.textContent;
-        inputBox.value = selectData;
-        icon.onclick = ()=>{
-            webLink = `?q=${selectData}`;
-            linkTag.setAttribute("href", webLink);
-            linkTag.click();
-        }
-        searchWrapper.classList.remove("active");
+    function select(data){
+        //data = data.split(",");
+        
+        //let selectData = element.textContent;
+        //inputBox.value = selectData;
+        //icon.onclick = ()=>{
+        //    webLink = `?q=${selectData}`;
+        //    linkTag.setAttribute("href", webLink);
+        //    linkTag.click();
+        //}
+        //searchWrapper.classList.remove("active");
     }
 
     function showSuggestions(list){
@@ -353,6 +376,8 @@
             x[i].classList.remove("autocom-box-active");
         }
     }
+
+    document.querySelector("#lasts").innerHTML=JSON.parse(window.localStorage.getItem("search")).map((item,i)=>{return `<div><a href="/english/word/${item[0]}">${item[1]}</a></div>`}).join("");
 </script>
 
 {% include "footer.html" %}
