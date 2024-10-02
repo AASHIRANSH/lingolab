@@ -7,5 +7,7 @@ var sInd = [
     [60045,"show somebody the ropes","idiom"],
     [60045,"know the ropes","idiom"],
     [18990,"know otherwise","idiom"],
+    [66299,"so so","adverb"],
+    [66300,"so so","adjective"],
     [79284,"make somebody wise","idiom"],
 ];

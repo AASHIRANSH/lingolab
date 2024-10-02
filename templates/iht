@@ -1,11 +1,11 @@
 <div class="px-3 my-5">
   <div class="d-flex flex-wrap justify-content-center gap-2 gap-md-3">
     
-    <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "learn_home" %}')">
+    <!--div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "learn_home" %}')">
       <span class="fst-italic fs-5">I'm here for...</span>
       <div class="fw-bold fs-4 text-center">Language Courses</div>
       <div class="ts-b bg-primary"></div>
-    </div>
+    </div-->
     
     {% if request.path != "/english/dictionary/" %}
     <div class="position-relative col-10 col-md-auto bg-primary bg-opacity-10 text-primary px-4 py-3 rounded cursor-pointer border border-3 border-light shadow-sm overflow-hidden" data-cl="lk" onclick="window.location.assign('{% url "dictionary" %}')">

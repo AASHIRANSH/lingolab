@@ -21,19 +21,19 @@
 {% block body %}
 {% include 'static/css/styles.html' %}
 {% include "header.html" %}
-<div class="bg-primary-nightly text-center p-5">
+<div class="bg-learner text-center p-5">
     <div class="py-5">
-        <div class="fw-bold fs-1 lsp-sm"> {{ post.title }}</div>
+        <div class="fw-bold display-4 lsp-sm wsp"> {{ post.title }}</div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center gap-3 px-5">
+    <div class="d-flex justify-content-between align-items-center gap-3">
         <div class="d-flex align-items-center font-poppins"><i class="ti ti-eye fs-4 me-1"></i> {{post.views}} VIEWS</div>
 
         <div>
             {% if request.user.is_authenticated %}
-                <button class="btn btn-sm btn-outline-light fs-5" onclick="window.location.assign('{% url 'like' post.pk %}')"><i class="fa fa-thumbs-up fs-5"></i> <span class="badge">{{post.like_set.count}}</span></button>
+                <button class="btn btn-sm text-light fs-5" onclick="window.location.assign('{% url 'like' post.pk %}')"><i class="fa fa-thumbs-up fs-5"></i> <span class="badge">{{post.like_set.count}}</span></button>
             {% else %}
-                <button class="btn btn-sm btn-outline-secondary fs-5" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-thumbs-up fs-5"></i> <span class="badge bg-secondary">{{post.like_set.count}}</span>
+                <button class="btn btn-sm text-light fs-5" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-thumbs-up fs-5"></i> <span class="badge">{{post.like_set.count}}</span>
                     <ul class="dropdown-menu" style="padding:1rem;margin:2rem">
                         You can like or dislike after you have logged in
                     </ul>
@@ -42,19 +42,18 @@
         </div>
     </div>
 </div>
+{% if perms.languages.change_post %}
+    <div class="card card-body mx-5 my-3">
+        <div class="fs-2 mb-2">Admin Features</div>
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_entry' %}?action=editpost&pk={{post.pk}}`)">Edit Post</button>
+            <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'exercise_entry' %}`)">Add Exercise</button>
+        </div>
+    </div>
+{% endif %}
 {% include 'messages.html' %}
 
-<div class="container post py-5">
-    {% if perms.languages.change_post %}
-        <div class="card card-body">
-            <div class="fs-2 mb-2">Admin Features</div>
-            <div class="col-auto">
-                <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_entry' %}?action=editpost&pk={{post.pk}}`)">Edit Post</button>
-                <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'exercise_entry' %}`)">Add Exercise</button>
-            </div>
-        </div>
-    {% endif %}
-    
+<div class="post col-11 col-md-9 col-lg-7 mx-auto">    
     <!--div id="post-title">
         <div class="p-4">
             <div>
@@ -71,12 +70,10 @@
         {{ post.content|safe }}
     </div>
     
-    <hr>
-    <hr>
-    
-    <div class="fs-4">Exercise <i class="fa-solid fa-dumbbell"></i></div>
+    <hr class="hr-blurry">
     
     {% if post.exercise_set.count > 0 %}
+        <div class="fs-4"><i class="fa-solid fa-dumbbell"></i> Exercise</div>
         <b>Choose the correct word to fill in the blanks</b>:
         
         <div id="exercise" class="my-4 position-relative">
@@ -95,7 +92,7 @@
             <!-- Result Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
-                    <div class="modal-content">
+                    <div class="modal-content bg-body">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Result:</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -123,95 +120,81 @@
         <div class="col-auto my-5">
             <button onclick="check()" class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#exampleModal">Check</button>
         </div>
-    {% else %}
-        No exercises for this post.
+    <hr class="hr-blurry">
     {% endif %}
 
-    <hr>
-
     <!-- Comment Form -->
-    <div class="container-fluid my-5">
-        <div class="row col-12">
+    <div class="my-5">
+        <div class="h3 text-secondary mb-3">Comments</div>
+        
+        <form class="comment-form mb-5" method="post" data-post="{{ post.id }}">
+            {% csrf_token %}
+            <textarea class="form-control mb-2" name="content" placeholder="Add/Write a comment" rows="4"></textarea>
+            <button class="btn btn-primary" type="submit">Comment</button>
+        </form>
 
-            <div class="col-sm-1 col-md-2">
-            </div>
+        {% for comment in comments %}
+            <div class="d-flex{% if request.user.is_superuser or request.user == comment.author %} justify-content-end{% endif %} mb-4">
+                <div class="d-inline-block">
+                
+                    <div class="d-flex{% if request.user.is_superuser or request.user == comment.author %} justify-content-end{% endif %} bg-gray-200 p-2 rounded-top">
+                    <div>
+                        <img style="height:3rem;" src="{{comment.author.profile.image.url}}" class="rounded-circle"/>
+                        <span class="fs-4"> {{ comment.author }}</span>
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div class="p-1">
+                        <div class="dropdown">
+                            <button class="btn" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                {% if request.user == comment.author %}
+                                <li><a class="dropdown-item" href="{% url 'edit_comment' comment.pk %}">Edit</a></li>
+                                {% endif %}
+                                
+                                <li><hr class="dropdown-divider"></li>
 
-            <div class="col-sm-10 col-md-8">
-                <form class="comment-form mb-5" method="post" data-post="{{ post.id }}">
-                    {% csrf_token %}
-                    <textarea class="form-control mb-2" name="content" placeholder="Add/Write a comment" rows="4"></textarea>
-                    <button class="btn btn-primary" type="submit">Comment</button>
-                </form>
-
-                {% for comment in comments %}
-                    <div class="mb-4">
-                        <div id="comment-head" class="row bg-gray-secondary p-2">
-                            <div class="col-8">
-                                <img style="height:3rem;" src="{{comment.author.profile.image.url}}" class="rounded-circle"/>
-                                <span class="fs-4"> {{ comment.author }}</span>
-                                <i class="fa-solid fa-comments"></i>
-                            </div>
-                            <div class="col-4 d-flex justify-content-end p-1">
-                                <div class="dropdown">
-                                    <button class="btn" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                                        {% if request.user == comment.author %}
-                                        <li><a class="dropdown-item" href="{% url 'edit_comment' comment.pk %}">Edit</a></li>
-                                        {% endif %}
-
-                                        {% if request.user.is_superuser or request.user == comment.author %}<li><a class="dropdown-item" href="{% url 'delete_comment' comment.pk %}">Delete</a></li>{% endif %}
-                                        
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item active" href="#">Separated link</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="comment" class="position-relative bg-gray p-2" style="">
-                        
-                            <pre>{{ comment.content }}</pre>
-
-                            <span id="time-stamp">{{ comment.created_at }}</span>
+                                {% if request.user.is_superuser or request.user == comment.author %}<li><a class="dropdown-item" href="{% url 'delete_comment' comment.pk %}">Delete</a></li>{% endif %}
+                            </ul>
                         </div>
                     </div>
+                    </div>
 
-                {% empty %}
-                    <p>No comments yet.</p>
-                {% endfor %}
+                    <div id="comment-{{forloop.counter}}" class="{% if request.user == comment.author %}text-end{% endif %} position-relative bg-gray-100 p-3 rounded-bottom" style="">
+                    
+                        <div>{{ comment.content }}</div>
+
+                        <div class="fs-8 text-start">{{ comment.created_at }}</div>
+                    </div>
+                </div>
             </div>
-
-
-            <div class="col-sm-1 col-md-2">
-            </div>
-            
+        {% endfor %}
         </div>
     </div>
 </div>
 
-<script>//adding class ".example" to each example
+<script>
     var post_content = document.getElementById("post-content");
-    for (let x of post_content.getElementsByClassName("examples")){
-        x.classList.add("col-10","col-lg-8","mx-auto");
-    }
-    for (let li of post_content.getElementsByTagName("li")) {
-        li.classList.add("example");
-    }
-</script>
+    let examples = post_content.getElementsByClassName("post-examples");
 
-<script>//highlighting the texts by replacing within li elems
-    var fill_values = "{{post.fill_values}}";
-    var target_vals = fill_values.split(",");
-    var element = document.getElementsByClassName("example");
-    for (let line in element) {
-        for (var tvx in target_vals) {
-            line_patt = new RegExp("\\b"+target_vals[tvx]+"\\b","gi")
-            element[line].innerHTML = element[line].innerHTML.replace(line_patt, `<span style='color:#0d6efd;'>${target_vals[tvx]}</span>`);
-        }
-    }
-</script>
+    //var fill_values = "{{post.fill_values}}";
+    //var target_vals = fill_values.split(",");
 
-<script>//insert select element
+    //if (examples.length){
+    //    for (let li of examples.getElementsByTagName("li")) {
+    //        for (var tvx of target_vals) {
+    //            line_patt = new RegExp("\\b"+tvx+"\\b","gi")
+    //            li.innerHTML = li.innerHTML.replace(line_patt, `<span style="color:#0d6efd">${tvx}</span>`);
+    //        }
+    //    }
+    //}
+    //for (let li of post_content.getElementsByClassName("exampless")) {
+    //    for (var tvx of target_vals) {
+    //        line_patt = new RegExp("\\b"+tvx+"\\b","g")
+    //        li.innerHTML = li.innerHTML.replace(line_patt, `<span style="color:#0d6efd">${tvx}</span>`);
+    //    }
+    //}
+    
+    //insert select element
     var exercise = document.getElementById("questions"); //parent element of questions
     var questions = exercise?exercise.getElementsByTagName("li"):[]; //question elements array
     var exchoices = [];

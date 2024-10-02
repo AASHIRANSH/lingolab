@@ -1,10 +1,13 @@
 <style>
     .card-lingo{
         padding: 1rem;
-        border: 0.1rem solid var(--bs-light-rgb);
         border-radius: 0.5rem;
         margin: 1rem 0;
     }
+    .card-lingo > p:not(:last-child), .card-lingo > div:not(:last-child){
+        margin-bottom: 1rem;
+    }
+
     .pnav{
         display: flex;
         flex-wrap: wrap;
@@ -49,7 +52,7 @@
         padding: 0.5rem 0;
     }
     .link-group li:not(:last-child){
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #aaa;
     }
     .link-gray li:hover{
         color: var(--bs-dark);
@@ -169,12 +172,11 @@
     .progress-container {
         width: 100%;
         height: 0.2rem;
-        background: #ccc;
+        background: #ffffff33;
     }
       
     .progress-bar {
-        height: 0.2rem;
-        {% comment %} background: var(--bs-blue); {% endcomment %}
+        height: 100%;
         width: 0%;
     }
 
@@ -233,18 +235,36 @@
         margin: 1.5rem auto;
     }
     .post .top-m {
+        position: relative;
+        width: 95%;
         max-width: 768px;
         background-color: var(--bs-purple);
         color: var(--bs-white-gray);
         font-weight: 350;
         font-size: 1.5rem;
+        text-align: justify;
         padding: 1rem 1.5rem;
+        border-width: 0.5rem;
+        border-color: #ffffff33;
+        border-style: solid;
         border-radius: 1rem;
         margin: 2rem auto;
+        box-shadow: var(--bs-box-shadow);
+    }
+    .top-m::before{
+        content:"LINGOLAB";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 3.5rem;
+        font-weight: bold;
+        letter-spacing: 10px;
+        opacity: 0.2;
+        transform: translate(-50%,-50%) rotate(25deg);
     }
     .post h3 {
         font-weight: bold;
-        color: var(--bs-gray-800);
+        color: var(--bs-gray-700);
     }
     .post .top-m .h {
         color: rgb(13, 110, 253);
@@ -283,10 +303,12 @@
         font-size: 0.8rem;
     }
     .post .exampless{
-        background-color: var(--bs-gray-200);
+        background-color: var(--bs-gray-100);
+        color: var(--bs-gray-700);
         padding: 0.5rem 1rem;
-        border-left: 0.3rem solid var(--bs-primary);
+        border-left: 0.3rem solid var(--bs-secondary);
         border-radius: 0.3rem;
+        margin: 0.5rem 0;
     }
     .post .tip {
         width: 90%;

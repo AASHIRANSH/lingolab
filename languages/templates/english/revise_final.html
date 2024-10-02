@@ -104,22 +104,23 @@
                     </div>
                     </div>
                 </div>
-                <div class="ts-circle bg-primary bg-opacity-75 shadow">
-                    <a href="{{request.GET.back}}" class="text-light"><i class="fa-solid fa-arrow-left"></i></a>
+                <div class="ts-circle bg-navy shadow">
+                    <a href="{{request.GET.back}}" class="text-white"><i class="fa-solid fa-arrow-left"></i></a>
                 </div>
                 <div class="te-circle bg-navy bg-opacity-50 shadow">
                     <div>
                         <!--div class="text-primary">{{rv_total_count}}</div-->
-                        <div class="text-light">${rv_count}/{{rv_count}}</div>
+                        <div class="text-white">${rv_count}/{{rv_count}}</div>
                     </div>
                 </div>
 
                 <div id="points" class="d-none position-absolute start-50 bg-primary fs-2 fw-semibold text-light p-1 rounded animate__animated animate__fadeInUp" style="top:20%;z-index:1;"></div>
                 
-                <div id="vocabc" class="position-relative d-flex flex-column justify-content-between bg-gray bg-opacity-75 col-10 col-md-7 overflow-hidden rounded-3 shadow-lg animate__animated animate__fadeIn" style="min-height:50%">
+                <div id="vocabc" class="position-relative d-flex flex-column justify-content-between bg-light col-10 col-md-7 overflow-hidden rounded-3 shadow-lg animate__animated animate__fadeIn" style="min-height:50%">
                     ${r_obj.from=="New Word"?`<div class="ts-b bg-primary" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-primary" data-bs-title="You haven't seen this word before and blue color means that"></div>`:`<div class="ts-b bg-success pulse" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-success" data-bs-title="You have seen this word before and green color means that"></div>`}
                     <!--div class="te-circle bg-success fs-7 text-light p-1 ps-4">${r_obj.from}</div-->
-                    <div id="qtop" class="row align-items-baseline gap-2 gx-0 bg-light p-3 shadow-sm">
+                    
+                    <div id="qtop" class="row align-items-baseline gap-2 gx-0 bg-gray-200 p-3">
                         <div class="col-auto text-primary fw-bold fs-2 text-wrap">${r_obj.word}</div>
                         <!--span class="fs-6">(${r_obj.pos})</span-->
                         <div class="col-auto text-secondary">${examples.length?'in the following sentence(s) means':'means'}:</div>
@@ -159,7 +160,7 @@
                     </div>
 
 
-                    <div class="exmenu d-flex justify-content-between bg-gray p-3">
+                    <div class="exmenu d-flex justify-content-between p-3">
                         <div></div>
                         <div><button class="btn btn-primary fs-5" data-action="next" data-ele="vocabc" accesskey="n"><i class="fa-solid fa-chevron-right"></i></button></div>
                     </div>
@@ -292,8 +293,8 @@
                 } else {
                     document.cookie = "wrt="+(parseInt(wrt)+1)+";expires="+d.toUTCString();
                 };
-
                 setPlan("lt",r_obj.pk,r_obj.rvsense);
+                setPlan("streak",0,0);
             };
 
             if (attr == "hard"){
@@ -360,7 +361,6 @@
         score.classList.add("animate__fadeOut");
         sl.addEventListener("animationend",()=>{
             if (len.length == objs.length-1) {
-                setPlan("streak",0,0)
                 window.location.reload();
             } else {
                 rv_count++;

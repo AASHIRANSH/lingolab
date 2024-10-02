@@ -305,7 +305,6 @@ margin: 0 15px 0 0;
 }
 
 .tooltip_container .tooltip_text {
-width: 200%;
 display: none;
 background-color: #ddd;
 text-align: center;
@@ -314,7 +313,7 @@ color: #444444;
 position: absolute;
 top: 100%;
 left: 50%;
-margin-left: -100%;
+/*margin-left: -100%;*/
 border-radius: 0.25em;
 padding: 10px 10px;
 z-index: 1;
@@ -528,10 +527,6 @@ flex-flow: row nowrap;
 }
 
 .content {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-around;
-    padding: 1.5rem 0;
     animation: fadeIn 0.5s;
 }
 
@@ -728,13 +723,6 @@ height: 13rem;
 }
 
 /* TRANSLATE SELECTION */
-.trans {
-width: 100%;
-display: flex;
-justify-content: space-around;
-flex-direction: column;
-}
-
 .tr_content {
 min-height: 5rem;
 padding: 1rem 2rem;
@@ -767,16 +755,17 @@ border-bottom: 3px solid rgb(57, 128, 89);
 
 /*MAIN CONTENT AREA IN ALL LESSONS*/
 .cardm_learn {
-display: flex;
-flex-flow: row wrap;
-background-color: #f1f1f1;
-width: 90%;
-min-height: 550px;
-font-size: 1.5rem;
-border-radius: 1rem;
-padding: 1rem 0;
-margin: 0 auto;
-box-shadow: 6px 6px 10px 10px #c1c1c1, -6px -6px 10px 10px #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #f1f1f1;
+    width: 90%;
+    min-height: 550px;
+    font-size: 1.5rem;
+    border-radius: 1rem;
+    padding: 1rem 0;
+    margin: 0 auto;
+    box-shadow: 6px 6px 10px 10px #c1c1c1, -6px -6px 10px 10px #ccc;
 }
 
 .cardm_learn>* {
@@ -855,7 +844,7 @@ user-select: none;
 .cardm_learn .ebutton:active {
 box-shadow: 1px 1px 1px #999;
 border-bottom: 1px solid #777;
-transform: translateY(5px);
+transform: translateY(2px);
 }
 
 .cardm {

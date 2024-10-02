@@ -2964,7 +2964,6 @@ function translate_beg() {
     main.innerHTML = `
         <div class="content">
             <div id="cardm" class="cardm_learn">
-                <div class="trans">
                     <div class="flex_center">
                         <div id="speaker" style="scale:0.6;cursor:pointer;">
                         <img src="/static/img/svg/loudspeaker_duo.svg"/></div>
@@ -2973,11 +2972,12 @@ function translate_beg() {
                     <div class="tr_content">
                         <div class="line flex gap-2"></div>
                     </div>
-                    <div class="px-3 text-end">
-                    <button id="check" class="btn btn-primary" onmousedown="clkk()">OK</button>
-                    </div>
+                    
                     <div class="d-flex flex-wrap justify-content-center gap-2">${meaning}</div>
-                </div>
+
+                    <div class="px-3 text-end">
+                        <button id="check" class="btn btn-primary col-12" onmousedown="clkk()">OK</button>
+                    </div>
             </div>
         </div>
     `;

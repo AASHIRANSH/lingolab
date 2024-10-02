@@ -1025,9 +1025,9 @@ def my_word(request,word):
 def dictionary(request):
     get = request.GET
 
-    with open("database/stats.json") as db:
-        db = json.load(db)
-        searches = db["dictionary"]["recent_searches"]
+    # with open("database/stats.json") as db:
+    #     db = json.load(db)
+    #     searches = db["dictionary"]["recent_searches"]
 
     url = "https://microsoft-translator-text.p.rapidapi.com/translate"
     querystring = {"to":"ur","api-version":"3.0","profanityAction":"NoAction","textType":"plain"}
@@ -1078,7 +1078,7 @@ def dictionary(request):
         }
         return render(request, "english/dictionary_2.html", vars)
     else:
-        return render(request, "english/dictionary_2.html", searches if searches else {})
+        return render(request, "english/dictionary_2.html")
 
 def dictionaryTopic(request):
     topics = TopicDictionary.objects.all()
@@ -1094,7 +1094,8 @@ def dictionaryTopicView(request,name):
         word = Dictionary.objects.get(pk=x[0])
         words.append([word,x[1]-1,word.senses[x[1]-1][9]["en"][0][0]])
     vars = {
-        "words":words
+        "words":words,
+        "topic":name
     }
     return render(request,"english/dictionary_topic_view.html",vars)
 
@@ -1136,8 +1137,8 @@ def word_main_single(request,word,sense):
     fav_obj = Fav.objects.get(pk=word.pk)
     if request.user.username in fav_obj.rvdata.keys():
         rvdata = fav_obj.rvdata[request.user.username]
-        if len(rvdata["senses"]):
-            fav = [x+1 for x in rvdata["senses"]]
+        if sense in rvdata["senses"]:
+            fav = [sense+1]
             note = rvdata["notes"][rvdata["senses"].index(sense)]
         else:
             fav = None
@@ -1155,7 +1156,6 @@ def word_main_single(request,word,sense):
         "note":note
     }
     return render(request, "english/word_main_single.html", vars)
-
 
 def dict_filt(request):
     get = request.GET
@@ -1188,16 +1188,16 @@ def dict_filt(request):
 @login_required
 def revise_main(request):
     get = request.GET
-    td = True if get.get("td") == "true" else False
-    favlist = True if get.get("favs") == "true" else False
     user = request.user
     username = user.username
+    td = True if get.get("td") == "true" else False
+    favlist = True if get.get("favs") == "true" else False
     cefr = ["a1","a2","b1","b2","c1","c2"]
 
     today = datetime.datetime.today().date() # today.strftime("%Y-%m-%d") # string date
 
     if td:
-        rv_set = [x for x in request.user.learnerprofile.plan[2]]
+        rv_set = [x for x in user.learnerprofile.plan[2]]
         lv_set = None
         if not rv_set:
             messages.success(request,f"You have no words due for review!")
@@ -1216,7 +1216,7 @@ def revise_main(request):
         for x in rv_set:
             f = Fav.objects.get(pk=x[0])
             rvdata = f.rvdata[username]
-            print(x)
+            # print(x)
             dn = rvdata["senses"].index(x[1])
             rvp_obj.append({
                 "pk":f.pk,

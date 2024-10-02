@@ -1,6 +1,41 @@
 /* BACKGROUNDS */
+.bg-learner {
+    background-image: linear-gradient(to bottom right, var(--lingo-blue), var(--lingo-green));
+    color: var(--bs-light);
+}
+
+.bg-amethyst-blue{
+    background-image: linear-gradient(to bottom right, #fbecff, #ddf6fd);
+    color: #8e69cc;
+}
+
+.bg-v {
+    background-image: linear-gradient(to bottom right, #6a3093, #a044ff);
+    color: var(--bs-light);
+}
+.bg-v2 {
+    background-image: linear-gradient(to bottom right, #8e2de2, #4a00e0);
+    color: var(--bs-light);
+}
+.bg-v3 {
+    background-image: linear-gradient(to bottom right, #c0392b, #8e44ad);
+    color: var(--bs-light);
+}
+.bg-v4 {
+    background-image: linear-gradient(to bottom right, #4568dc, #b06ab3);
+    color: var(--bs-light);
+}
+.bg-d {
+    background-image: linear-gradient(to bottom right, #141e30, #243b55);
+    color: var(--bs-light);
+}
+.bg-d2 {
+    background-image: linear-gradient(to bottom right, #141e30, #243b55);
+    color: var(--bs-light);
+}
+
 .bg-primary-nightly{
-    background-color: var(--bs-primary-nightly);
+    background-color:rgba(var(--bs-primary-nightly),var(--bs-bg-opacity,1))!important;
     color: var(--bs-light);
 }
 .bg-gray {
@@ -40,10 +75,10 @@
 }
 .bg-gray-100 {
     background-color: var(--bs-gray-100);
-    color: var(--bs-gray-700);
+    color: var(--bs-gray-800);
 }
 .bg-navy {
-    background-color: var(--bg-navy);
+    background-color: var(--bs-navy);
 }
 
 .hidden {
@@ -134,26 +169,15 @@
     transition:0.5s;
 }
 
-.bg-learner {
-    width: 100%;
-    background-image: linear-gradient(to bottom right, #3B71CA, #3cb371);
-    margin: 0 0 0 0;
-    overflow: hidden;
-}
-.bg-learnerf {
-    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
-    color: #fff;
-}
-
 .rule {
     width: 100%;
-    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
+    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, var(--bs-success) 10%, #2255a5 30%, var(--bs-success));
     margin: 0 0 0 0;
     overflow: hidden;
 }
 
 .text-learner {
-    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 30%, #3cb371);
+    background-image: repeating-radial-gradient(circle farthest-side at 5px 10px, #3cb371 10%, #3B71CA 20%, #3cb371);
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;

@@ -44,9 +44,9 @@
     <div class="position-absolute bottom-0 w-100 bg-primary bg-opacity-50 p-1 rounded"></div>
 </div>
 
-<div class="container-fluid bg-light py-4">
-    <div class="row">
-        <div class="col-12 col-sm-12 col-lg-9 px-4 pe-lg-0 mb-5">
+<div class="container-fluid my-3">
+    <div class="row gx-0">
+        <div class="col-12 col-sm-12 col-lg-9 px-3 pe-lg-0 mb-5">
             {% include 'messages.html' %}
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -66,10 +66,10 @@
             </div>
 
             <div class="bg-light px-3 py-4 shadow-sm rounded">
-                <div class="d-flex justify-content-between align-items-center rounded">
-                    <div class="row col-11">
+                <div class="d-flex justify-content-between">
+                    <div class="col-11">
                         <!-- Word Pos-->
-                        <div class="col-12 mb-1">
+                        <div class="mb-1">
                             <div id="word" class="col-auto text-primary d-inline-block me-2" {% if request.user.is_superuser %}onclick="window.location.assign(`{% url 'word_entry' %}?edit=true&word={{word.pk}}&sense={{sense.0|add:-1}}`)"{% endif %}>
                                 {{word.word}}
                             </div>
@@ -83,7 +83,7 @@
                             {% endif %}
                         </div>
                         <!-- Grade Pronounce Pic-->
-                        <div class="col-12">
+                        <div>
                             <div class="row col-12 mb-3">
                                 {% if word.pronounciation.uk.texts %}
                                     <div class="col-auto ps-3" style="font-family:Arial;">
@@ -164,21 +164,15 @@
                     </div>
                     <!-- Option Buttons -->
                     <div class="col-1">
-                        {% if visible == "disabled" %}
-                            <button title="Already Added" disabled class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/data?data=new&word={{word.id}}')"><i class="fa-solid fa-heart"></i></button>
-                        {% else %}
-                            <button title="Add it" class="btn btn-outline-danger col-12 fs-5" onclick="window.location.assign('/english/datamain?data=fav&word={{word.id}}&sense=0')"><i class="fa-regular fa-heart"></i></button>
-                        {% endif %}
-                        <button title="Revise/Practise" class="btn btn-outline-success col-12 fs-5 mt-2" onclick="window.location.assign('/english/revisemain/?back={{request.path}}')"><i class="fa fa-history"></i></button>
-                        <button title="Share it" class="btn btn-outline-primary col-12 fs-5 mt-2" data-bs-toggle="collapse" data-bs-target="#collapseShare" aria-expanded="false" aria-controls="collapseShare"><i class="fa-solid fa-share-nodes"></i></button>
+                        <button title="Share it" class="btn btn-outline-primary col-12 fs-5" data-bs-toggle="collapse" data-bs-target="#collapseShare" aria-expanded="false" aria-controls="collapseShare"><i class="fa-solid fa-share-nodes"></i></button>
                         <div class="card col-auto shadow-sm" style="position:absolute;translate:-105% -50%;z-index:1;">
                             <div class="collapse" id="collapseShare">
                                 <div id="share" class="text-center fs-7 cursor-pointer" style="width:10rem;">
-                                  <div class="p-2">Copy Link</div>
+                                  <div class="p-2 hover-gray">Copy Link</div>
                                   <hr class="my-0">
-                                  <div class="p-2 scr" data-ele="scr">Save It</div>
+                                  <div class="p-2 scr hover-gray" data-ele="scr">Save It</div>
                                   <hr class="my-0">
-                                  <div class="p-2" onclick="window.location.assign(`https://api.whatsapp.com/send?text=https://www.lingolab.in{{request.path}}`)">WhatsApp</div>
+                                  <div class="p-2 hover-gray" onclick="window.location.assign(`https://api.whatsapp.com/send?text=https://www.lingolab.in{{request.path}}`)">WhatsApp</div>
                                 </div>
                             </div>
                         </div>
@@ -216,12 +210,12 @@
                         <div>
                             {% if fav %}
                                 {% if sense.0 in fav %}
-                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="btn{{sense.0}}" title="Already added" class="btn btn-outline-danger fs-6 p-0 px-2 rounded" onclick="favSet('remove',{{word.id}},{{sense.0}})"><i id="ft" class="fa-solid fa-trash"></i><i id="fp" class="d-none fa-solid fa-plus"></i></button>
                                     {% else %}
-                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
+                                    <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i id="fp" class="fa-regular fa-plus"></i><i id="ft" class="d-none fa-solid fa-trash"></i> <i class="fa-solid fa-list-ul"></i></button>
                                 {% endif %}
                             {% else %}
-                                <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="favSet('fav',{{word.id}},{{sense.0}})"><i class="fa-regular fa-plus"></i></button>
+                                <button id="btn{{sense.0}}" title="Add it" class="btn btn-outline-primary fs-6 p-0 px-2 rounded" onclick="{% if request.user.is_authenticated %}favSet('fav',{{word.id}},{{sense.0}}){% else %}window.location.assign('{% url "sign_in" %}?next=/english/datamain%3Fdata%3Dfav%26word%3D{{word.pk}}%26sense%3D{{sense.0}}'){% endif %}"><i class="fa-regular fa-plus"></i> <i class="fa-solid fa-list-ul"></i></button>
                             {% endif %}
                         </div>
                     </div>
@@ -297,8 +291,8 @@
                             <div class="col-sm-12 col-lg-6 accordion my-1" id="accordionExample{{forloop.counter}}">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapseOne">
-                                            <span class="d-inline-block bg-secondary text-white fw-bold wsp-sm lsp-sm fs-7 p-2 rounded">{{box.0|safe}}</span>
+                                        <button class="accordion-button bg-gray-200 collapsed p-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapseOne">
+                                            <span class="d-inline-block fw-bold wsp-sm lsp-sm fs-7">{{box.0|safe}}</span>
                                         </button>
                                     </h2>
                                     <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -320,7 +314,7 @@
                             <div class="ps-3">
                                 {% for x in sense.11 %}
                                     <div class="mb-3">
-                                        <div class="mb-1"><span class="bg-gray-200 text-primary fw-bold px-2 py-1 rounded">{{x.0}}</span></div> 
+                                        <div class="mb-1"><span class="btn-gray-200">{{x.0}}</span></div> 
                                         <div class="px-3">&#x2022; {{x.1}}</div>
                                     </div>
                                 {% endfor %}
@@ -422,15 +416,16 @@
           
         </div>
 
-        <div class="col-12 col-sm-12 col-lg-3 px-4 px-lg-2">
+        <div class="col-12 col-lg-3 px-4 ps-lg-2">
             <div class="position-sticky sticky bg-light p-2 rounded shadow-sm">
-                <div class="d-flex justify-content-between align-items-center border-bottom border-grey">
-                    <h5 class="text-secondary">Nearby words</h5>
-                    <div class="">
-                        <a href="{% url "words" word.pk|add:-1 0 %}" class="btn btn-grey" role="button" title="short-key alt+z" accesskey="z">&lt;</a>
-                        <a href="{% url "words" word.pk|add:1 0 %}" class="btn btn-grey" role="button" title="short-key alt+x" accesskey="x">&gt;</a>
+                <div class="d-flex justify-content-between align-items-center text-secondary">
+                    <h5 class="fw-bold fs-5 m-0">NEARBY WORDS</h5>
+                    <div>
+                        <a href="{% url "word" word.pk|add:-1 %}" class="btn btn-sm btn-light" role="button" title="short-key alt+z" accesskey="z"><i class="fa-solid fa-chevron-left"></i></a>
+                        <a href="{% url "word" word.pk|add:1 %}" class="btn btn-sm btn-light" role="button" title="short-key alt+x" accesskey="x"><i class="fa-solid fa-chevron-right"></i></a>
                     </div>
                 </div>
+                <hr>
                 {% for w in nw %}
                     {% if word.pk == w.pk %}
                         <a class="d-block fw-bold bg-primary-subtle text-primary px-2 py-1 my-1 rounded">{{w.word}} <span class="text-secondary fs-8">{{w.pos}}</a>

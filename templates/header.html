@@ -1,6 +1,6 @@
 <theader class="bg-body shadow-sm" id="headerm">
-    <div id="title_bar" class="">
-        <div id="title" class="ps-4 col-md-3 py-3">
+    <div id="title_bar">
+        <div id="title" class="ps-4 col-md-3 py-2">
             <a href="/"><img src="/static/img/dark-logo_ad.svg"/></a>
         </div>
 
@@ -11,10 +11,9 @@
                     Learn <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="dropdown-menu header-menu p-3 m-1 shadow-lg border-0" style="width:400%;">
-                    <li><h6 class="dropdown-header text-body">ENGLISH</h6></li>
                     <li><a href="{% url 'dictionary' %}">Dictionary</a></li>
                     <li><a href="{% url 'dictionary_topic' %}">Topics Dictionary</a></li>
-                    <li><a href="/english">Posts</a></li>
+                    <li><a href="{% url 'posts' %}">Posts</a></li>
                     <li><a href="/english/presentindefinite">Tenses</a></li>
                     <li><a href="{% url 'learn_home' %}">learn from zero</a></li>
                     <li><a href="{% url 'dictionary_collocation' %}">Collocation Dictionary</a></li>
@@ -59,7 +58,7 @@
             {% endif %}
         </div>
 
-        <button class="btn btn-outline-light text-secondary d-md-none fs-2 px-4 py-3 cursor-pointer" data-bs-toggle="offcanvas" data-bs-target="#sidebarm"><i class="ti ti-menu-2"></i></div>
+        <button class="btn text-secondary d-md-none fs-2 px-4 py-2 border-0 cursor-pointer" data-bs-toggle="offcanvas" data-bs-target="#sidebarm"><i class="ti ti-menu-2"></i></div>
     </div>
 
     <!--nav class="d-none bg-learnerf">
@@ -137,9 +136,9 @@
     </div>
 
     <div class="link-group link-gray font-public fw-semibold fs-5 px-3 my-3">
-        <li class="authenticated"><a onclick="notifications()"><i class="ti ti-notification fs-4"></i> Notifications <span class="badge {% if request.notifications %}learner-notif{% else %}bg-secondary{% endif %} text-white">{{request.notifications|length}}</span></a></li>
+        <li class="authenticated"><a onclick="notifications()"><i class="ti ti-notification fs-4"></i> Notifications {% if request.notifications %}<span class="badge learner-notif text-white">{{request.notifications|length}}</span>{% endif %}</a></li>
         <li><a href="{% url "dictionary" %}"><i class="fa-solid fa-book"></i> Dictionary</a></li>
-        <li><a href="{% url "dictionary" %}"><i class="fa-solid fa-book"></i> Tenses</a></li>
+        <!--li><a href="{% url "dictionary" %}"><i class="fa-solid fa-book"></i> Tenses</a></li-->
         <li><a href="{% url "posts" %}"><i class="fa-regular fa-newspaper"></i> Posts</a></li>
         <li><a href="{% url "quotes" %}"><i class="fa-solid fa-pen"></i> Quotes</a></li>
         <li><a href="{% url "games" %}"><i class="fa-solid fa-gamepad"></i> Games</a></li>
@@ -157,20 +156,20 @@
                             <img src="{{user.profile.image.url}}" class="p-1 rounded-circle account-img shadow bg-white" style="width:10rem;height:auto"/>
                         </div>
             
-                        <div class="d-flex flex-column text-center text-md-start">
-                            <div class="">
+                        <div class="d-flex flex-column gap-1 text-center text-md-start">
+                            <div>
                                 <span class="bg-gray-200 p-1 rounded">
                                     @{{user.username}}
                                 </span>
                             </div>
                             
                             {% if user.first_name %}
-                                <div class="fs-1 text-uppercase my-2">
+                                <div class="fs-2 text-uppercase">
                                     {{user.first_name}} {{user.last_name}}
                                 </div>
                             {% endif %}
                             
-                            <div class="fs-5 px-1 text-center">
+                            <div class="fs-5">
                                 {% if user.pk == 1 %}
                                 Servant at Learners' Academy
                                 {% else %}
@@ -182,14 +181,15 @@
                 </div>
                 <input type="text" class="form-control" id="status_update" placeholder="Update Status"/>
                 <div class="link-group link-gray font-public fs-7 my-3">
-                    <li class="superuser"><a href="/admin"><i class="fa-solid fa-sliders"></i> Admin Panel</a></li>
+                    {% if request.user.is_superuser %}<li><a href="/admin"><i class="fa-solid fa-sliders"></i> Admin Panel</a></li>{% endif %}
                     <li><a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
+                    <li><a href="{% url 'my_words' %}"><i class="fa-solid fa-language"></i> My Words List</a></li>
                 </div>
                 <a href="{% url 'sign_out' %}" role="button" class="btn btn-danger text-end"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
             </div>
         </div>
         {% else %}
-        <a href="{% url 'sign_in' %}" role="button" class="col-12 btn btn-light fw-semibold lsp-sm mb-1">Login</a>
+        <a href="{% url 'sign_in' %}" role="button" class="col-12 btn btn-secondary fw-semibold lsp-sm mb-1">Login</a>
         <a href="{% url 'sign_up' %}" role="button" class="col-12 btn btn-primary fw-semibold lsp-sm">Register</a>
         {% endif %}
         </div>

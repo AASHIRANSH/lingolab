@@ -146,8 +146,7 @@
             $(".loader-wrapper").fadeOut();
         });
         window.addEventListener("visibilitychange", function(){
-            //$(".loader-wrapper").fadeOut();
-            document.querySelector(".loader-wrapper").style.display = "none";
+            $(".loader-wrapper").fadeOut(); //document.querySelector(".loader-wrapper").style.display = "none";
             document.querySelector("[data-bs-dismiss='offcanvas']").click();
         });
 
@@ -193,13 +192,11 @@
             if(Math.abs(lastScrollTop - st) <= delta)
                 return;
             
-            // If they scrolled down and are past the navbar, add class .nav-up.
-            // This is necessary so you never see what is "behind" the navbar.
             if (st > lastScrollTop && st > navbarHeight){
                 // Scroll Down
                 $('theader').css('transform','translate(0, -'+navbarHeight+'px)');
                 $('.sticky').css({"top":"1rem"}); // for Word Page Nearby Words
-                if (document.documentElement.scrollTop > height-20){
+                if (document.documentElement.scrollTop > height-25){
                     $('#tbt').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')");
                 } else {
                     $('#tbt').css({"transform":"rotate(0)"}).attr("onclick","window.location.assign('#bottom')");
@@ -209,7 +206,11 @@
                 if(st + $(window).height() < $(document).height()) {
                     $('theader').css('transform','translate(0, 0)');
                     $('.sticky').css({"top":"4rem"});
-                    $('#tbt').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')")
+                    if (st < 25){
+                        $('#tbt').css({"transform":"rotate(0)"}).attr("onclick","window.location.assign('#bottom')");
+                    } else {
+                        $('#tbt').css({"transform":"rotate(180deg)"}).attr("onclick","window.location.assign('#top')");
+                    }
                 }
             }
 

@@ -39,7 +39,7 @@
 {% endif %}
 
 <section id="sl" class="shadow mb-3" style="--img: url(/static/img/system/{{bg|random}})">
-  <div id="headersl">
+  <div id="slbg">
   </div>
   <div id="caption" class="d-none d-lg-inline-block">
     <div id="text">
@@ -49,18 +49,18 @@
     </div>
   </div>
   <div id="quote">
-    <div class="position-relative">
-      <div><span class="text-success">❝ </span>{{quote.quote}} <span class="text-success"> ❞</span></div>
-      <button onclick="window.location.assign('{% url 'quotes' %}?author={{quote.author}}')" class="btn btn-sm btn-success rounded-4 py-1 px-3">{{quote.author}}</button>
-    </div>
+    <div><span class="text-success">❝ </span>{{quote.quote}} <span class="text-success"> ❞</span></div>
+    <button onclick="window.location.assign('{% url 'quotes' %}?author={{quote.author}}')" class="btn btn-sm btn-success border border-1 rounded-4 py-1 px-3">{{quote.author}}</button>
   </div>
 </section>
 
 <!-- search -->
-<div id="searc" class="container pt-3">
+<hr id="searc" class="hr-blurry my-5">
+
+<div class="container">
   <div class="swrapper col-10 col-md-8">
       <div class="search-input">
-          <input type="search" name="q" placeholder="Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
+          <input type="search" name="q" placeholder=" Type to search..." value="{{request.GET.q}}" autocomplete="off"/>
           <div id="subox" class="autocom-box mt-1 rounded-bottom shadow">
           </div>
           <a><div class="icon"><i class="fas fa-search"></i></div></a>
@@ -71,40 +71,35 @@
 <hr class="hr-blurry my-5">
 
 <!-- WOD -->
-<div class="container-fluid">
-  <div class="d-flex justify-content-center w-100">
-    <div class="bg-light col-12 col-md-8 rounded shadow">
-      <div class="d-flex justify-content-between bg-primary bg-opacity-50 p-3 rounded shadow-sm">
-        <span class="col-auto bg-primary text-white py-1 px-3 rounded-2"><i class="fa-solid fa-star me-2"></i> Word of the Day</span>
-        <span class="col-auto text-end bg-primary text-light py-1 px-3 rounded-2"><i class="fa-regular fa-calendar-days me-2"></i> {% now "D, d M, Y" %}</span>
-      </div>
-      
-      <div class="col-10 text-center text-secondary px-2 py-3 cursor-pointer mx-auto" onclick="window.location.assign('{% url 'word' word.pk %}')">
-        <div class="display-5 text-primary mb-1">{{word.word}}</div>
-        <div class="fs-5 fst-italic">({{word.pos}})</div>
-        <hr class="hr-blurry">
-        
-        <div class="fs-4">{{word.senses.0.9.en.0.0}}</div>
-        <hr class="hr-blurry">
-        
-        <div class="fs-5 text-start">
-          <ul class="m-0"><li>{{word.senses.0.10|random|cut:"*"}}</li></ul>
-        </div>
-      </div>
+<div class="col-11 col-lg-7 bg-light rounded shadow mx-auto">
+  <div class="d-flex justify-content-between bg-primary bg-opacity-50 p-3 rounded shadow-sm">
+    <span class="col-auto bg-primary-nightly py-1 px-3 rounded-2"><i class="fa-solid fa-star me-2"></i> Word of the Day</span>
+    <span class="col-auto text-end bg-primary-nightly py-1 px-3 rounded-2"><i class="fa-regular fa-calendar-days me-2"></i> {% now "D, d M" %}</span>
+  </div>
+  
+  <div class="col-10 text-center text-secondary py-3 mx-auto">
+    <div class="display-4 text-primary mb-1 cursor-pointer" onclick="window.location.assign('{% url 'word' word.pk %}')">{{word.word}}</div>
+    <div class="fs-5 fst-italic">({{word.pos}})</div>
+    <hr class="hr-blurry">
+    
+    <div class="fs-4">: {{word.senses.0.9.en.0.0}}</div>
+    <hr class="hr-blurry">
+    
+    <div class="fs-5">
+      &#x2022; {{word.senses.0.10|random|cut:"*"}}
+    </div>
+    <hr class="hr-blurry">
 
-      <div class="text-center fs-7 mb-1">
-        <span class="d-inline-block text-bg-primary px-3 py-1 rounded m-3">
-          From the list :
-          {% if word.listing == 1 %}Lingo's Words List{% endif %}
-          {% if word.listing == 2 %}Common Phrasal Verbs{% endif %}
-          {% if word.listing == 3 %}Common Phrases{% endif %}
-          {% if word.listing == 4 %}Common Idioms{% endif %}
-        </span>
-      </div>
-
-      <div class="bg-primary bg-opacity-50 text-center text-primary fs-8 p-1 rounded">&copy; LingoLab | www.lingolab.in</div>
+    <div class="fs-7">
+      <span class="d-inline-block bg-primary-nightly px-3 py-1 rounded m-3">
+        {% if word.listing == 1 %}<a href="/english/entries/?data=lingo_words_list" class="text-white">From the list : Lingo's Words List</a>{% endif %}
+        {% if word.listing == 2 %}<a href="/english/entries/?data=common_phrasal_verbs" class="text-white">From the list : Common Phrasal Verbs</a>{% endif %}
+        {% if word.listing == 3 %}<a href="/english/entries/?data=common_phrases" class="text-white">From the list : Common Phrases</a>{% endif %}
+        {% if word.listing == 4 %}<a href="/english/entries/?data=common_idioms" class="text-white">From the list : Common Idioms</a>{% endif %}
+      </span>
     </div>
   </div>
+  <div class="bg-primary-nightly bg-opacity-50 text-center text-primary fs-8 p-1 rounded">&copy; LingoLab | www.lingolab.in</div>
 </div>
 
 <hr class="hr-blurry my-5">
@@ -142,7 +137,7 @@
     </div>
   
     <div class="col-auto">
-      <a href="/english/posts/" class="btn btn-outline-primary fw-bold border-2">ALL POSTS <i class="fa-solid fa-chevron-right fs-7"></i></a>
+      <a href="/english/posts/" class="btn btn-outline-primary fw-bold border-2">Show All <i class="fa-solid fa-chevron-right fs-7"></i></a>
     </div>
   </div>
 
@@ -176,7 +171,8 @@
     {% endfor %}
   </div>
 </div>
-  
+
+<!--
 <hr class="hr-blurry my-5">
 
 <div class="p-3 rounded mx-2 shadow border border-2">
@@ -202,7 +198,7 @@
     {% endfor %}
   </div>
 </div>
-
+-->
 
 {% include "footer-links.html" %}
 <script src="/static/js/suggsh.js"></script>

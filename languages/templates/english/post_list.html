@@ -1,24 +1,26 @@
 {% extends 'base.html' %}
 {% block body %}
 {% include "header.html" %}
-<div class="bg-gray-200 py-5">
-    <div class="text-center display-5 fw-semibold text-learner pb-1">
-        ENGLISH POSTS
+<div class="bg-gray-200 py-4">
+    <div class="text-center display-4 fw-semibold text-learner pb-1">
+        <i class="fa-solid fa-newspaper"></i> English Posts
     </div>
 </div>
 <div class="rule pt-1 rounded-bottom"></div>
-{% include 'messages.html' %}
-<div class="container my-5">
-    {% if perms.languages.add_post %}
-        <h2>Admin Control</h2>
-        <div class="row">
-            <div>
-                <button class="btn btn-secondary" onclick="window.location.assign(`{% url 'post_entry' %}`)">Add Post</button>
-            </div>
-        </div>
-        <hr>
-    {% endif %}
 
+{% if perms.languages.change_post %}
+    <div class="card card-body mx-5 my-3">
+        <div class="fs-2 mb-2">Admin Features</div>
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'post_entry' %}?action=editpost&pk={{post.pk}}`)">Edit Post</button>
+            <button class="btn btn-outline-secondary" onclick="window.location.assign(`{% url 'exercise_entry' %}`)">Add Exercise</button>
+        </div>
+    </div>
+{% endif %}
+
+{% include 'messages.html' %}
+
+<div class="col-11 col-md-9 col-lg-7 mx-auto my-5">
     <div class="d-flex justify-content-between mb-3">
         <div class="col-auto">
             <select class="form-select bg-gray text-secondary">
@@ -34,15 +36,15 @@
         </div>
     </div>
 
-    <hr>
+    <hr class="hr-blurry">
 
     {% for post in page_obj %}
-        <div class="bg-gray-200 p-3 rounded shadow-sm mb-3">
+        <div class="bg-gray-200 p-3 rounded mb-3">
             <div class="d-flex justify-content-between fs-8 lsp-sm text-uppercase mb-3">
                 <span>{{post.created_at|date:"M d, Y"}}</span>
                 {% if post.topic.name %}<span class="p-1 rounded">{{post.topic.name}}</span>{% endif %}
             </div>
-            <div class="fw-bold fs-3 text-center mb-4 cursor-pointer" onclick="window.location.assign(`{% url "post_detail" post.pk %}`)">
+            <div class="fw-bold fs-3 text-gray-600 text-center mb-4 cursor-pointer" onclick="window.location.assign(`{% url "post_detail" post.pk %}`)" data-cl="lk">
                 {{post.title}}
             </div>
             <!--div class="">By: {{post.author}}</div-->
@@ -59,7 +61,7 @@
         </div>
     {% endfor %}
 
-    <hr>
+    <hr class="hr-blurry">
 
     <nav class="d-flex justify-content-center" aria-label="...">
         <ul class="pagination">

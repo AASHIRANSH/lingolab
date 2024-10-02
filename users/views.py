@@ -367,13 +367,13 @@ def plan(request):
     elif key == "streak":
         date = datetime.datetime.strptime(user.plan[0][1],"%Y-%m-%d").date()
         today = datetime.datetime.today().date()
-        if date == today-datetime.timedelta(days=1):
+        if date == today:
+            return HttpResponse("none")
+        elif date == today-datetime.timedelta(days=1):
             user.plan[0][0] += 1
             user.plan[0][1] = today.strftime("%Y-%m-%d")
             user.save()
             return HttpResponse("true")
-        elif date == today:
-            return HttpResponse("none")
         else:
             user.plan[0][0] = 1
             user.plan[0][1] = today.strftime("%Y-%m-%d")

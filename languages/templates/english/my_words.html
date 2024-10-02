@@ -3,7 +3,7 @@
 {% include 'header.html' %}
 
 <div class="container-fluid bg-gray-200 p-3">
-    <div class="text-center text-learner display-5 fw-semibold pb-4"><i class="fa-solid fa-list"></i> My Learnings</div>
+    <div class="text-center text-learner display-4 fw-semibold py-4"><i class="fa-solid fa-list"></i> My Learnings</div>
 
     <div class="px-2">
         <div class="pnav">
@@ -17,7 +17,7 @@
                 <a href="{% url "my_words" %}?td=true"><i class="fa-solid fa-history"></i> REVIEW LIST</a>
             </li>
 
-            <li class="{% if request.GET.td %}active{% endif %}">
+            <li class="d-none {% if request.GET.td %}active{% endif %}">
                 <div class="ts-b"></div>
                 <a href="{% url "my_words" %}?td=true">MAKE NEW LIST <i class="fa-solid fa-plus"></i></a>
             </li>
@@ -71,27 +71,24 @@
             <thead>
                 <tr class="table-primary">
                     <th class="text-primary" style="width:5%;">#</th>
-                    <th class="text-primary" style="width:45%;">Word</th>
+                    <th class="text-primary" style="width:55%;">Word</th>
                     <th class="text-primary" style="width:20%;">Sense</th>
                     <th class="text-primary" style="width:20%;">Progress</th>
-                    <th class="text-primary" style="width:10%;"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for word in words %}
                 <tr onclick="window.location.assign(`{% url 'my_word' word.pk %}`)" class="cursor-pointer">
-                    <td class="text-secondary">{% if not forloop.counter == 10%}{{request.GET.page}}{{forloop.counter}}{% else %}{{forloop.counter}}{% endif %}</td>
+                    <td class="text-secondary">{% if not forloop.counter == 10 %}{{request.GET.page}}{{forloop.counter}}{% else %}{{request.GET.page|add:1}}0{% endif %}</td>
                     <td>{{word.word}} {% if word.pos %}<span class="text-secondary fst-italic">({{word.pos}})</span>{% endif %}</td>
                     <td><div class="badge text-bg-secondary">{{word.sense.0}}/{{word.sense.1}}</div></td>
                     <td><div class="badge text-bg-primary">{{word.progress}}%</div></td>
-                    <td></td>
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr>
                     <th colspan="2" class="fs-7 text-secondary">PAGE {{request.GET.page|default:"1"}} of {{wordsp.paginator.num_pages}}</th>
-                    <th></th>
                     <th></th>
                     <th></th>
                 </tr>
